@@ -1,3 +1,9 @@
-.test {
-    
+.parentBox {
+    position: relative;
+}
+
+.childBox {
+    position: absolute;
+    top: -36px;
+    left: 108%;
 }

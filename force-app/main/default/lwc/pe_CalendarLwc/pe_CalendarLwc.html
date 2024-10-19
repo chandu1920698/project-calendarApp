@@ -112,7 +112,7 @@
                                                                 </p>
                                                             </button>
                                                             <template if:true={currentEvent.isShowMoreEventInfo}>
-                                                                Show More Event Info
+                                                                <c-pe-event-more-info-lwc key={currentEvent.eventId} oncloseeventmoreinfo={handleShowMoreEventInfoClose} onediteventrecord={handleOpenEventRecordFromPopup} topmargin={top} leftmarginn={left} event-data={currentEvent} ></c-pe-event-more-info-lwc>
                                                             </template>
                                                         </template>
                                                     </template>

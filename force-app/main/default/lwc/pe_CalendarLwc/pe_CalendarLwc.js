@@ -2446,6 +2446,14 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
                                 console.log(updatedEvent.eventId + " -> " + selectedEventId);
                                 updatedEvent.isShowMoreEventInfo = true;
                                 selectedEvent = updatedEvent;
+
+                                // Set the popover position based on the mouse cursor's location
+                                this.left = event.clientX;
+                                this.top = event.clientY;
+
+                                console.log("this.left -> " + JSON.stringify(this.left));
+                                console.log("this.top -> " + JSON.stringify(this.top));
+
                             } else {
                                 updatedEvent.isShowMoreEventInfo = false;
                             }

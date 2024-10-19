@@ -19,6 +19,8 @@ export default class PePopoverEventsLwc extends LightningElement {
     }
 
     get boxClass() { 
+        console.log("this.left -> " + JSON.stringify(this.left));
+        console.log("this.top -> " + JSON.stringify(this.top));
         return `background-color:white; top:${this.top - 280}px; left:${this.left}px`;
     }
 
