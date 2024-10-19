@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>Network.NetworkMembers$Email</field>
+    </columns>
+    <columns>
+        <field>Network.NetworkMembers.LoginHistory$LoginTime</field>
+    </columns>
+    <description>What&apos;s the login history for each of my partner sites last week?</description>
+    <filter>
+        <criteriaItems>
+            <column>Network.NetworkMembers.LoginHistory$Status</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>0</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Network$Site</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Network.NetworkMembers$Name</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Partner Logins by Site</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>prm_total_portal_login_crt__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <showGrandTotal>true</showGrandTotal>
+    <showSubTotals>true</showSubTotals>
+    <sortColumn>Network.NetworkMembers.LoginHistory$LoginTime</sortColumn>
+    <sortOrder>Desc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>Network.NetworkMembers.LoginHistory$LoginTime</dateColumn>
+        <interval>INTERVAL_LASTWEEK</interval>
+    </timeFrameFilter>
+</Report>

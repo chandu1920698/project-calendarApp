@@ -1,0 +1,242 @@
+.calendar {
+    font-family: Arial, sans-serif;
+    width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.weekdays {
+    display: flex;
+}
+
+.weekdays .weekday {
+    flex: 1;
+    text-align: center;
+    padding: 5px;
+}
+
+.days {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.week {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.lightning-card {
+    flex: 1;
+    text-align: center;
+    padding: 5px;
+    margin: 2px;
+}
+
+.today {
+    background-color: #e6e6e6;
+}
+
+.weekend {
+    color: red;
+}
+
+.empty {
+    visibility: hidden;
+}
+
+.lgc-bg {
+    background-color: rgb(242 242 242);
+}
+
+.custom-box {
+    /* width: 14.285714285714286%; */
+}
+
+.calweekday {
+    border-style: groove;
+    height: 92px;
+    width: 0px;
+    display: flex;
+    flex-direction: column;
+}
+
+.texttopleft {
+    top: 10px;
+    left: 10px;
+}
+
+.slds-badge {
+    background-color: var(--slds-c-badge-color-background, #CFEBFE);
+    border-radius: var(--slds-c-badge-radius-border, 5px);
+    color: var(--slds-c-badge-text-color, #080707);
+    font-size: xx-small;
+    height: 20px;
+    margin-bottom: 1%;
+    margin-left: 0%;
+    width: 99%;
+    /* Styles not pertinent have been omitted */
+}
+
+.loadingSpinner {}
+
+.divTagAsLink {
+    text-decoration: underline;
+}
+
+.card_header {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom: 1px solid rgb(201, 201, 201);
+}
+
+.popover {
+    position: absolute;
+    top: auto;
+    transform: scale(0);
+    width: auto;
+    height: auto;
+    left: auto;
+}
+
+.card:hover .popover {
+    transform: scale(1);
+}
+
+.newHelpTextBackgroundColor {
+    --slds-c-tooltip-color-background: #FFF;
+    --slds-c-tooltip-text-color: #000;
+    --slds-c-popover-position-zindex: 9999;
+}
+
+.createventdivtag {
+    flex: 1;
+}
+
+.transitiontime {
+    transition: 1.0s;
+}
+
+.custom-box-height {
+    /* height: 10px; */
+}
+
+.x-large{
+    /* height: 10px; */
+}
+
+.div-css {
+    display:block;
+}
+
+.datepickercalweekday {
+    width: 0px;
+    height: 3rem;
+    vertical-align: middle;
+}
+
+.today-css {
+    text-shadow:#000;
+}
+lightning-layout-item.datepickercalweekday > div{
+    cursor: pointer;
+}
+
+.datePickerTextalignCenter {
+    height: 3rem;
+    width: inherit;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.datePickerDay {
+
+}
+
+.datePickerDay:hover {
+    cursor: pointer;
+    transform: scale(2);
+    color: rgb(27, 150, 255);
+    transition: .2s;
+}
+
+.isSelectedDayFromSmallCalendar {
+    border-radius: 50%;
+    border: solid 2px #1B96FF;
+}
+
+.isSelectedDayFromSmallCalendarCurrentMonth {
+    border-radius: 50%;
+    border: solid 2px #1B96FF;
+}
+
+.today {
+    background-color: #f3f3f3;
+    transform: scale(2);
+    color: rgb(27, 150, 255);
+}
+
+.calendarHour {
+    border-right: 1px solid #F3F3F3;
+    /* border-left: 1px solid #F3F3F3; */
+    border-top: 1px solid #F3F3F3;
+    /* border-bottom: 1px solid #F3F3F3; */
+    /* height: var(--hourHeightInDayViewCalendar); */
+    height: 50px;
+}
+
+.calendarHourWithoutBorder {
+    height: 50px;
+}
+
+.timecolumnclass {
+    border-right: 1px solid #F3F3F3;
+    border-left: 1px solid #F3F3F3;
+    /* border-top: 1px solid #F3F3F3; */
+    /* border-bottom: 1px solid #F3F3F3; */
+    /* height: var(--hourHeightInDayViewCalendar); */
+    height: 50px;
+}
+
+.createEventDayView {
+    height: 50px;
+    width: 100%;
+}
+
+.negativeMarginForColumn {
+    margin-left: -12px;
+    /* margin-right: -12px; */
+}
+
+.weekCalendarWidthEqualMaker {
+    width: 0px;
+}
+
+.liveLineParent {
+    position: relative;
+}
+
+.liveLineChild {
+    border: solid 1px red;
+    position: absolute;
+    right: 0px;
+    left: 0px;
+    z-index: 1;
+    top: 100px;
+}
+
+.topLineForDateTable {
+    border-top: 1px solid red;
+}
+
+.card-maring-top-remove {
+    margin-top: -1.5rem;
+}

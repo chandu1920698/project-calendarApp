@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>PartnerMarketingBudget$Name</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>PartnerMarketingBudget$Amount</field>
+    </columns>
+    <columns>
+        <field>PartnerMarketingBudget$CreatedDate</field>
+    </columns>
+    <description>What is the amount and creation date for each of my partner marketing budgets, and what&apos;s the total of all budgets? Budgets are grouped by partner account.</description>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>PartnerMarketingBudget$ChannelPartner</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Total Partner Marketing Budget</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>prm_partner_marketing_budget_crt__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <showGrandTotal>true</showGrandTotal>
+    <showSubTotals>true</showSubTotals>
+    <sortColumn>PartnerMarketingBudget$CreatedDate</sortColumn>
+    <sortOrder>Desc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>PartnerMarketingBudget$CreatedDate</dateColumn>
+        <interval>INTERVAL_PREV1</interval>
+    </timeFrameFilter>
+</Report>

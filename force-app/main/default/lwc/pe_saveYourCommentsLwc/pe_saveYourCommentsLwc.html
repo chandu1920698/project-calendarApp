@@ -1,0 +1,25 @@
+<template>
+    <lightning-card title={LABLE.LabelSaveYourComments}>
+        <div class="slds-p-around_medium lgc-bg">
+            <lightning-input type="text" label="Type your comments" value={commentText}
+                onchange={handleInputChange}></lightning-input>
+            {commentText}
+            {recordId}
+        </div>
+        <div class='slds-p-around_xxx-small slds-align_absolute-center'>
+            <div class="slds-p-around_xx-small">
+                <lightning-button variant="destructive-text" class="slds-button" icon-name="utility:delete"
+                    label="Clear" onclick={handleClearText}>Clear</lightning-button>
+            </div>
+            <div class="slds-p-around_xx-small">
+                <lightning-button class="slds-button" icon-name="utility:save" label="Save"
+                    onclick={handleSaveComment}>Save</lightning-button>
+            </div>
+            <!-- <div class="slds-p-around_xx-small">
+                <lightning-button class="slds-button" icon-name="utility:close" label="Cancel and Close"
+                    onclick={handleCloseCommentPopup}>Cancel and Close</lightning-button>
+            </div> -->
+        </div>
+    </lightning-card>
+
+</template>

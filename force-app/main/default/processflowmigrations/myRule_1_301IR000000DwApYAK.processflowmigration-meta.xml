@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ProcessFlowMigration xmlns="http://soap.sforce.com/2006/04/metadata">
+    <destinationFlowDefinition>Publish_Platform_Event_on_Event_Upsert_1</destinationFlowDefinition>
+    <destinationFlowVersion>Publish_Platform_Event_on_Event_Upsert_1-1</destinationFlowVersion>
+    <developerName>myRule_1_301IR000000DwApYAK</developerName>
+    <masterLabel>Publish Platform Event on Event Upsert_1</masterLabel>
+    <migratedCriteriaLabel>No Criteria</migratedCriteriaLabel>
+    <migratedCriteriaName>myRule_1</migratedCriteriaName>
+    <processVersion>Publish_Platform_Event_on_Event_Upsert-1</processVersion>
+</ProcessFlowMigration>

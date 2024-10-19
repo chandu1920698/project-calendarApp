@@ -1,0 +1,12 @@
+.slds-badge {
+    background-color: var(--slds-c-badge-color-background, #CFEBFE);
+    border-radius: var(--slds-c-badge-radius-border, 5px);
+    color: var(--slds-c-badge-text-color, #080707);
+    font-size: xx-small;
+    height: 20px;
+    margin-left: 0%;
+    width: 95%;
+    margin-bottom: 1px;
+    /* Styles not pertinent have been omitted */
+
+}

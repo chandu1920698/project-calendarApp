@@ -1,0 +1,77 @@
+<template>
+    <lightning-card icon-name="" variant="base" class="" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol; font-size: 0.75rem;'
+    SANS_SERIF;">
+      <lightning-layout vertical-align="stretch" multiple-rows="true">
+         <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_12-of-12 slds-theme_shade">
+            <lightning-layout-item flexibility="auto" class="slds-size_12-of-12 slds-theme_shade">
+               <div class="slds-grid slds-gutters slds-align-top">
+                   <div class="slds-col slds-align-top">
+                       <div class="slds-grid slds-gutters">
+                           <div class="slds-col slds-no-flex">
+                               <lightning-icon icon-name="standard:event" alternative-text="Approved" title="Approved"
+                                   size="medium"></lightning-icon>
+                           </div>
+                           <div class="slds-col">
+                               <div class="slds-text-heading_small">Related Events</div>
+                           </div>
+                       </div>
+                   </div>
+                   <div class="slds-col slds-align-top">
+                     <span class="slds-float_right">
+                         <span style="display: inline-block">
+                              <lightning-input type="text" variant="label-hidden" placeholder="Search events here..." onchange={handleEventSearch}></lightning-input>
+                         </span>
+                          
+                          <span style="display: inline-block">
+                         <lightning-button-menu alternative-text="View" variant="border" 
+                                class="slds-m-right_x-small slds-m-left_x-small" icon-name="utility:event"
+                                onselect={handleSwitchCalendarView}>
+                                <template for:each={calendarTypesList} for:item="calendarType">
+                                    <template if:true={calendarType.isSelected}>
+                                        <lightning-menu-item key={calendarType.name} value={calendarType.name} label={calendarType.lable} checked></lightning-menu-item>
+                                    </template>
+                                    <template if:false={calendarType.isSelected}>
+                                        <lightning-menu-item key={calendarType.name} value={calendarType.name} label={calendarType.lable}></lightning-menu-item>
+                                    </template>
+                                    
+                                </template>
+                            </lightning-button-menu>
+
+                         <lightning-button label="New Event" title="Non-primary action" onclick={handleEventCreate}
+                             class="slds-m-left_x-small slds-m-right_x-small"></lightning-button>
+                          </span>
+                     </span>
+                 </div>
+               </div>
+           </lightning-layout-item>
+         </lightning-layout-item>
+         <lightning-layout-item flexibility="auto" class="slds-size_12-of-12 slds-theme_shade slds-scrollable_y" style="height:30rem">
+            <template if:true={showCalendarTableView}>
+                <div class="" style="border-top: 1px solid rgb(201, 201, 201);"></div>
+                <template if:true={tableViewEventsRecordsData}>
+                    <lightning-datatable
+                        key-field="Id"
+                        data={tableViewEventsRecordsData}
+                        columns={eventTablecolumns}
+                        onrowaction={handleRowAction}
+                        enable-infinite-loading={enableInfiniteLoading}
+                        onloadmore={loadMoreData}
+                        show-row-number-column="true"
+                        hide-checkbox-column="true"
+                        column-widths-mode="fixed">
+                    </lightning-datatable>
+                    <template if:true={isLoadMoreData}>
+                        <div class="loadingSpinner">
+                            <lightning-spinner alternative-text="Loading" variant="brand" size="small"></lightning-spinner>
+                        </div>
+                    </template>
+                </template>
+            </template>
+         </lightning-layout-item>
+      </lightning-layout>
+       
+
+        
+    </lightning-card>
+    
+</template>

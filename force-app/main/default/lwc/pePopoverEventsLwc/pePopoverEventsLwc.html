@@ -1,0 +1,48 @@
+<template>
+        <div class="boxClass">
+            <template if:true={eventsData.showPopoverEventsOnHover}>
+                <section aria-describedby="dialog-body-id-109" aria-label="Dialog Title" class="slds-popover slds-nubbin_top-left" role="dialog">
+                    <button class="slds-button slds-button_icon slds-button_icon-small slds-float_right slds-popover__close slds-button_icon-inverse" onclick={handlePopoverCloseButtonClick} title="Close dialog">
+                        <svg class="slds-button__icon" aria-hidden="true">
+                            <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+                        </svg>
+                        <lightning-icon icon-name="utility:close" alternative-text="Utility image" size="small" title="Image"></lightning-icon>
+                        <span class="slds-assistive-text">Close dialog</span>
+                    </button>
+                    <header class="slds-popover__header slds-theme_shade">
+                        <div class="slds-media slds-media_center slds-has-flexi-truncate ">
+                            <div class="slds-media__figure">
+                                <lightning-icon icon-name="standard:events" alternative-text="Event" size="small" title="Event"></lightning-icon>
+                            </div>
+                            <div class="slds-media__body">
+                                <h2 class="slds-truncate slds-float_left slds-text-heading_medium" id="dialog-heading-id-1" title="">{eventsData.day}, {dateInfo}</h2>
+                            </div>
+                        </div>
+                    </header>
+                    <div class="slds-popover__body" id="dialog-body-id-115">
+                        <div>   
+                            <lightning-layout-item flexibility="auto">
+                                <template for:each={eventsData.events} for:item="currentEvent">
+                                    <template if:false={currentEvent.isShowEventRecord}>
+                                        <button href={currentEvent.eventUrl}
+                                            data-object={currentEvent.eventId}
+                                            key={currentEvent.eventId}
+                                            class="slds-badge slds-size_1-of-1 "
+                                            style={currentEvent.opacity} onclick={handleOpenEventRecord}
+                                            >
+                                            <p class="slds-truncate" data-object={currentEvent.eventId}
+                                                onclick={handleOpenEventRecord}>
+                                                <span data-object={currentEvent.eventId} onclick={handleOpenEventRecord}>
+                                                    {currentEvent.startTime12hrsFormat}&nbsp;<span data-object={currentEvent.eventId}>{currentEvent.subject}</span>&nbsp;<template if:true={currentEvent.listOfWhoNames}>|&nbsp;{currentEvent.listOfWhoNames}</template>
+                                                </span>
+                                            </p>
+                                        </button>
+                                    </template>
+                                </template>
+                            </lightning-layout-item>
+                        </div>
+                    </div>
+                    </section>
+            </template>
+        </div>
+</template>

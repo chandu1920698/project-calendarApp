@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>tgn__Status__c</fullName>
+    <defaultValue>&apos;Pending&apos;</defaultValue>
+    <deprecated>false</deprecated>
+    <externalId>false</externalId>
+    <label>Status</label>
+    <required>true</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Pending</fullName>
+                <default>false</default>
+                <label>Pending</label>
+            </value>
+            <value>
+                <fullName>Processing</fullName>
+                <default>false</default>
+                <label>Processing</label>
+            </value>
+            <value>
+                <fullName>Processed</fullName>
+                <default>false</default>
+                <label>Processed</label>
+            </value>
+            <value>
+                <fullName>Failed</fullName>
+                <default>false</default>
+                <label>Failed</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

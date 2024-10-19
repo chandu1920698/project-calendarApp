@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Test Class Extension --></label>
+    <name>tgn__Test_Class_Extension__c</name>
+</CustomFieldTranslation>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>PartnerFundRequest$Name</field>
+    </columns>
+    <columns>
+        <field>PartnerFundRequest.PartnerFundClaims$Name</field>
+    </columns>
+    <columns>
+        <field>PartnerFundRequest.PartnerFundClaims$Status</field>
+    </columns>
+    <columns>
+        <field>PartnerFundRequest.PartnerFundClaims$Description</field>
+    </columns>
+    <columns>
+        <field>PartnerFundRequest.PartnerFundClaims$CreatedBy</field>
+    </columns>
+    <columns>
+        <field>PartnerFundRequest.PartnerFundClaims$Amount</field>
+    </columns>
+    <columns>
+        <field>PartnerFundRequest.PartnerFundClaims$CreatedDate</field>
+    </columns>
+    <description>What are the open market development fund claims submitted by partners?</description>
+    <filter>
+        <criteriaItems>
+            <column>PartnerFundRequest.PartnerFundClaims$Status</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>false</isUnlocked>
+            <operator>equals</operator>
+            <value>4</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>PartnerFundRequest$ChannelPartner</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Open Partner Fund Claims</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>MDF_Claim_Request_Crt__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <showGrandTotal>true</showGrandTotal>
+    <showSubTotals>true</showSubTotals>
+    <sortColumn>PartnerFundRequest.PartnerFundClaims$CreatedDate</sortColumn>
+    <sortOrder>Desc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>PartnerFundRequest$CreatedDate</dateColumn>
+        <interval>INTERVAL_PREV1</interval>
+    </timeFrameFilter>
+</Report>

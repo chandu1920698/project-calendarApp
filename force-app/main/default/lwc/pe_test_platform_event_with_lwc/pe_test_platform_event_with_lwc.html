@@ -1,0 +1,9 @@
+<template> {recordId}
+    <lightning-card title={title}>
+        <lightning-button label="New" slot="actions" onclick={createOpportunity}></lightning-button>
+        <lightning-datatable key-field="id" data={data} columns={columns} onrowaction={handleRowAction}
+            hide-checkbox-column show-row-number-column>
+        </lightning-datatable>
+    </lightning-card>
+    <lightning-spinner alternative-text="Loading" size="small" if:true={isLoading}></lightning-spinner>
+</template>

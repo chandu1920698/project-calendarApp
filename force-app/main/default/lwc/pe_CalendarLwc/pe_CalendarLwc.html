@@ -1,0 +1,448 @@
+<template>
+    <lightning-card style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol; font-size: 0.75rem;'
+    SANS_SERIF;">
+        <lightning-layout vertical-align="stretch" multiple-rows="true">
+            <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_12-of-12 slds-theme_shade card-maring-top-remove">
+                <div class="slds-grid slds-gutters slds-align-top">
+                    <div class="slds-col slds-align-top">
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col slds-no-flex">
+                                <lightning-icon icon-name="standard:event" alternative-text="Calendar" title="Calendar"
+                                    size="large"></lightning-icon>
+                            </div>
+                            <div class="slds-col">
+                                <div class="slds-text-heading_small">Calendar</div>
+                                <div class="slds-text-heading_small">
+                                    <strong>
+                                        <template if:true={showCalendar}>
+                                            {mainCalendarCurrentMonth} {mainCalendarCurrentYear}
+                                        </template> 
+                                        <template if:true={showCalendarWeekView}>
+                                            {currentWeekStartDay} {currentWeekStartMonth} {currentWeekStartYear} - {currentWeekEndDay} {currentWeekEndMonth} {currentWeekEndYear}
+                                        </template> 
+                                        <template if:true={showCalendarDayView}>
+                                            {datePickerSelectedDay} {datePickerSelectedMonth} {datePickerSelectedYear}
+                                        </template> 
+                                    </strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-col slds-align-top">
+                        <span class="slds-float_right">
+                            <lightning-button-icon icon-name="utility:chevronleft" onclick={handlePrevDayWeekMonth}
+                                alternative-text="Previous" title="Previous"></lightning-button-icon>
+                            <lightning-button-icon icon-name="utility:chevronright" onclick={handleNextDayWeekMonth}
+                                alternative-text="Next" class="slds-m-right_x-small"
+                                title="Next"></lightning-button-icon>
+                            <lightning-button-icon icon-name="utility:refresh" onclick={handleRefreshClick}
+                                alternative-text="Refresh" class="slds-m-left_xx-small"
+                                title="Refresh"></lightning-button-icon>
+                            <lightning-button-menu alternative-text="View" variant="border" 
+                                class="slds-m-right_x-small slds-m-left_x-small" icon-name="utility:event"
+                                onselect={handleSwitchCalendarView}>
+                                <template for:each={calendarTypesList} for:item="calendarType">
+                                    <template if:true={calendarType.isSelected}>
+                                        <lightning-menu-item key={calendarType.name} value={calendarType.name} label={calendarType.lable} checked></lightning-menu-item>
+                                    </template>
+                                    <template if:false={calendarType.isSelected}>
+                                        <lightning-menu-item key={calendarType.name} value={calendarType.name} label={calendarType.lable}></lightning-menu-item>
+                                    </template>
+                                    
+                                </template>
+                            </lightning-button-menu>
+
+                            <lightning-button label="New Event" title="New Event" onclick={handleEventCreate}
+                                class="slds-m-left_x-small slds-m-right_x-small"></lightning-button>
+                            <template if:true={showSmallCalendar}>
+                                <lightning-button-icon icon-name="utility:expand_alt" alternative-text="Expand Main Calendar" onclick={handleShowSmallCalendar}
+                                class="slds-m-left_xx-small" title="Expand Main Calendar"></lightning-button-icon> 
+                            </template>
+                            <template if:false={showSmallCalendar}>
+                                <lightning-button-icon icon-name="utility:contract_alt" alternative-text="Minimize Main Calendar" onclick={handleShowSmallCalendar}
+                                class="slds-m-left_xx-small" title="Minimize Main Calendar"></lightning-button-icon>
+                            </template>
+                        </span>
+                    </div>
+                </div>
+            </lightning-layout-item>
+        </lightning-layout>
+
+        <lightning-layout vertical-align="stretch" multiple-rows="true">
+            <lightning-layout-item flexibility="auto" class={monthlyCalendarSize} style="position:relative">
+                <template lwc:if={showCalendar}>
+                    <div class="custom-box slds-text-align_center ">
+                        <lightning-layout>
+                            <template for:each={weekDays} for:item="currentDay">
+                                <lightning-layout-item  flexibility="auto" key={currentDay.fullform} padding="around-small">
+                                    <div class="custom-box  slds-text-align_center"><strong>{currentDay.shortform}</strong></div>
+                                </lightning-layout-item>
+                            </template>
+                        </lightning-layout>
+                    </div>
+                    <template for:each={calendar} for:item="week">
+                        <div key={week.weekNumber} class="custom-box slds-text-align_center">
+                            <lightning-layout>
+                                <template for:each={week.days} for:item="day">
+                                    <template if:true={day.date}>
+                                        <lightning-layout-item key={day.date} flexibility="auto"
+                                            class="calweekday slds-p-around_xx-small">
+                                            <div id={day.number} data-object={day.date} key={day.date}
+                                                class="custom-box slds-text-align_left" onclick={handleEventCreate}>
+                                                <div key={day.date} data-object={day.date} class="texttopleft">
+                                                    {day.number}
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <template if:true={day.events}>
+                                                    <template for:each={day.events} for:item="currentEvent">
+                                                        <template if:true={currentEvent.isShowEventRecord}>
+                                                            <button href={currentEvent.eventUrl}
+                                                                data-object={currentEvent}
+                                                                key={currentEvent.eventId}
+                                                                id={currentEvent.eventId}
+                                                                class="slds-badge slds-size_1-of-1"
+                                                                style={currentEvent.opacity} onclick={handleShowMoreEventInfo}
+                                                                >
+                                                                <p class="slds-truncate" id={currentEvent.eventId} data-object={currentEvent}
+                                                                    onclick={handleShowMoreEventInfo}>
+                                                                    <span data-object={currentEvent} id={currentEvent.eventId} onclick={handleShowMoreEventInfo}>
+                                                                        {currentEvent.startTime12hrsFormat}&nbsp;<span id={currentEvent.eventId} data-object={currentEvent} onclick={handleShowMoreEventInfo}>{currentEvent.subject}</span>&nbsp;<template if:true={currentEvent.listOfWhoNames} data-object={currentEvent}>|&nbsp;{currentEvent.listOfWhoNames}</template>
+                                                                    </span>
+                                                                </p>
+                                                            </button>
+                                                            <template if:true={currentEvent.isShowMoreEventInfo}>
+                                                                Show More Event Info
+                                                            </template>
+                                                        </template>
+                                                    </template>
+                                                </template>
+                                            </div>
+                                            <div>
+                                                <template if:true={day.dayhasMoreThanThreeEvents}>
+                                                    <div style="padding-left:1rem;padding-top:0rem;position:relative" >
+                                                        <a key={day.date} data-object={day.date}
+                                                            class="slds-truncate slds-size_1-of-1 card"
+                                                            href="javascript:void(0)" value={day.remainingEvents}
+                                                            tooltip={day.remainingEvents} label={day.remainingEvents}
+                                                            data-dateinfo={day.date}
+                                                            onclick={handleOpenPopoverEventsLwc}
+                                                            >{day.remainingEvents}</a>
+                                                            <template if:true={showPopoverEvents}>
+                                                                <c-pe-popover-events-lwc topmargin={top} leftmarginn={left} events-data={day} onclosepopover={handleClosePopover} onediteventrecord={handleOpenEventRecordFromPopup}></c-pe-popover-events-lwc>
+                                                            </template>
+                                                    </div>
+                                                    <template if:false={showAllDayEventPopover}>
+                                                    </template>
+                                                </template>
+                                            </div>
+                                            <div class="createventdivtag" data-object={day.date} onclick={handleEventCreate}>
+
+                                            </div>
+                                        </lightning-layout-item>
+                                    </template>
+                                    <template if:false={day.date}>
+                                        <lightning-layout-item key={day.date} flexibility="auto"
+                                            class="calweekday slds-p-around_xx-small slds-theme_shade">
+                                            <div class="custom-box slds-text-align_left"></div>
+                                        </lightning-layout-item>
+                                    </template>
+                                </template>
+                            </lightning-layout>
+                        </div>
+                    </template>
+                    <template if:true={isLoading}>
+                        <div class="slds-spinner_container">
+                            <div role="status" class="slds-spinner slds-spinner_small slds-spinner_brand">
+                                <span class="slds-assistive-text">Loading</span>
+                                <div class="slds-spinner__dot-a"></div>
+                                <div class="slds-spinner__dot-b"></div>
+                            </div>
+                        </div>
+                    </template>
+                </template>
+                <template lwc:elseif={showCalendarDayView}>
+                    <lightning-layout vertical-align="stretch" multiple-rows="true" class="slds-scrollable" style="height:32rem;">
+                        <lightning-layout-item flexibility="auto" class="slds-size_12-of-12 liveLineParent">
+                            <template if:true={dayInfo}>
+                                <div class="slds-grid slds-grid_vertical">
+                                    <template for:each={dayInfo.hourRowsInfo} for:item="hour">
+                                        <div key={hour} class="slds-col calendarHour " >
+                                            <div class="slds-grid slds-gutters">
+                                                <div class="slds-col slds-size_1-of-12 timecolumnclass">
+                                                    <span>
+                                                        {hour.hoursValue12hrs}
+                                                    </span>
+                                                </div>
+                                                <div class="slds-col slds-size_11-of-12 negativeMarginForColumn">
+                                                    <template if:true={hour.hasEvents}>
+                                                        <div class="slds-grid slds-gutters">
+                                                            <div class="slds-col slds-size_11-of-12">
+                                                                <div class="slds-grid slds-grid_vertical-align-start">
+                                                                    <template for:each={hour.events} for:item="event">
+                                                                        <div key={event.Id} style={event.eventWidth}>
+                                                                            <div class="" data-object={selectedDateFromSmallCalendar} style={event.emptySpaceCssOnTop} id={hour.hoursValue} onclick={handleEventCreate}>
+                                                                            </div>
+                                                                            <button href={event.eventUrl}
+                                                                                data-object={event.eventUrl}
+                                                                                class="slds-badge"
+                                                                                style={event.eventClass} 
+                                                                                onclick={handleOpenEventRecord}>
+                                                                                <p class="slds-truncate" onclick={handleOpenEventRecord}>
+                                                                                    <span>{event.subject}</span>
+                                                                                    <template if:true={event.isShowDescription}>
+                                                                                        <span>
+                                                                                            <p class="slds-truncate" title={event.description}>{event.description}</p>
+                                                                                        </span>
+                                                                                    </template>
+                                                                                    <template if:true={event.isShowRelatedRecords}>
+                                                                                        <p class="slds-truncate" title={event.relatedrecordsInfo.truncatedListOfRelatedRecords}>
+                                                                                            <template for:each={event.relatedrecordsInfo.relatedRecordsList} for:item="relatedRecord">
+                                                                                                <span key={relatedRecord.recordId}>
+                                                                                                    <lightning-formatted-url value={relatedRecord.recordUrl} label={relatedRecord.recordName} target="_blank" ></lightning-formatted-url>
+                                                                                                    <template if:false={relatedRecord.isLastRecord}>
+                                                                                                        ,&nbsp;
+                                                                                                    </template>
+                                                                                                </span>
+                                                                                            </template>
+                                                                                        </p>
+                                                                                    </template>
+                                                                                </p>
+                                                                            </button>
+                                                                            <div class="" data-object={selectedDateFromSmallCalendar} style={event.emptySpaceCssOnBottom} id={hour.hoursValue} onclick={handleEventCreate}>
+                                                                            </div>
+                                                                        </div>  
+                                                                    </template>
+                                                                </div>
+                                                            </div>
+                                                            <div class="slds-col slds-size_1-of-12" data-object={selectedDateFromSmallCalendar} id={hour.hoursValue} onclick={handleEventCreate}>
+                                                            </div>
+                                                        </div>
+                                                    </template>
+                                                    <template if:false={hour.hasEvents}>
+                                                        <div class="createEventDayView" data-object={selectedDateFromSmallCalendar} id={hour.hoursValue} onclick={handleEventCreate}>
+    
+                                                        </div>
+                                                    </template>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                                <template if:true={dayInfo.isToday}>
+                                    <div class="slds-size_11-of-12" style={liveDateTimeStyle}></div>
+                                </template>
+                            </template>
+                            <template if:true={isDayCalendarLoading}>
+                                <div class="slds-spinner_container">
+                                    <div role="status" class="slds-spinner slds-spinner_small slds-spinner_brand">
+                                        <span class="slds-assistive-text">Loading</span>
+                                        <div class="slds-spinner__dot-a"></div>
+                                        <div class="slds-spinner__dot-b"></div>
+                                    </div>
+                                </div>
+                            </template>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </template>
+                <template lwc:elseif={showCalendarWeekView}>
+                    <lightning-layout vertical-align="stretch" multiple-rows="true" class="slds-scrollable" style="height:32rem;">
+                        <lightning-layout-item flexibility="auto" class="slds-size_12-of-12">
+                            <div class="slds-grid">
+                                <div class="slds-col slds-size_1-of-12">
+                                    <div class="slds-col calendarHourWithoutBorder"></div>
+                                    <template for:each={dayInfo.hourRowsInfo} for:item="hour">
+                                        <div key={hour} class="slds-col calendarHour">
+                                            <span>
+                                                {hour.hoursValue12hrs}
+                                            </span> 
+                                        </div>
+                                    </template>
+                                </div>
+                                <div class="slds-col slds-size_11-of-12">
+                                    <lightning-layout vertical-align="stretch" class="slds-text-align_center">
+                                        <template for:each={weekDays} for:item="currentDay">
+                                            <lightning-layout-item flexibility="auto" key={currentDay.fullform} padding="around-small" class="calendarHourWithoutBorder weekCalendarWidthEqualMaker">
+                                                <div class="">{currentDay.shortform} {currentDay.date}</div>
+                                            </lightning-layout-item>
+                                        </template>
+                                    </lightning-layout>
+                                    
+                                    <div class="slds-grid slds-grid_vertical-align-center slds-is-relative">
+                                        <template for:each={weekViewCalendarData} for:item="currentDay">
+                                            <template if:true={currentDay.dayInfo}>
+                                                <div key={currentDay.day} class="slds-col weekCalendarWidthEqualMaker liveLineParent">
+                                                    <template if:true={currentDay.dayInfo}>
+                                                        <template for:each={currentDay.dayInfo.hourRowsInfo} for:item="hour">
+                                                            <div key={hour.hoursValue} class="slds-col calendarHour">
+                                                                <div class="slds-grid">
+                                                                    <div class="slds-col slds-size_11-of-12">
+                                                                        <div class="slds-grid slds-grid_vertical-align-start">
+                                                                            <template if:true={hour.hasEvents}>
+                                                                                <template for:each={hour.events} for:item="event">
+                                                                                    <div key={event.Id} style={event.eventWidth}>
+                                                                                        <div class="" data-object={selectedDateFromSmallCalendar} style={event.emptySpaceCssOnTop} id={hour.hoursValue} onclick={handleEventCreate}>
+                                                                                        </div>
+                                                                                        <button key={event.Id} href={event.eventUrl}
+                                                                                            data-object={event.eventUrl}
+                                                                                            class="slds-badge"
+                                                                                            style={event.eventClass} 
+                                                                                            onclick={handleOpenEventRecord}>
+                                                                                            <p class="slds-truncate" onclick={handleOpenEventRecord}>
+                                                                                                <span>{event.subject}</span>
+                                                                                                <template if:true={event.isShowDescription}>
+                                                                                                    <span>
+                                                                                                        <p class="slds-truncate" title={event.description}>{event.description}</p>
+                                                                                                    </span>
+                                                                                                </template>
+                                                                                                <template if:true={event.isShowRelatedRecords}>
+                                                                                                    <p class="slds-truncate" title={event.relatedrecordsInfo.truncatedListOfRelatedRecords}>
+                                                                                                        <template for:each={event.relatedrecordsInfo.relatedRecordsList} for:item="relatedRecord">
+                                                                                                            <span key={relatedRecord.recordId}>
+                                                                                                                <lightning-formatted-url value={relatedRecord.recordUrl} label={relatedRecord.recordName} target="_blank" ></lightning-formatted-url>
+                                                                                                                <template if:false={relatedRecord.isLastRecord}>
+                                                                                                                    ,&nbsp;
+                                                                                                                </template>
+                                                                                                            </span>
+                                                                                                        </template>
+                                                                                                    </p>
+                                                                                                </template>
+                                                                                            </p>
+                                                                                        </button>
+                                                                                        <div class="" data-object={selectedDateFromSmallCalendar} style={event.emptySpaceCssOnBottom} id={hour.hoursValue} onclick={handleEventCreate}>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    
+                                                                                </template>
+                                                                                
+                                                                            </template>
+                                                                            <template if:false={hour.hasEvents}>
+                                                                                <div class="createEventDayView" data-object={currentDay.day} id={hour.hoursValue} onclick={handleEventCreate}>
+                            
+                                                                                </div>
+                                                                            </template>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="slds-col slds-size_1-of-12">
+                                                                        <div class="createEventDayView" data-object={currentDay.day} id={hour.hoursValue} onclick={handleEventCreate}>
+            
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </template>
+                                                        <template if:true={currentDay.dayInfo.isToday}>
+                                                            <div class="slds-size_12-of-12" style={liveDateTimeStyle}></div>
+                                                        </template>
+                                                    </template>
+                                                </div>
+                                            </template>
+                                        </template>
+                                        <template if:true={isWeekCalendarLoading}>
+                                            <div class="slds-spinner_container">
+                                                <div role="status" class="slds-spinner slds-spinner_small slds-spinner_brand">
+                                                    <span class="slds-assistive-text">Loading</span>
+                                                    <div class="slds-spinner__dot-a"></div>
+                                                    <div class="slds-spinner__dot-b"></div>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+                            </div>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </template>
+                <template lwc:else>
+                    <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+                </template>
+            </lightning-layout-item>
+            <lightning-layout-item flexibility="auto" class={fadesmallCalendar}>
+                <template if:true={showSmallCalendar}>
+                    <div style="position:relative">
+                        <lightning-layout class="x-large" vertical-align="center">
+                            <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-12">
+                                <lightning-button-icon icon-name="utility:left"  variant="bare" size="medium" alternative-text="Previous Month" class="slds-m-left_xx-small" onclick={handleDatePickerPrevMonthClick}></lightning-button-icon>
+                            </lightning-layout-item>
+                            <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_4-of-12 slds-text-align_center">
+                                <div class="custom-box-height"><div>{datePickerSelectedMonth}</div></div>
+                            </lightning-layout-item>
+                            <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-12">
+                                <lightning-button-icon icon-name="utility:right" variant="bare" size="medium" alternative-text="Next Month" class="slds-m-left_xx-small" onclick={handleDatePickerNextMonthClick}></lightning-button-icon>
+                            </lightning-layout-item>
+                            <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_4-of-12">
+                                <div class="slds-form-element">
+                                    <div class="slds-form-element__control">
+                                      <div class="slds-select_container">
+                                        <select class="slds-select" data-id="selectYear" onchange={handleDatePickerYearSelect}>
+                                            <template for:each={listOfDatePickerYears} for:item="datePickerYear">
+                                                <template if:true={datePickerYear.isSelected}>
+                                                    <option  key={datePickerYear.value} value={datePickerYear.value} selected>{datePickerYear.value}</option>
+                                                </template>
+                                                <template if:false={datePickerYear.isSelected}>
+                                                    <option  key={datePickerYear.value} value={datePickerYear.value}>{datePickerYear.value}</option>
+                                                </template>
+                                            </template>
+                                        </select>
+                                      </div>
+                                    </div>
+                                  </div>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                        <lightning-layout class="x-large slds-text-align_center">
+                            <template for:each={weekDays} for:item="currentDay">
+                                <lightning-layout-item  flexibility="auto" key={currentDay.fullform} padding="around-small">
+                                    <div class="custom-box-height"><strong>{currentDay.shortform}</strong></div>
+                                </lightning-layout-item>
+                            </template>
+                        </lightning-layout>
+                        <template if:true={showDatePickerCalendar}>
+                            <template for:each={datePickerCalendar} for:item="week">
+                                <div key={week.weekNumber} class="slds-text-align_center">
+                                    <lightning-layout>
+                                        <template for:each={week.days} for:item="day">
+                                            <template if:true={day.date}>
+                                                <lightning-layout-item key={day.date} flexibility="auto"
+                                                    class={day.dayLayoutCss} data-object={day.date} onclick={handleDatePickerDayClick}>
+                                                    <div id={day.number} data-object={day.date} class={day.dayCssClass}>
+                                                        <template if:true={day.today}>
+                                                            <div class="datePickerDay today" data-object={day.date}>{day.number}</div>
+                                                        </template>
+                                                        <template if:false={day.today}>
+                                                            <div class="datePickerDay" data-object={day.date}>{day.number}</div>
+                                                        </template>
+                                                    </div>
+                                                </lightning-layout-item>
+                                            </template>
+                                            <template if:false={day.date}>
+                                                <lightning-layout-item key={day.date} flexibility="auto"
+                                                    class=" datepickercalweekday">
+                                                    <div id={day.number} class="datePickerTextalignCenter">
+                                                        <div class="datePickerDay">{day.number}</div>
+                                                    </div>
+                                                </lightning-layout-item>
+                                            </template>
+                                        </template>
+                                    </lightning-layout>
+                                </div>
+                            </template>
+                        </template>
+                        <template if:true={isSmallCalendarLoading}>
+                            <div class="slds-spinner_container">
+                                <div role="status" class="slds-spinner slds-spinner_small slds-spinner_brand">
+                                    <span class="slds-assistive-text">Loading</span>
+                                    <div class="slds-spinner__dot-a"></div>
+                                    <div class="slds-spinner__dot-b"></div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+                <template if:true={showSmallCalendar}>
+                    <div class="slds-border_bottom slds-p-top_xx-small"></div>
+                </template>
+            </lightning-layout-item>
+        </lightning-layout>
+    </lightning-card>
+
+</template>
