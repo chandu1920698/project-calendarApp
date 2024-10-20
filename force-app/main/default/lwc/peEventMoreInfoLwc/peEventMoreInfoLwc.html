@@ -1,7 +1,7 @@
 <template>
     <div class="parentBox">
-        <div class="childBox">
-            <section aria-describedby="dialog-body-id-109" aria-label="Dialog Title" class="slds-popover slds-nubbin_left-top" role="dialog">
+        <div style={childBoxClass}>
+            <section aria-describedby="dialog-body-id-109" aria-label="Dialog Title" class={popoverNubbinClass} role="dialog">
                 <button class="slds-button slds-button_icon slds-button_icon-small slds-float_right slds-popover__close slds-button_icon-inverse" onclick={handleEventInfoCloseButtonClick} title="Close dialog">
                     <svg class="slds-button__icon" aria-hidden="true">
                         <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
@@ -10,33 +10,26 @@
                     <span class="slds-assistive-text">Close dialog</span>
                 </button>
                 <header class="slds-popover__header slds-theme_shade">
-                    <div class="slds-media slds-media_center slds-has-flexi-truncate ">
+                    <div class={mediaClassCss}>
                         <div class="slds-media__figure">
                             <lightning-icon icon-name="standard:event" alternative-text="Event" size="small" title="Event"></lightning-icon>
                         </div>
                         <div class="slds-media__body">
-                            <h2 class="slds-truncate slds-float_left slds-text-heading_medium" id="dialog-heading-id-1" title="">{eventData.titleIn12HrFormat}</h2>
+                            <h2 class="slds-truncate slds-float_left slds-text-heading_small" id="dialog-heading-id-1" title="">{eventData.titleIn12HrFormat}</h2>
                         </div>
                     </div>
                 </header>
                 <div class="slds-popover__body" id="dialog-body-id-115">
                     <div>   
                         <lightning-layout-item flexibility="auto">
-                            <!-- <template if:true={eventData}>
-                                <button href={eventData.eventUrl}
-                                    data-object={eventData.eventId}
-                                    key={eventData.eventId}
-                                    class="slds-badge slds-size_1-of-1 "
-                                    style={eventData.opacity} onclick={handleOpenEventRecord}
-                                    >
-                                    <p class="slds-truncate" data-object={currentEvent.eventId}
-                                        onclick={handleOpenEventRecord}>
-                                        <span data-object={eventData.eventId} onclick={handleOpenEventRecord}>
-                                            {eventData.startTime12hrsFormat}&nbsp;<span data-object={eventData.eventId}>{eventData.subject}</span>&nbsp;<template if:true={eventData.listOfWhoNames}>|&nbsp;{currentEvent.listOfWhoNames}</template>
-                                        </span>
-                                    </p>
-                                </button>
-                            </template> -->
+                            <template if:true={eventData.description}>
+                                <p class="slds-truncate" title={eventData.description}><strong>Description</strong> : {eventData.description}</p>
+                            </template>
+                            <span>
+                                <div><strong>Start:</strong>{eventStartTime}</div>
+                                <div><strong>End:</strong>{eventEndTime}</div>
+                            </span>
+                            
                         </lightning-layout-item>
                     </div>
                 </div>

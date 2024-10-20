@@ -98,21 +98,21 @@
                                                     <template for:each={day.events} for:item="currentEvent">
                                                         <template if:true={currentEvent.isShowEventRecord}>
                                                             <button href={currentEvent.eventUrl}
-                                                                data-object={currentEvent}
+                                                                data-object={currentEvent.eventUrl}
                                                                 key={currentEvent.eventId}
                                                                 id={currentEvent.eventId}
                                                                 class="slds-badge slds-size_1-of-1"
                                                                 style={currentEvent.opacity} onclick={handleShowMoreEventInfo}
                                                                 >
-                                                                <p class="slds-truncate" id={currentEvent.eventId} data-object={currentEvent}
-                                                                    onclick={handleShowMoreEventInfo}>
-                                                                    <span data-object={currentEvent} id={currentEvent.eventId} onclick={handleShowMoreEventInfo}>
-                                                                        {currentEvent.startTime12hrsFormat}&nbsp;<span id={currentEvent.eventId} data-object={currentEvent} onclick={handleShowMoreEventInfo}>{currentEvent.subject}</span>&nbsp;<template if:true={currentEvent.listOfWhoNames} data-object={currentEvent}>|&nbsp;{currentEvent.listOfWhoNames}</template>
+                                                                <p class="slds-truncate" id={currentEvent.eventId} data-object={currentEvent.eventUrl}
+                                                                    onclick={handleShowMoreEventInfo}> 
+                                                                    <span data-object={currentEvent.eventUrl} id={currentEvent.eventId} onclick={handleShowMoreEventInfo}>
+                                                                        {currentEvent.startTime12hrsFormat}&nbsp;<span id={currentEvent.eventId} data-object={currentEvent.eventUrl} onclick={handleShowMoreEventInfo}>{currentEvent.subject}</span>&nbsp;<template if:true={currentEvent.listOfWhoNames} data-object={currentEvent.eventUrl}>|&nbsp;{currentEvent.listOfWhoNames}</template>
                                                                     </span>
                                                                 </p>
                                                             </button>
                                                             <template if:true={currentEvent.isShowMoreEventInfo}>
-                                                                <c-pe-event-more-info-lwc key={currentEvent.eventId} oncloseeventmoreinfo={handleShowMoreEventInfoClose} onediteventrecord={handleOpenEventRecordFromPopup} topmargin={top} leftmarginn={left} event-data={currentEvent} ></c-pe-event-more-info-lwc>
+                                                                <c-pe-event-more-info-lwc key={currentEvent.eventId} is-show-calendar=true is-show-more-info-for-hidden-event=false is-show-calander-day-view=false is-show-calander-week-view=false  oncloseeventmoreinfo={handleShowMoreEventInfoClose} ondeleteeventrecord={handleEventRecordDeletion} onediteventrecord={handleOpenEventRecordFromPopup}  event-data={currentEvent} ></c-pe-event-more-info-lwc>
                                                             </template>
                                                         </template>
                                                     </template>
@@ -128,8 +128,8 @@
                                                             data-dateinfo={day.date}
                                                             onclick={handleOpenPopoverEventsLwc}
                                                             >{day.remainingEvents}</a>
-                                                            <template if:true={showPopoverEvents}>
-                                                                <c-pe-popover-events-lwc topmargin={top} leftmarginn={left} events-data={day} onclosepopover={handleClosePopover} onediteventrecord={handleOpenEventRecordFromPopup}></c-pe-popover-events-lwc>
+                                                            <template if:true={day.showPopoverEventsOnHover}>
+                                                                <c-pe-popover-events-lwc  events-data={popoverEventsData} onclosepopover={handleClosePopover} onediteventrecord={handleOpenEventRecordFromPopup} ondeleteeventrecord={handleEventRecordDeletion}></c-pe-popover-events-lwc>
                                                             </template>
                                                     </div>
                                                     <template if:false={showAllDayEventPopover}>
@@ -187,8 +187,9 @@
                                                                                 data-object={event.eventUrl}
                                                                                 class="slds-badge"
                                                                                 style={event.eventClass} 
-                                                                                onclick={handleOpenEventRecord}>
-                                                                                <p class="slds-truncate" onclick={handleOpenEventRecord}>
+                                                                                id={event.Id}
+                                                                                onclick={handleShowMoreEventInfo}>
+                                                                                <p class="slds-truncate" id={event.Id} onclick={handleShowMoreEventInfo}>
                                                                                     <span>{event.subject}</span>
                                                                                     <template if:true={event.isShowDescription}>
                                                                                         <span>
@@ -209,6 +210,9 @@
                                                                                     </template>
                                                                                 </p>
                                                                             </button>
+                                                                            <template if:true={event.isShowMoreEventInfo}>
+                                                                                <c-pe-event-more-info-lwc is-show-calendar=false is-show-calander-day-view=true is-show-more-info-for-hidden-event=false is-show-calander-week-view=false oncloseeventmoreinfo={handleShowMoreEventInfoClose} ondeleteeventrecord={handleEventRecordDeletion} onediteventrecord={handleOpenEventRecordFromPopup}  event-data={event}></c-pe-event-more-info-lwc>
+                                                                            </template>
                                                                             <div class="" data-object={selectedDateFromSmallCalendar} style={event.emptySpaceCssOnBottom} id={hour.hoursValue} onclick={handleEventCreate}>
                                                                             </div>
                                                                         </div>  
@@ -287,12 +291,12 @@
                                                                                             data-object={event.eventUrl}
                                                                                             class="slds-badge"
                                                                                             style={event.eventClass} 
-                                                                                            onclick={handleOpenEventRecord}>
-                                                                                            <p class="slds-truncate" onclick={handleOpenEventRecord}>
+                                                                                            onclick={handleShowMoreEventInfo}>
+                                                                                            <p class="slds-truncate" data-object={event.eventUrl} onclick={handleShowMoreEventInfo}>
                                                                                                 <span>{event.subject}</span>
                                                                                                 <template if:true={event.isShowDescription}>
-                                                                                                    <span>
-                                                                                                        <p class="slds-truncate" title={event.description}>{event.description}</p>
+                                                                                                    <span data-object={event.eventUrl} onclick={handleShowMoreEventInfo}>
+                                                                                                        <p class="slds-truncate" title={event.description} data-object={event.eventUrl} onclick={handleShowMoreEventInfo}>{event.description}</p>
                                                                                                     </span>
                                                                                                 </template>
                                                                                                 <template if:true={event.isShowRelatedRecords}>
@@ -309,6 +313,9 @@
                                                                                                 </template>
                                                                                             </p>
                                                                                         </button>
+                                                                                        <template if:true={event.isShowMoreEventInfo}>
+                                                                                            <c-pe-event-more-info-lwc is-show-calendar=false is-show-more-info-for-hidden-event=false is-show-calander-day-view=false is-show-calander-week-view=false oncloseeventmoreinfo={handleShowMoreEventInfoClose} ondeleteeventrecord={handleEventRecordDeletion} onediteventrecord={handleOpenEventRecordFromPopup}  event-data={event}></c-pe-event-more-info-lwc>
+                                                                                        </template>
                                                                                         <div class="" data-object={selectedDateFromSmallCalendar} style={event.emptySpaceCssOnBottom} id={hour.hoursValue} onclick={handleEventCreate}>
                                                                                         </div>
                                                                                     </div>
