@@ -38,7 +38,7 @@
                                             </p>
                                         </button>
                                         <template if:true={currentEvent.isShowMoreEventInfo}>
-                                            <c-pe-event-more-info-lwc key={currentEvent.eventId} is-show-calendar=true is-show-more-info-for-hidden-event=true is-show-calander-day-view=false is-show-calander-week-view=false oncloseeventmoreinfo={handleShowMoreEventInfoClose} ondeleteeventrecord={handleEventRecordDeletion} onediteventrecord={handleOpenEventRecordFromPopup} event-data={currentEvent}></c-pe-event-more-info-lwc>
+                                            <c-pe-event-more-info-lwc key={currentEvent.eventId} is-show-calendar=true is-show-more-info-for-hidden-event=true is-show-calander-day-view=false is-show-calander-week-view=false oncloseeventmoreinfo={handleShowMoreEventInfoClose} ondeleteeventrecord={handleEventRecordDeletion} onediteventrecord={handleEditEventRecord} event-data={currentEvent}></c-pe-event-more-info-lwc>
                                         </template>
                                     </template>
                                 </template>

@@ -112,6 +112,16 @@ export default class PeEventMoreInfoLwc extends NavigationMixin(LightningElement
         }
     }
 
+
+    /*
+     * Function Name            : handleEditEventRecord
+     * Purpose                  : To edit the selected event record.
+     * Author Details           : Chandra Sekhar Reddy Muthumula
+     * Created Date             : Oct 17, 2024
+     * ------------------------- Updates to the function -------------------------
+     * Modified Date             Modified By                             Changes
+     * ------------------------- Updates to the function -------------------------
+     */
     handleEditEventRecord(event) {
         try {
             console.log("Inside handleEditEventRecord ");
@@ -129,6 +139,15 @@ export default class PeEventMoreInfoLwc extends NavigationMixin(LightningElement
         }
     }
 
+    /*
+     * Function Name            : handleEventRecordDeletion
+     * Purpose                  : To delete the selected event record.
+     * Author Details           : Chandra Sekhar Reddy Muthumula
+     * Created Date             : Oct 17, 2024
+     * ------------------------- Updates to the function -------------------------
+     * Modified Date             Modified By                             Changes
+     * ------------------------- Updates to the function -------------------------
+     */
     handleDeleteEventRecord(event) {
         try {
             console.log("Inside handleDeleteEventRecord ");

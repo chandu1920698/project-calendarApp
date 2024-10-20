@@ -38,22 +38,6 @@ export default class PePopoverEventsLwc extends LightningElement {
         }));
     }
 
-    handleOpenEventRecord(event) {
-        // this.handlePopoverCloseButtonClick();
-        console.log("event-> " + JSON.stringify(event));
-
-
-        console.log("event.target.dataset.object -> " + event.target.dataset.object);
-
-        this.dispatchEvent(new CustomEvent('editeventrecord', {
-            detail: {
-                message: 'Editing the event record',
-                recordId : event.target.dataset.object,
-            }
-        }));
-
-    }
-
     /*
      * Function Name            : handleShowMoreEventInfo
      * Purpose                  : To show more event information.
@@ -128,7 +112,7 @@ export default class PePopoverEventsLwc extends LightningElement {
      * Modified Date             Modified By                             Changes
      * ------------------------- Updates to the function -------------------------
      */
-    handleOpenEventRecordFromPopup(event) {
+    handleEditEventRecord(event) {
         try {
             console.log("Inside handleEditEventRecord ");
             console.log("event-> " + JSON.stringify(event));
