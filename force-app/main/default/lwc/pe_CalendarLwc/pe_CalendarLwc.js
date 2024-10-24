@@ -866,7 +866,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
             console.log('newDate -> ', newDate);
             
             // Adjust the current date by subtracting the user timezone offset to get the correct date in GMT.
-            newDate.setMinutes(newDate.getMinutes() - (this.userTimeZoneOffSetHours * 60));
+            // newDate.setMinutes(newDate.getMinutes() - (this.userTimeZoneOffSetHours * 60));
 
             // Now we have the GMT date, which is used because Salesforce stores event datetimes in GMT.
             const currentDateInGMT = newDate;
@@ -875,15 +875,24 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
             // Get the first day of the current month in GMT.
             const firstDayOfMonth = new Date(currentDateInGMT.getFullYear(), currentDateInGMT.getMonth(), 1);
 
-            // Get the last day of the current month in GMT.
-            const lastDayOfMonth = new Date(currentDateInGMT.getFullYear(), currentDateInGMT.getMonth() + 1, 0);
+            firstDayOfMonth.setHours(0);
+            firstDayOfMonth.setMinutes(0);
+            firstDayOfMonth.setSeconds(0);
 
-            // Adjust the dates for Salesforce's 1-day offset.
+            // Get the last day of the current month in GMT.
+            const lastDayOfMonth = new Date(currentDateInGMT.getFullYear(), currentDateInGMT.getMonth() + 1, 1);
+
+            lastDayOfMonth.setDate(lastDayOfMonth.getDate() - 1);
+            lastDayOfMonth.setHours(0);
+            lastDayOfMonth.setMinutes(0);
+            lastDayOfMonth.setSeconds(0);
+
+            // // Adjust the dates for Salesforce's 1-day offset.
             firstDayOfMonth.setDate(firstDayOfMonth.getDate() + 1);
             lastDayOfMonth.setDate(lastDayOfMonth.getDate() + 1);
 
-            console.log('First date of the month :', firstDayOfMonth);
-            console.log('Last date of the month :', lastDayOfMonth);
+            // console.log('First date of the month :', firstDayOfMonth);
+            // console.log('Last date of the month :', lastDayOfMonth);
 
             // Format the dates to 'YYYY-MM-DD' to send to Apex.
             this.firstDayOfMonth = firstDayOfMonth.toISOString().split('T')[0];
@@ -1714,7 +1723,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
             week.days.forEach(day => {
                 day.dayCssClass = 'datePickerTextalignCenter ';
                 day.dayLayoutCss = 'datepickercalweekday ';
-                console.log("day -> " + JSON.stringify(day));
+                // console.log("day -> " + JSON.stringify(day));
                 // if(day.date != null && day.date != '' && day.date.toISOString().split('T')[0] === this.datePickerCurrentDate.toISOString().split('T')[0]) {
                 if(day.date != null && day.date != '' && day.date.toISOString().split('T')[0] === this.selectedDateFromSmallCalendar.toISOString().split('T')[0]) {
                     console.log(day.date.toISOString().split('T')[0] + " -> " + this.selectedDateFromSmallCalendar.toISOString().split('T')[0]);

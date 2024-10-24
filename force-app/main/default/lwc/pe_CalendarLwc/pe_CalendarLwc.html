@@ -190,10 +190,10 @@
                                                                                 id={event.Id}
                                                                                 onclick={handleShowMoreEventInfo}>
                                                                                 <p class="slds-truncate" id={event.Id} onclick={handleShowMoreEventInfo}>
-                                                                                    <span>{event.subject}</span>
+                                                                                    <span data-object={event.eventUrl} onclick={handleShowMoreEventInfo}>{event.subject}</span>
                                                                                     <template if:true={event.isShowDescription}>
                                                                                         <span>
-                                                                                            <p class="slds-truncate" title={event.description}>{event.description}</p>
+                                                                                            <p class="slds-truncate" title={event.description} data-object={event.eventUrl} onclick={handleShowMoreEventInfo}>{event.description}</p>
                                                                                         </span>
                                                                                     </template>
                                                                                     <template if:true={event.isShowRelatedRecords}>
