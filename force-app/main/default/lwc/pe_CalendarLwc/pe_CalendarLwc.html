@@ -112,7 +112,7 @@
                                                                 </p>
                                                             </button>
                                                             <template if:true={currentEvent.isShowMoreEventInfo}>
-                                                                <c-pe-event-more-info-lwc key={currentEvent.eventId} is-show-calendar=true is-show-more-info-for-hidden-event=false is-show-calander-day-view=false is-show-calander-week-view=false  oncloseeventmoreinfo={handleShowMoreEventInfoClose} ondeleteeventrecord={handleEventRecordDeletion} onediteventrecord={handleOpenEventRecordFromPopup}  event-data={currentEvent} ></c-pe-event-more-info-lwc>
+                                                                <c-pe-event-more-info-lwc key={currentEvent.eventId} is-show-calendar=true is-show-more-info-for-hidden-event=false is-show-calander-day-view=false is-show-calander-week-view=false  oncloseeventmoreinfo={handleShowMoreEventInfoClose} ondeleteeventrecord={handleEventRecordDeletion} onediteventrecord={handleOpenEventRecordFromPopup}  event-data={currentEvent} onmouseleave={handleShowMoreEventInfoClose}></c-pe-event-more-info-lwc>
                                                             </template>
                                                         </template>
                                                     </template>
@@ -211,7 +211,7 @@
                                                                                 </p>
                                                                             </button>
                                                                             <template if:true={event.isShowMoreEventInfo}>
-                                                                                <c-pe-event-more-info-lwc is-show-calendar=false is-show-calander-day-view=true is-show-more-info-for-hidden-event=false is-show-calander-week-view=false oncloseeventmoreinfo={handleShowMoreEventInfoClose} ondeleteeventrecord={handleEventRecordDeletion} onediteventrecord={handleOpenEventRecordFromPopup}  event-data={event}></c-pe-event-more-info-lwc>
+                                                                                <c-pe-event-more-info-lwc is-show-calendar=false is-show-calander-day-view=true is-show-more-info-for-hidden-event=false is-show-calander-week-view=false oncloseeventmoreinfo={handleShowMoreEventInfoClose} ondeleteeventrecord={handleEventRecordDeletion} onediteventrecord={handleOpenEventRecordFromPopup}  event-data={event} onmouseleave={handleShowMoreEventInfoClose}></c-pe-event-more-info-lwc>
                                                                             </template>
                                                                             <div class="" data-object={selectedDateFromSmallCalendar} style={event.emptySpaceCssOnBottom} id={hour.hoursValue} onclick={handleEventCreate}>
                                                                             </div>
@@ -314,7 +314,7 @@
                                                                                             </p>
                                                                                         </button>
                                                                                         <template if:true={event.isShowMoreEventInfo}>
-                                                                                            <c-pe-event-more-info-lwc is-show-calendar=false is-show-more-info-for-hidden-event=false is-show-calander-day-view=false is-show-calander-week-view=false oncloseeventmoreinfo={handleShowMoreEventInfoClose} ondeleteeventrecord={handleEventRecordDeletion} onediteventrecord={handleOpenEventRecordFromPopup}  event-data={event}></c-pe-event-more-info-lwc>
+                                                                                            <c-pe-event-more-info-lwc is-show-calendar=false is-show-more-info-for-hidden-event=false is-show-calander-day-view=false is-show-calander-week-view=false oncloseeventmoreinfo={handleShowMoreEventInfoClose} ondeleteeventrecord={handleEventRecordDeletion} onediteventrecord={handleOpenEventRecordFromPopup}  event-data={event} onmouseleave={handleShowMoreEventInfoClose}></c-pe-event-more-info-lwc>
                                                                                         </template>
                                                                                         <div class="" data-object={selectedDateFromSmallCalendar} style={event.emptySpaceCssOnBottom} id={hour.hoursValue} onclick={handleEventCreate}>
                                                                                         </div>
