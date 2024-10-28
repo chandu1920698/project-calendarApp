@@ -21,16 +21,36 @@
                 </header>
                 <div class="slds-popover__body" id="dialog-body-id-115">
                     <div>   
-                        <lightning-layout-item flexibility="auto">
+                        <div>
                             <template if:true={eventData.description}>
-                                <p class="slds-truncate" title={eventData.description}><strong>Description</strong> : {eventData.description}</p>
+                                <p class="slds-truncate" title={eventData.description}><strong>Description :</strong> 
+                                    {eventData.description}
+                                </p>
                             </template>
+                        </div>
+                            <div class="slds-text-align_left">
+                                <p ><strong>Start Time : </strong>{eventStartTime}</p>
+                                <p><strong>End Time : </strong>{eventEndTime}</p>
+                            </div>
+                        <div>
                             <span>
-                                <div><strong>Start:</strong>{eventStartTime}</div>
-                                <div><strong>End:</strong>{eventEndTime}</div>
+                                <p class="slds-truncate">
+                                    <template if:true={relatedRecordList}>
+                                        <template if:true={relatedRecordList}>
+                                            <strong class="slds-float_left">Attendies : </strong> 
+                                        </template>
+                                        <template for:each={relatedRecordList} for:item="relatedRecord">
+                                            <span key={relatedRecord.recordId} class="slds-float_left">
+                                                <lightning-formatted-url value={relatedRecord.recordUrl} label={relatedRecord.recordName} target="_blank" ></lightning-formatted-url>
+                                                <template if:false={relatedRecord.isLastRecord}>
+                                                    ,&nbsp;
+                                                </template>
+                                            </span>
+                                        </template>
+                                    </template>
+                                </p>
                             </span>
-                            
-                        </lightning-layout-item>
+                        </div>
                     </div>
                 </div>
                 <footer class="slds-popover__footer">

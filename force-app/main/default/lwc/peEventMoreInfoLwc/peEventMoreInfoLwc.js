@@ -17,6 +17,7 @@ export default class PeEventMoreInfoLwc extends NavigationMixin(LightningElement
     @track childBoxClass = 'position: absolute; ';
     @track popoverNubbinClass = 'slds-popover ';
     @track mediaClassCss = 'slds-media slds-media_center slds-has-flexi-truncate ';
+    @track relatedRecordList = null;
 
     connectedCallback() {
         console.log("Inside PeEventMoreInfoLwc connectedcallback");
@@ -25,8 +26,8 @@ export default class PeEventMoreInfoLwc extends NavigationMixin(LightningElement
         this.eventRecordId = this.eventData.eventId;
         this.eventRecordUrl = this.eventData.eventUrl;
         console.log("this.eventRecordId -> " + this.eventRecordId);
-        this.eventStartTime = this.convert24HrsTo12Hrs(this.eventData.startDateTime);
-        this.eventEndTime = this.convert24HrsTo12Hrs(this.eventData.endDateTime);
+        this.eventStartTime = this.convert24HrsTo12Hrs(this.eventData.startDateTime).split(", ")[1];
+        this.eventEndTime = this.convert24HrsTo12Hrs(this.eventData.endDateTime).split(", ")[1];
         console.log("this.eventStartTime -> " + this.eventStartTime);
         console.log("this.eventEndTime -> " + this.eventEndTime);   
 
@@ -35,20 +36,59 @@ export default class PeEventMoreInfoLwc extends NavigationMixin(LightningElement
         console.log("this.isShowCalanderDayView -> " + this.isShowCalanderDayView);
         console.log("this.isShowCalanderWeekView -> " + this.isShowCalanderWeekView);
 
+        let tempRelatedRecordList;
+
         if(this.isShowCalendar.toString() == 'true') {
             this.childBoxClass += 'top: -36px; left: 104%;';
             this.popoverNubbinClass += 'slds-nubbin_left-top';
             if(this.isShowMoreInfoForHiddenEvent.toString() == 'true') {
                 this.mediaClassCss += ' slds-p-around_x-small';
             }
-        } else if(this.isShowCalanderDayView.toString() == 'true') {
+    
+            if(this.eventData.hasOwnProperty('relatedRecordList') == true && this.eventData.relatedRecordList != null && this.eventData.relatedRecordList != undefined && this.eventData.relatedRecordList.length > 0) {
+                console.log("this.eventData.relatedRecordList -> " + JSON.stringify(this.eventData.relatedRecordList));
+                tempRelatedRecordList = this.eventData.relatedRecordList;
+            }
+        } else {
             this.childBoxClass += 'top: -0.25rem; left: -1rem;';
             this.popoverNubbinClass += 'slds-nubbin_top-left';
-        } else if(this.isShowCalanderWeekView.toString() == 'true') {
-            this.childBoxClass += 'top: -0.25rem; left: -1rem;';
-            this.popoverNubbinClass += 'slds-nubbin_top-left';
+            console.log(1);
+            console.log("this.eventData.hasOwnProperty('relatedrecordsInfo') -> " + this.eventData.hasOwnProperty('relatedrecordsInfo'));
+            console.log("this.eventData.relatedrecordsInfo.relatedRecordsList -> " + this.eventData.relatedrecordsInfo.relatedRecordsList);
+            console.log("this.eventData.relatedrecordsInfo.relatedRecordsList.length -> " + this.eventData.relatedrecordsInfo.relatedRecordsList.length);
+            if(this.eventData.hasOwnProperty('relatedrecordsInfo') == true && this.eventData.relatedrecordsInfo.relatedRecordsList != null && this.eventData.relatedrecordsInfo.relatedRecordsList != undefined && this.eventData.relatedrecordsInfo.relatedRecordsList.length > 0) {
+                console.log(2);
+                console.log("this.eventData.relatedrecordsInfo.relatedRecordsList -> " + JSON.stringify(this.eventData.relatedrecordsInfo.relatedRecordsList));
+                tempRelatedRecordList = this.eventData.relatedrecordsInfo.relatedRecordsList;
+                console.log(3);
+            }
         }
-
+        console.log(4);
+        
+        if(tempRelatedRecordList != null && tempRelatedRecordList != undefined && tempRelatedRecordList.length > 0) {
+            let recordLength = tempRelatedRecordList.length;
+            console.log("recordLength -> " + recordLength);
+            this.relatedRecordList = [];
+            tempRelatedRecordList.forEach(record => {
+                recordLength--;
+                let relatedRecord = {};
+    
+                relatedRecord.recordName = record.recordName;
+                relatedRecord.recordId = record.recordId;
+                relatedRecord.recordUrl = "/" + record.recordId;
+                relatedRecord.isLastRecord = false;
+                relatedRecord.isFirstRecord = false;
+                if(recordLength == tempRelatedRecordList.length - 1) {
+                    relatedRecord.isFirstRecord = true;
+                }
+                if(recordLength == 0) {
+                    relatedRecord.isLastRecord = true;
+                }
+                this.relatedRecordList.push(relatedRecord);
+            });
+        }
+       
+        console.log("this.relatedRecordList -> " + this.relatedRecordList);
         console.log("this.childBoxClass -> " + this.childBoxClass);
         console.log("this.popoverNubbinClass -> " + this.popoverNubbinClass);
     }
