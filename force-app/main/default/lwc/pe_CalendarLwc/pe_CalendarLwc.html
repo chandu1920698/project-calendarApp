@@ -235,7 +235,7 @@
                                 </div>
                                 <template if:true={dayInfo.isToday}>
                                     <div class="slds-size_11-of-12" style={liveDateTimeStyle}></div>
-                                </template>
+                                </template>ondragover={handleDragover}
                             </template>
                             <template if:true={isDayCalendarLoading}>
                                 <div class="slds-spinner_container">
@@ -291,7 +291,11 @@
                                                                                             data-object={event.eventUrl}
                                                                                             class="slds-badge"
                                                                                             style={event.eventClass} 
-                                                                                            onclick={handleShowMoreEventInfo}>
+                                                                                            onclick={handleShowMoreEventInfo}
+                                                                                            draggable="true"
+                                                                                            
+                                                                                            ondragend={handleEventUpdateOnDrag}
+                                                                                            >
                                                                                             <p class="slds-truncate" data-object={event.eventUrl} onclick={handleShowMoreEventInfo}>
                                                                                                 <span>{event.subject}</span>
                                                                                                 <template if:true={event.isShowDescription}>

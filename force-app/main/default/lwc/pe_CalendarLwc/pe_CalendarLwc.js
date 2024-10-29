@@ -2570,6 +2570,15 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
         
     }
 
+    /*
+     * Function Name            : handleEventRecordDeletion
+     * Purpose                  : To delete event.
+     * Author Details           : Chandra Sekhar Reddy Muthumula
+     * Created Date             : Oct 17, 2024
+     * ------------------------- Updates to the function -------------------------
+     * Modified Date             Modified By                             Changes
+     * ------------------------- Updates to the function -------------------------
+     */
     async handleEventRecordDeletion(event) {
         try {
             console.log("Inside handleEventRecordDeletion");
@@ -2585,5 +2594,24 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
         } catch (error) {
             console.log("Error -> " + JSON.stringify(error));
         }
+    }
+
+    /*
+     * Function Name            : handleEventUpdateOnDrag
+     * Purpose                  : To update event record on drag.
+     * Author Details           : Chandra Sekhar Reddy Muthumula
+     * Created Date             : Oct 29, 2024
+     * ------------------------- Updates to the function -------------------------
+     * Modified Date             Modified By                             Changes
+     * ------------------------- Updates to the function -------------------------
+     */
+    handleEventUpdateOnDrag(event) {
+        console.log("Inside handleEventUpdateOnDrag");
+        console.log(event);
+        console.log(event.target.id);
+        console.log("Event -> " + JSON.stringify(event));
+        console.log("event.detail -> " + JSON.stringify(event.detail));
+        console.log("event.detail.message -> " + event.detail.message);
+        console.log("event.detail.recordId ->" + event.detail.recordId);
     }
 }
