@@ -866,7 +866,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
             console.log('newDate -> ', newDate);
             
             // Adjust the current date by subtracting the user timezone offset to get the correct date in GMT.
-            newDate.setMinutes(newDate.getMinutes() - (this.userTimeZoneOffSetHours * 60));
+            // newDate.setMinutes(newDate.getMinutes() - (this.userTimeZoneOffSetHours * 60));
 
             // Now we have the GMT date, which is used because Salesforce stores event datetimes in GMT.
             const currentDateInGMT = newDate;
@@ -875,15 +875,24 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
             // Get the first day of the current month in GMT.
             const firstDayOfMonth = new Date(currentDateInGMT.getFullYear(), currentDateInGMT.getMonth(), 1);
 
-            // Get the last day of the current month in GMT.
-            const lastDayOfMonth = new Date(currentDateInGMT.getFullYear(), currentDateInGMT.getMonth() + 1, 0);
+            firstDayOfMonth.setHours(0);
+            firstDayOfMonth.setMinutes(0);
+            firstDayOfMonth.setSeconds(0);
 
-            // Adjust the dates for Salesforce's 1-day offset.
+            // Get the last day of the current month in GMT.
+            const lastDayOfMonth = new Date(currentDateInGMT.getFullYear(), currentDateInGMT.getMonth() + 1, 1);
+
+            lastDayOfMonth.setDate(lastDayOfMonth.getDate() - 1);
+            lastDayOfMonth.setHours(0);
+            lastDayOfMonth.setMinutes(0);
+            lastDayOfMonth.setSeconds(0);
+
+            // // Adjust the dates for Salesforce's 1-day offset.
             firstDayOfMonth.setDate(firstDayOfMonth.getDate() + 1);
             lastDayOfMonth.setDate(lastDayOfMonth.getDate() + 1);
 
-            console.log('First date of the month :', firstDayOfMonth);
-            console.log('Last date of the month :', lastDayOfMonth);
+            // console.log('First date of the month :', firstDayOfMonth);
+            // console.log('Last date of the month :', lastDayOfMonth);
 
             // Format the dates to 'YYYY-MM-DD' to send to Apex.
             this.firstDayOfMonth = firstDayOfMonth.toISOString().split('T')[0];
@@ -949,7 +958,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
                             // If there are more than 2 events for the day, set a flag and display the remaining events.
                             if (day.events.length > 2) {
                                 day.dayhasMoreThanThreeEvents = true;
-                                day.remainingEvents = '+ ' + (day.events.length - 2) + ' More'; // Shows how many additional events exist beyond the first two.
+                                day.remainingEvents = '+ ' + (day.events.length - 2) + ' More'; // Shows how many additional events exist excluding the first two.
                             }
                         }
                     }
@@ -1714,7 +1723,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
             week.days.forEach(day => {
                 day.dayCssClass = 'datePickerTextalignCenter ';
                 day.dayLayoutCss = 'datepickercalweekday ';
-                console.log("day -> " + JSON.stringify(day));
+                // console.log("day -> " + JSON.stringify(day));
                 // if(day.date != null && day.date != '' && day.date.toISOString().split('T')[0] === this.datePickerCurrentDate.toISOString().split('T')[0]) {
                 if(day.date != null && day.date != '' && day.date.toISOString().split('T')[0] === this.selectedDateFromSmallCalendar.toISOString().split('T')[0]) {
                     console.log(day.date.toISOString().split('T')[0] + " -> " + this.selectedDateFromSmallCalendar.toISOString().split('T')[0]);
@@ -2154,6 +2163,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
             tempEvent.startDateTime = event.startDateTime;
             tempEvent.title = event.title;
             tempEvent.subject = event.title.split(' - ')[1];
+            tempEvent.isShowMoreEventInfo = false;
             tempEvent.description;
             tempEvent.whoName;
             tempEvent.emptySpaceCssOnTop =  '';
@@ -2202,7 +2212,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
             tempEvent.titleIn12HrFormat = event.titleIn12HrFormat;
             // tempEvent.paddingTop = 'padding-top:' + (new Date(tempEvent.startDateTime).toISOString().split('T')[1].split(':')[1]/60) * this.hourHeightInDayViewCalendar + 'px;'
             // Style the event for the hourly calendar view
-            tempEvent.eventClass = '' + 
+            tempEvent.eventClass = 'position : relative;' + 
             'height : ' +  ((tempEvent.eventDuration/60) * this.hourHeightInDayViewCalendar) + 'px;' +
             // 'margin-top : ' + (new Date(tempEvent.startDateTime).toISOString().split('T')[1].split(':')[1]/60) * this.hourHeightInDayViewCalendar + 'px;' +
             // 'left : 100px;' + /
@@ -2210,6 +2220,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
             // 'border : groove;' +
             'z-index : 1;' +
             'text-align: left;' +
+            'border: 0.01px solid lightblue;' +
             event.opacity + ';';
             // console.log("tempEvent -> " + JSON.stringify(tempEvent));
 
@@ -2424,23 +2435,61 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
             console.log(event);
             console.log(event.target);
             console.log(event.target.id); 
-            let selectedEventId = event.target.id.split("-")[0];
-            console.log("selectedEventId -> " +selectedEventId);
             console.log("event.target.dataset.object -> " + JSON.stringify(event.target.dataset.object));
-            console.log(event.target.dataset.object);
+            let selectedEventId = event.target.dataset.object.split("/")[1];
+            console.log("selectedEventId -> " +selectedEventId);
 
             let selectedEvent;
-            // Loop through each week in the calendar
-            this.calendar.forEach(week => {
-                // console.log('week -> ' + JSON.stringify(week));
-                week.days.forEach(day => {
-                    // Check if the day has events
-                    if (day.hasOwnProperty('events')) {
-                        // Create a new array of events (immutably updating)
-                        day.events = day.events.map(currentEvent => {
+            if(this.showCalendar == true) {
+                 // Loop through each week in the calendar
+                this.calendar.forEach(week => {
+                    // console.log('week -> ' + JSON.stringify(week));
+                    week.days.forEach(day => {
+                        // Check if the day has events
+                        if (day.hasOwnProperty('events')) {
+                            // Create a new array of events (immutably updating)
+                            day.events = day.events.map(currentEvent => {
+                                // Create a copy of the current event
+                                let updatedEvent = Object.assign({}, currentEvent);
+
+                                // If the event ID matches the selected event, mark it for more info display
+                                if (updatedEvent.eventId == selectedEventId) {
+                                    console.log(updatedEvent.eventId + " -> " + selectedEventId);
+                                    updatedEvent.isShowMoreEventInfo = true;
+                                    selectedEvent = updatedEvent;
+                                } else {
+                                    updatedEvent.isShowMoreEventInfo = false;
+                                }
+                                return updatedEvent; // Return the updated event for the new array
+                            });
+                        }
+                    });
+                });
+            } else if(this.showCalendarDayView == true) {
+                this.dayInfo.hourRowsInfo.forEach(currentHour => {
+                    currentHour.events = currentHour.events.map(currentEvent => {
+                        // Create a copy of the current event
+                        let updatedEvent = Object.assign({}, currentEvent);
+
+                        // If the event ID matches the selected event, mark it for more info display
+                        if (updatedEvent.eventId == selectedEventId) {
+                            console.log(updatedEvent.eventId + " -> " + selectedEventId);
+                            updatedEvent.isShowMoreEventInfo = true;
+                            selectedEvent = updatedEvent;
+                        } else {
+                            updatedEvent.isShowMoreEventInfo = false;
+                        }
+                        return updatedEvent; // Return the updated event for the new array
+
+                    });
+                });
+            } else if(this.showCalendarWeekView == true) {
+                this.weekViewCalendarData.forEach(currentDay => {
+                    currentDay.dayInfo.hourRowsInfo.forEach(currentHour => {
+                        currentHour.events = currentHour.events.map(currentEvent => {
                             // Create a copy of the current event
                             let updatedEvent = Object.assign({}, currentEvent);
-
+    
                             // If the event ID matches the selected event, mark it for more info display
                             if (updatedEvent.eventId == selectedEventId) {
                                 console.log(updatedEvent.eventId + " -> " + selectedEventId);
@@ -2450,10 +2499,13 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
                                 updatedEvent.isShowMoreEventInfo = false;
                             }
                             return updatedEvent; // Return the updated event for the new array
+    
                         });
-                    }
+                    });
                 });
-            });
+            }
+           
+            // this.loadMonthWeekDayTableCalanderView(this.showCalendar, this.showCalendarWeekView, this.showCalendarDayView);
             console.log("selectedEvent -> " + JSON.stringify(selectedEvent));
         } catch (error) {
             console.log("handleShowMoreEventInfo error -> " + error);
@@ -2470,20 +2522,96 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
      * ------------------------- Updates to the function -------------------------
      */
     handleShowMoreEventInfoClose() {
-        this.calendar.forEach(week => {
-            // console.log('week -> ' + JSON.stringify(week));
-            week.days.forEach(day => {
-                // Check if the day has events
-                if (day.hasOwnProperty('events')) {
-                    // Create a new array of events (immutably updating)
-                    day.events = day.events.map(currentEvent => {
+        if(this.showCalendar == true) {
+            this.calendar.forEach(week => {
+                // console.log('week -> ' + JSON.stringify(week));
+                week.days.forEach(day => {
+                    // Check if the day has events
+                    if (day.hasOwnProperty('events')) {
+                        // Create a new array of events (immutably updating)
+                        day.events = day.events.map(currentEvent => {
+                            // Create a copy of the current event
+                            let updatedEvent = Object.assign({}, currentEvent);
+                            if (updatedEvent.isShowMoreEventInfo) {
+                                updatedEvent.isShowMoreEventInfo = false;
+                            }
+                            return updatedEvent; // Return the updated event for the new array
+                        });
+                    }
+                });
+            });
+        } else if(this.showCalendarDayView == true) {
+
+            this.dayInfo.hourRowsInfo.forEach(currentHour => {
+                currentHour.events = currentHour.events.map(currentEvent => {
+                    // Create a copy of the current event
+                    let updatedEvent = Object.assign({}, currentEvent);
+                    if (updatedEvent.isShowMoreEventInfo) {
+                        updatedEvent.isShowMoreEventInfo = false;
+                    }
+                    return updatedEvent; // Return the updated event for the new array
+                });
+            });
+
+        } else if(this.showCalendarWeekView == true) {
+            this.weekViewCalendarData.forEach(currentDay => {
+                currentDay.dayInfo.hourRowsInfo.forEach(currentHour => {
+                    currentHour.events = currentHour.events.map(currentEvent => {
                         // Create a copy of the current event
                         let updatedEvent = Object.assign({}, currentEvent);
-                        updatedEvent.isShowMoreEventInfo = false;
+                        if (updatedEvent.isShowMoreEventInfo) {
+                            updatedEvent.isShowMoreEventInfo = false;
+                        }
                         return updatedEvent; // Return the updated event for the new array
                     });
-                }
+                });
             });
-        });
+        }
+        
+    }
+
+    /*
+     * Function Name            : handleEventRecordDeletion
+     * Purpose                  : To delete event.
+     * Author Details           : Chandra Sekhar Reddy Muthumula
+     * Created Date             : Oct 17, 2024
+     * ------------------------- Updates to the function -------------------------
+     * Modified Date             Modified By                             Changes
+     * ------------------------- Updates to the function -------------------------
+     */
+    async handleEventRecordDeletion(event) {
+        try {
+            console.log("Inside handleEventRecordDeletion");
+            console.log("Event -> " + JSON.stringify(event));
+            console.log("event.detail -> " + JSON.stringify(event.detail));
+            console.log("event.detail.message -> " + event.detail.message);
+            console.log("event.detail.recordId ->" + event.detail.recordId);
+
+            await deleteEventRecord({ eventRecordId: event.detail.recordId });
+
+            await this.handleRefreshClick();
+
+        } catch (error) {
+            console.log("Error -> " + JSON.stringify(error));
+        }
+    }
+
+    /*
+     * Function Name            : handleEventUpdateOnDrag
+     * Purpose                  : To update event record on drag.
+     * Author Details           : Chandra Sekhar Reddy Muthumula
+     * Created Date             : Oct 29, 2024
+     * ------------------------- Updates to the function -------------------------
+     * Modified Date             Modified By                             Changes
+     * ------------------------- Updates to the function -------------------------
+     */
+    handleEventUpdateOnDrag(event) {
+        console.log("Inside handleEventUpdateOnDrag");
+        console.log(event);
+        console.log(event.target.id);
+        console.log("Event -> " + JSON.stringify(event));
+        console.log("event.detail -> " + JSON.stringify(event.detail));
+        console.log("event.detail.message -> " + event.detail.message);
+        console.log("event.detail.recordId ->" + event.detail.recordId);
     }
 }

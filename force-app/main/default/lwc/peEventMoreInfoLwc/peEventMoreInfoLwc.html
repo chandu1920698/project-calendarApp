@@ -1,3 +1,70 @@
 <template>
-    
+    <div class="parentBox">
+        <div style={childBoxClass}>
+            <section aria-describedby="dialog-body-id-109" aria-label="Dialog Title" class={popoverNubbinClass} role="dialog">
+                <button class="slds-button slds-button_icon slds-button_icon-small slds-float_right slds-popover__close slds-button_icon-inverse" onclick={handleEventInfoCloseButtonClick} title="Close dialog">
+                    <svg class="slds-button__icon" aria-hidden="true">
+                        <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+                    </svg>
+                    <lightning-icon icon-name="utility:close" alternative-text="Utility image" size="small" title="Image"></lightning-icon>
+                    <span class="slds-assistive-text">Close dialog</span>
+                </button>
+                <header class="slds-popover__header slds-theme_shade">
+                    <div class={mediaClassCss}>
+                        <div class="slds-media__figure">
+                            <lightning-icon icon-name="standard:event" alternative-text="Event" size="small" title="Event"></lightning-icon>
+                        </div>
+                        <div class="slds-media__body">
+                            <h2 class="slds-truncate slds-float_left slds-text-heading_small" id="dialog-heading-id-1" title="">{eventData.titleIn12HrFormat}</h2>
+                        </div>
+                    </div>
+                </header>
+                <div class="slds-popover__body" id="dialog-body-id-115">
+                    <div>   
+                        <div>
+                            <template if:true={eventData.description}>
+                                <p class="slds-truncate" title={eventData.description}><strong>Description :</strong> 
+                                    {eventData.description}
+                                </p>
+                            </template>
+                        </div>
+                            <div class="slds-text-align_left">
+                                <p><strong>Start Time : </strong>{eventStartTime}</p>
+                                <p><strong>End Time : </strong>{eventEndTime}</p>
+                            </div>
+                        <div>
+                            <span>
+                                <p class="slds-truncate">
+                                    <template if:true={relatedRecordList}>
+                                        <template if:true={relatedRecordList}>
+                                            <strong class="slds-float_left">Attendies : </strong> 
+                                        </template>
+                                        <template for:each={relatedRecordList} for:item="relatedRecord">
+                                            <span key={relatedRecord.recordId} class="slds-float_left">
+                                                <lightning-formatted-url value={relatedRecord.recordUrl} label={relatedRecord.recordName} target="_blank" ></lightning-formatted-url>
+                                                <template if:false={relatedRecord.isLastRecord}>
+                                                    ,&nbsp;
+                                                </template>
+                                            </span>
+                                        </template>
+                                    </template>
+                                </p>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <footer class="slds-popover__footer">
+                    <div class="slds-grid slds-grid_vertical-align-center">
+                        <span class="slds-popover_prompt__action-link slds-col_bump-right">
+                          <a href={eventRecordUrl} class="slds-button" target="_blank">More Details</a>
+                        </span>
+                        <div class="slds-button-group slds-grid slds-grid_vertical-align-center slds-grid_align-end" role="group">
+                            <button class="slds-button slds-button_neutral slds-col_bump-left" onclick={handleEditEventRecord}>Edit</button>
+                            <button class="slds-button slds-button_neutral slds-col_bump-left" onclick={handleDeleteEventRecord}>Delete</button>
+                        </div>
+                      </div>
+                </footer>
+            </section>
+        </div>
+    </div>
 </template>

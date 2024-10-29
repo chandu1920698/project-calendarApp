@@ -22,27 +22,30 @@
                     <div class="slds-popover__body" id="dialog-body-id-115">
                         <div>   
                             <lightning-layout-item flexibility="auto">
-                                <template for:each={eventsData.events} for:item="currentEvent">
+                                <template for:each={hiddenEventsList} for:item="currentEvent">
                                     <template if:false={currentEvent.isShowEventRecord}>
                                         <button href={currentEvent.eventUrl}
-                                            data-object={currentEvent.eventId}
+                                            data-object={currentEvent.eventUrl}
                                             key={currentEvent.eventId}
                                             class="slds-badge slds-size_1-of-1 "
-                                            style={currentEvent.opacity} onclick={handleOpenEventRecord}
+                                            style={currentEvent.opacity} onclick={handleShowMoreEventInfo}
                                             >
-                                            <p class="slds-truncate" data-object={currentEvent.eventId}
-                                                onclick={handleOpenEventRecord}>
-                                                <span data-object={currentEvent.eventId} onclick={handleOpenEventRecord}>
-                                                    {currentEvent.startTime12hrsFormat}&nbsp;<span data-object={currentEvent.eventId}>{currentEvent.subject}</span>&nbsp;<template if:true={currentEvent.listOfWhoNames}>|&nbsp;{currentEvent.listOfWhoNames}</template>
+                                            <p class="slds-truncate" data-object={currentEvent.eventUrl}
+                                                onclick={handleShowMoreEventInfo}>
+                                                <span data-object={currentEvent.eventUrl} onclick={handleShowMoreEventInfo}>
+                                                    {currentEvent.startTime12hrsFormat}&nbsp;<span data-object={currentEvent.eventUrl}>{currentEvent.subject}</span>&nbsp;<template if:true={currentEvent.listOfWhoNames}>|&nbsp;{currentEvent.listOfWhoNames}</template>
                                                 </span>
                                             </p>
                                         </button>
+                                        <template if:true={currentEvent.isShowMoreEventInfo}>
+                                            <c-pe-event-more-info-lwc key={currentEvent.eventId} is-show-calendar=true is-show-more-info-for-hidden-event=true is-show-calander-day-view=false is-show-calander-week-view=false oncloseeventmoreinfo={handleShowMoreEventInfoClose} ondeleteeventrecord={handleEventRecordDeletion} onediteventrecord={handleEditEventRecord} event-data={currentEvent}></c-pe-event-more-info-lwc>
+                                        </template>
                                     </template>
                                 </template>
                             </lightning-layout-item>
                         </div>
                     </div>
-                    </section>
+                </section>
             </template>
         </div>
 </template>
