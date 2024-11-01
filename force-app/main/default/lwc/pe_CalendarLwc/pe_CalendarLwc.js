@@ -4,6 +4,7 @@ import CURRENTUSERID from "@salesforce/user/Id";
 import getCurrentMonthCalanderEventRecords from "@salesforce/apex/GetEventsController.getCurrentMonthCalanderEvents";
 import getTableViewCalanderEvents from "@salesforce/apex/GetEventsController.getTableViewCalanderEvents";
 import deleteEventRecord from "@salesforce/apex/GetEventsController.deleteEventRecord";
+import updateEventRecord from "@salesforce/apex/GetEventsController.updateEventRecord";
 import { encodeDefaultFieldValues } from 'lightning/pageReferenceUtils';
 import { subscribe, unsubscribe, onError } from 'lightning/empApi';
 import pe_CalendarLwc from "./pe_CalendarLwc.html";
@@ -275,7 +276,6 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
             */
             this.addEventsToCalendarInfo();
             console.log("wiredEventRecordsresult -> " + JSON.stringify(this.wiredEventRecordsresult));
-            console.log(this.wiredEventRecordsresult);
             this.isLoading = false;
         }
         else if (result.error) {;
@@ -1143,6 +1143,8 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
             this.loadMonthWeekDayTableCalanderView(false, false, true);  // Day view
         } else if (event.detail.value === 'table') {
             this.eventSearchKeyword = '';
+            this.tableRowLimit = 50;
+            this.tableRowOffset = 0;
             this.getTableViewEventRecords();  // Load the event records for the table view
             this.selectHTMLTemplateName = "peCalendarTableView";  // Switch to table view
         }
@@ -1202,7 +1204,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
     @track toggleBetweenMonthWeekDay = true;
 
     renderedCallback() {
-        console.log('Inside renderedCallback -> setRenderCallback : ' + this.setRenderCallback);
+        // console.log('Inside renderedCallback -> setRenderCallback : ' + this.setRenderCallback);
 
         // If setRenderCallback is true, proceed with re-rendering.
         if (this.setRenderCallback == true) {
@@ -1620,7 +1622,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
             console.log("generateDatePickerCalendar - this.datePickerCalendar -> " + JSON.stringify(this.datePickerCalendar));
             setTimeout(() => {
                 this.isSmallCalendarLoading = false;
-            }, 500);
+            }, 250);
 
             // Set the render callback flag to true to update the UI
             this.setRenderCallback = true;
@@ -1787,8 +1789,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
     */
     convert24HrsTo12Hrs(dateTime) {
         try {
-            // console.log("Inside convert24HrsTo12Hrs");
-            // console.log(" dateTime -> " + JSON.stringify(dateTime));
+            // console.log("Inside convert24HrsTo12Hrs dateTime -> " + JSON.stringify(dateTime));
             let tempDateTime = dateTime;
             let tempDate = tempDateTime.split('T')[0];
             // console.log("tempDate -> " + JSON.stringify(tempDate));
@@ -1846,7 +1847,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
         try {
             // Call the Apex method to get event records based on user ID, related record ID, and search keyword
             const data = await getTableViewCalanderEvents({
-                count : 0, 
+                count : ++this.countToManipulateWire, 
                 relatedRecordId : this.recordId, 
                 limitSize : this.tableRowLimit,
                 offset : this.tableRowOffset
@@ -1875,8 +1876,11 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
                 formattedEventsDataFromApex.push(newItem);
             });
 
+            if(this.tableRowOffset == 0) {
+                this.originalTableViewEventsRecordsData = [];
+            }
             this.originalTableViewEventsRecordsData = [...this.originalTableViewEventsRecordsData, ...formattedEventsDataFromApex];
-
+            this.tableViewEventsRecordsData = null;
             if(this.eventSearchKeyword != '' || this.eventSearchKeyword != null) {
                 this.tableViewEventsRecordsData = this.originalTableViewEventsRecordsData.filter((currentEvent) => currentEvent.Subject.includes(this.eventSearchKeyword ));
             } else {
@@ -2278,7 +2282,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
 
         setTimeout(() => {
             this.isDayCalendarLoading = false;
-        }, 500) ;
+        }, 250) ;
 
         // Load the updated calendar view if the source is 'daySource'
         if(source == 'daySource') {
@@ -2348,7 +2352,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
 
         setTimeout(() => {
             this.isWeekCalendarLoading = false;
-        }, 500);
+        }, 250);
         
         // Log the current state of the main calendar and week view calendar data
         console.log("this.mainCalendarCurrentDate -> " + JSON.stringify(this.mainCalendarCurrentDate));
@@ -2596,6 +2600,18 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
         }
     }
 
+
+    @track showEventChangeModalPopup = false;
+    @track modalPopupEventInfo = {
+        eventStartDateOld  : '',
+        eventEndDateOld : '',
+        eventStartDateNew : '',
+        eventEndDateNew : '',
+        eventRecordId : '',
+        eventStartDateNewString : '',
+        eventEndDateNewString : ''
+    }
+
     /*
      * Function Name            : handleEventUpdateOnDrag
      * Purpose                  : To update event record on drag.
@@ -2605,13 +2621,317 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
      * Modified Date             Modified By                             Changes
      * ------------------------- Updates to the function -------------------------
      */
-    handleEventUpdateOnDrag(event) {
+    handleEventUpdateOnDragStart(event) {
         console.log("Inside handleEventUpdateOnDrag");
-        console.log(event);
-        console.log(event.target.id);
-        console.log("Event -> " + JSON.stringify(event));
-        console.log("event.detail -> " + JSON.stringify(event.detail));
-        console.log("event.detail.message -> " + event.detail.message);
-        console.log("event.detail.recordId ->" + event.detail.recordId);
+        console.log("event.target.dataset.object -> " + event.target.dataset.object); 
+        console.log("event.target.dataset.startDateTime -> " + event.target.dataset.eventstartdatetime); 
+        console.log("event.target.dataset.eventenddatetime -> " + event.target.dataset.eventenddatetime); 
+        console.log("event.target.dataset.eventduration -> " + event.target.dataset.eventduration); 
+
+        let eventData = {
+            startDateTime : event.target.dataset.eventstartdatetime,
+            endDateTime : event.target.dataset.eventenddatetime,
+            eventDuration : event.target.dataset.eventduration,
+            eventRecordId : event.target.dataset.object.split("/")[1]
+        };
+        event.dataTransfer.setData("draggedEventInfo", JSON.stringify(eventData));
+        
     }
+
+    /*
+     * Function Name            : handleDropEventUpdate
+     * Purpose                  : To update event record on drop.
+     * Author Details           : Chandra Sekhar Reddy Muthumula
+     * Created Date             : Oct 30, 2024
+     * ------------------------- Updates to the function -------------------------
+     * Modified Date             Modified By                             Changes
+     * ------------------------- Updates to the function -------------------------
+     */
+    handleDropEventUpdate(event) {
+        console.log("Inside handleDropEventUpdate");
+    
+        // Log the relevant target attributes for debugging
+        console.log("event.target.id -> " + event.target.id);
+        console.log("event.target.dataset.object -> " + event.target.dataset.object);
+        console.log("event.target.dataset.currentdayinfo -> " + event.target.dataset.currentdayinfo);
+        console.log("event.target.dataset.hourvalue -> " + event.target.dataset.hourvalue);
+    
+        // Initialize variables to store dropped event time details
+        let droppedDateTime;
+        let droppedHours = 0;
+        let droppedMinutes = 0;
+        let droppedSeconds = 0;
+    
+        // Parse the dragged event information from the dataTransfer object
+        let draggedEventInfo = JSON.parse(event.dataTransfer.getData("draggedEventInfo"));
+        console.log("event.dataTransfer.getData(draggedEventInfo) -> " + event.dataTransfer.getData("draggedEventInfo"));
+    
+        // Save the original event start and end dates from dragged data
+        this.modalPopupEventInfo.eventStartDateOld = new Date(draggedEventInfo.startDateTime);
+        this.modalPopupEventInfo.eventEndDateOld = new Date(draggedEventInfo.endDateTime);
+    
+        // Adjust the dates to the correct time zone (GMT)
+        this.modalPopupEventInfo.eventStartDateOld.setMinutes(this.modalPopupEventInfo.eventStartDateOld.getMinutes() + (this.modalPopupEventInfo.eventStartDateOld.getTimezoneOffset()));
+        this.modalPopupEventInfo.eventEndDateOld.setMinutes(this.modalPopupEventInfo.eventEndDateOld.getMinutes() + (this.modalPopupEventInfo.eventEndDateOld.getTimezoneOffset()));
+    
+        // Convert old start and end dates to ISO format
+        this.modalPopupEventInfo.eventStartDateOld = new Date(this.modalPopupEventInfo.eventStartDateOld).toISOString();
+        this.modalPopupEventInfo.eventEndDateOld = new Date(this.modalPopupEventInfo.eventEndDateOld).toISOString();
+    
+        console.log("this.modalPopupEventInfo.eventStartDateOld -> " + this.modalPopupEventInfo.eventStartDateOld);
+        console.log("this.modalPopupEventInfo.eventEndDateOld -> " + this.modalPopupEventInfo.eventEndDateOld);
+    
+        // Check which view is active to determine where the event was dropped
+        if(this.showCalendar == true) {
+            console.log("this.showCalendar -> " + this.showCalendar);
+    
+            // Check if the drop occurred on a specific day or on an existing event
+            if(event.target.dataset.currentdayinfo != null || event.target.dataset.currentdayinfo != undefined) {
+                // Dropped on an empty space in the calendar
+                droppedDateTime = new Date(event.target.dataset.currentdayinfo);
+            } else if (event.target.dataset.object != null || event.target.dataset.object != undefined) {
+                // Dropped on an existing event
+                droppedDateTime = new Date(event.target.dataset.object);   
+            }
+    
+            // Extract start time components from the dragged event for the new start time
+            let tempEventStartTime = draggedEventInfo.startDateTime.split(".")[0].split("T")[1];
+            droppedHours = Number(tempEventStartTime.split(':')[0]);
+            droppedMinutes = Number(tempEventStartTime.split(':')[1]);
+            droppedSeconds = Number(tempEventStartTime.split(':')[2]);
+    
+        } else if(this.showCalendarDayView == true) {
+            console.log("this.showCalendarDayView -> " + this.showCalendarDayView);
+    
+            // Check if the drop occurred on an hour slot or an existing event
+            if(event.target.dataset.hourvalue == null || event.target.dataset.hourvalue == undefined) {
+                // Dropped on an empty space, using the hour value from the ID
+                droppedHours = Number(event.target.id.split("-")[0]);
+            } else {
+                // Dropped on an existing event
+                droppedHours = Number(event.target.dataset.hourvalue);
+            }
+            // Set the date for the drop based on the currently selected date
+            droppedDateTime = new Date(this.datePickerCurrentDate);
+    
+        } else if(this.showCalendarWeekView == true) {
+            console.log("this.showCalendarWeekView -> " + this.showCalendarWeekView);
+    
+            // Check if the drop occurred on a specific day or existing event in the week view
+            if(event.target.dataset.currentdayinfo == null || event.target.dataset.currentdayinfo == undefined) {
+                // Dropped on an empty space
+                droppedDateTime = new Date(event.target.dataset.object);
+                droppedHours = Number(event.target.id.split("-")[0]);
+            } else {
+                // Dropped on an existing event
+                droppedDateTime = new Date(event.target.dataset.currentdayinfo);
+                droppedHours = Number(event.target.dataset.hourvalue);
+            }
+        }
+    
+        // Log the new dropped datetime
+        console.log("droppedDateTime -> " + JSON.stringify(droppedDateTime));
+    
+        // Set minutes and seconds based on dragged event data for consistent time
+        let tempEventStartTime = draggedEventInfo.startDateTime.split(".")[0].split("T")[1];
+        droppedMinutes = Number(tempEventStartTime.split(':')[1]);
+        droppedSeconds = Number(tempEventStartTime.split(':')[2]);
+    
+        // Log updated hour, minute, and second values
+        console.log("droppedHours -> " + JSON.stringify(droppedHours));
+        console.log("droppedMinutes -> " + JSON.stringify(droppedMinutes));
+        console.log("droppedSeconds -> " + JSON.stringify(droppedSeconds));
+        
+        // Create new start time based on drop date and dragged time details
+        let eventStartTimeNew = new Date();
+        eventStartTimeNew.setFullYear(droppedDateTime.getFullYear());
+        eventStartTimeNew.setMonth(droppedDateTime.getMonth());
+        eventStartTimeNew.setDate(droppedDateTime.getDate());
+        eventStartTimeNew.setHours(droppedHours);
+        eventStartTimeNew.setMinutes(droppedMinutes);
+        eventStartTimeNew.setSeconds(droppedSeconds);
+    
+        console.log("eventStartTimeNew -> " + eventStartTimeNew);
+    
+        // Calculate new end time based on duration from dragged data
+        let eventEndTimeNew = new Date(eventStartTimeNew);
+        eventEndTimeNew.setMinutes(eventEndTimeNew.getMinutes() + Number(draggedEventInfo.eventDuration));
+    
+        console.log("eventEndTimeNew -> " + eventEndTimeNew);
+    
+        // Update modal popup info with new start and end times
+        this.modalPopupEventInfo.eventStartDateNew = new Date(eventStartTimeNew);
+        this.modalPopupEventInfo.eventEndDateNew = new Date(eventEndTimeNew);
+    
+        // Convert new start and end dates to ISO format for consistency
+        this.modalPopupEventInfo.eventStartDateNewString = eventStartTimeNew.toISOString();
+        this.modalPopupEventInfo.eventEndDateNewString = eventEndTimeNew.toISOString();
+    
+        console.log("this.modalPopupEventInfo.eventStartDateNew -> " + this.modalPopupEventInfo.eventStartDateNew);
+        console.log("this.modalPopupEventInfo.eventEndDateNew -> " + this.modalPopupEventInfo.eventEndDateNew);
+    
+        // Store the dragged event's ID for reference in the modal popup
+        this.modalPopupEventInfo.eventRecordId = draggedEventInfo.eventRecordId;
+    
+        console.log("this.modalPopupEventInfo -> " + JSON.stringify(this.modalPopupEventInfo));
+    
+        // Conditionally show or hide modal popup based on whether start or end times have changed
+        if((new Date(this.modalPopupEventInfo.eventStartDateOld).toISOString().split('.')[0] == this.modalPopupEventInfo.eventStartDateNewString.split('.')[0] || 
+            new Date(this.modalPopupEventInfo.eventEndDateOld).toISOString().split('.')[0] == this.modalPopupEventInfo.eventEndDateNewString.split('.')[0]) || 
+            (this.modalPopupEventInfo.eventEndDateNew == null ||
+                this.modalPopupEventInfo.eventEndDateNew == undefined || 
+                this.modalPopupEventInfo.eventStartDateNew == null || 
+                this.modalPopupEventInfo.eventStartDateNew == undefined)) {
+                    
+            // Hide the modal if there is no change in times or values are invalid
+            this.showEventChangeModalPopup = false;
+            console.log("Modal Popup value -> " + this.showEventChangeModalPopup);
+        } else {
+            // Show the modal if times have changed
+            this.showEventChangeModalPopup = true;
+        }
+    }
+    
+    /*
+     * Function Name            : allowDrop
+     * Purpose                  : To allow the drop event
+     * Author Details           : Chandra Sekhar Reddy Muthumula
+     * Created Date             : Oct 30, 2024
+     * ------------------------- Updates to the function -------------------------
+     * Modified Date             Modified By                             Changes
+     * ------------------------- Updates to the function -------------------------
+     */
+    allowDrop(event) {
+        event.preventDefault(); // Necessary to allow the drop
+    }
+
+    /*
+     * Function Name            : handleEventEditModalPopupCancel
+     * Purpose                  : To close the modal popup
+     * Author Details           : Chandra Sekhar Reddy Muthumula
+     * Created Date             : Oct 30, 2024
+     * ------------------------- Updates to the function -------------------------
+     * Modified Date             Modified By                             Changes
+     * ------------------------- Updates to the function -------------------------
+     */
+    handleEventEditModalPopupCancel() {
+        this.showEventChangeModalPopup = false;
+    }
+
+    /*
+     * Function Name            : handleEventEditModalPopupSave
+     * Purpose                  : To update event record from modal popup.
+     * Author Details           : Chandra Sekhar Reddy Muthumula
+     * Created Date             : Oct 30, 2024
+     * ------------------------- Updates to the function -------------------------
+     * Modified Date             Modified By                             Changes
+     * ------------------------- Updates to the function -------------------------
+     */
+    async handleEventEditModalPopupSave() {
+        try {
+            console.log("Inside handleEventEditModalPopupSave");
+    
+            // Log new event start and end dates for debugging
+            console.log("this.modalPopupEventInfo.eventStartDateNew -> " + this.modalPopupEventInfo.eventStartDateNew);
+            console.log("this.modalPopupEventInfo.eventEndDateNew -> " + this.modalPopupEventInfo.eventEndDateNew);
+    
+            // Log the ISO string format of new start and end dates
+            console.log("this.modalPopupEventInfo.eventStartDateNewString -> " + this.modalPopupEventInfo.eventStartDateNewString);
+            console.log("this.modalPopupEventInfo.eventEndDateNewString -> " + this.modalPopupEventInfo.eventEndDateNewString);
+    
+            // Validate if the new start date is before the end date
+            if(new Date(this.modalPopupEventInfo.eventStartDateNew) < new Date(this.modalPopupEventInfo.eventEndDateNew)) {
+                
+                // Call an asynchronous function to update the event record in the backend
+                const response = await updateEventRecord({ 
+                    eventRecordId: this.modalPopupEventInfo.eventRecordId, 
+                    startDateTime: this.modalPopupEventInfo.eventStartDateNew.toISOString(), 
+                    endDateTime: this.modalPopupEventInfo.eventEndDateNew.toISOString()
+                });
+    
+                // Log response for debugging
+                console.log("response -> " + JSON.stringify(response));
+    
+                // Show a success toast message if the event is updated
+                this.showToast('Success', 'success', 'Event Updated Successfully');
+                
+                // Refresh the view after the update
+                await this.handleRefreshClick();
+            } else {
+                // Show an error toast if the start date is not before the end date
+                this.showToast('Error', 'error', 'Invalid date selection');
+            }
+    
+            // Close the modal popup after save or if invalid date
+            this.showEventChangeModalPopup = false;
+    
+        } catch (error) {
+            // Show a general error toast if there's an issue during the update process
+            this.showToast('Error', 'error', 'Error updating the event. Please contact Salesforce administrator !');
+        }
+    }
+    
+
+    /*
+     * Function Name            : handleEventNewStartDateChange
+     * Purpose                  : To update event start timings from popup.
+     * Author Details           : Chandra Sekhar Reddy Muthumula
+     * Created Date             : Oct 31, 2024
+     * ------------------------- Updates to the function -------------------------
+     * Modified Date             Modified By                             Changes
+     * ------------------------- Updates to the function -------------------------
+     */
+    handleEventNewStartDateChange(event) {
+        console.log("Inside handleEventNewStartDateChange");
+    
+        // Log the target element and its value for debugging
+        console.log("event.target -> " + event.target);
+        console.log("event.target.value -> " + event.target.value);
+    
+        // Update the new start date string in the modalPopupEventInfo object with the value from the event
+        this.modalPopupEventInfo.eventStartDateNewString = event.target.value;
+    
+        // Create a temporary Date object using the start date value from the event
+        let tempStartEDateTimeValue = new Date(event.target.value);
+    
+        // Set the new end date string by adding 60 minutes to the start date and converting it to an ISO string format
+        this.modalPopupEventInfo.eventEndDateNewString = new Date(
+            tempStartEDateTimeValue.setMinutes(tempStartEDateTimeValue.getMinutes() + 60)
+        ).toISOString();
+    
+        // Set the new start date in the modalPopupEventInfo object as a Date object based on the event value
+        this.modalPopupEventInfo.eventStartDateNew = new Date(event.target.value);
+    
+        // Set the new end date by cloning the start date and adding 60 minutes
+        this.modalPopupEventInfo.eventEndDateNew = new Date(this.modalPopupEventInfo.eventStartDateNew);
+        this.modalPopupEventInfo.eventEndDateNew.setMinutes(this.modalPopupEventInfo.eventEndDateNew.getMinutes() + 60);
+    }
+    
+
+    /*
+     * Function Name            : handleEventNewEndDateChange
+     * Purpose                  : To update event record end timings from modal popup
+     * Author Details           : Chandra Sekhar Reddy Muthumula
+     * Created Date             : Oct 31, 2024
+     * ------------------------- Updates to the function -------------------------
+     * Modified Date             Modified By                             Changes
+     * ------------------------- Updates to the function -------------------------
+     */
+    handleEventNewEndDateChange(event) {
+        // Log entry point to function for debugging purposes
+        console.log("Inside handleEventNewEndDateChange");
+    
+        // Log the event target element to understand where the data is coming from
+        console.log("event.target -> " + event.target);
+    
+        // Log the new end date value from the event target for verification
+        console.log("event.target.value -> " + event.target.value);
+    
+        // Update the end date string in modalPopupEventInfo with the new value from the event
+        this.modalPopupEventInfo.eventEndDateNewString = event.target.value;
+    
+        // Convert the end date string to a Date object and store it in modalPopupEventInfo
+        this.modalPopupEventInfo.eventEndDateNew = new Date(event.target.value);
+    }
+    
 }

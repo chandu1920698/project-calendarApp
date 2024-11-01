@@ -61,7 +61,7 @@
 }
 
 .calweekday {
-    border-style: groove;
+    border: 1px solid lightgray;
     height: 92px;
     width: 0px;
     display: flex;

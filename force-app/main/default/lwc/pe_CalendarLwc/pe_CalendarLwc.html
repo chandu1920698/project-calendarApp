@@ -85,7 +85,7 @@
                             <lightning-layout>
                                 <template for:each={week.days} for:item="day">
                                     <template if:true={day.date}>
-                                        <lightning-layout-item key={day.date} flexibility="auto"
+                                        <lightning-layout-item key={day.date} flexibility="auto" ondrop={handleDropEventUpdate} ondragover={allowDrop}
                                             class="calweekday slds-p-around_xx-small">
                                             <div id={day.number} data-object={day.date} key={day.date}
                                                 class="custom-box slds-text-align_left" onclick={handleEventCreate}>
@@ -103,8 +103,14 @@
                                                                 id={currentEvent.eventId}
                                                                 class="slds-badge slds-size_1-of-1"
                                                                 style={currentEvent.opacity} onclick={handleShowMoreEventInfo}
+                                                                data-eventstartdatetime={currentEvent.startDateTime}
+                                                                data-eventenddatetime={currentEvent.endDateTime}
+                                                                data-eventduration={currentEvent.eventDurationInMinutes}
+                                                                data-currentdayinfo={day.date}
+                                                                draggable="true"
+                                                                ondragstart={handleEventUpdateOnDragStart}
                                                                 >
-                                                                <p class="slds-truncate" id={currentEvent.eventId} data-object={currentEvent.eventUrl}
+                                                                <p class="slds-truncate" id={currentEvent.eventId} data-object={currentEvent.eventUrl} data-currentdayinfo={day.date}
                                                                     onclick={handleShowMoreEventInfo}> 
                                                                     <span data-object={currentEvent.eventUrl} id={currentEvent.eventId} onclick={handleShowMoreEventInfo}>
                                                                         {currentEvent.startTime12hrsFormat}&nbsp;<span id={currentEvent.eventId} data-object={currentEvent.eventUrl} onclick={handleShowMoreEventInfo}>{currentEvent.subject}</span>&nbsp;<template if:true={currentEvent.listOfWhoNames} data-object={currentEvent.eventUrl}>|&nbsp;{currentEvent.listOfWhoNames}</template>
@@ -120,12 +126,11 @@
                                             </div>
                                             <div>
                                                 <template if:true={day.dayhasMoreThanThreeEvents}>
-                                                    <div style="padding-left:1rem;padding-top:0rem;position:relative" >
+                                                    <div style="padding-left:1rem;padding-top:0rem;position:relative" data-object={day.date} data-dateinfo={day.date} data-currentdayinfo={day.date}>
                                                         <a key={day.date} data-object={day.date}
                                                             class="slds-truncate slds-size_1-of-1 card"
                                                             href="javascript:void(0)" value={day.remainingEvents}
                                                             tooltip={day.remainingEvents} label={day.remainingEvents}
-                                                            data-dateinfo={day.date}
                                                             onclick={handleOpenPopoverEventsLwc}
                                                             >{day.remainingEvents}</a>
                                                             <template if:true={day.showPopoverEventsOnHover}>
@@ -174,7 +179,7 @@
                                                         {hour.hoursValue12hrs}
                                                     </span>
                                                 </div>
-                                                <div class="slds-col slds-size_11-of-12 negativeMarginForColumn">
+                                                <div class="slds-col slds-size_11-of-12 negativeMarginForColumn" ondrop={handleDropEventUpdate} ondragover={allowDrop}>
                                                     <template if:true={hour.hasEvents}>
                                                         <div class="slds-grid slds-gutters">
                                                             <div class="slds-col slds-size_11-of-12">
@@ -185,10 +190,17 @@
                                                                             </div>
                                                                             <button href={event.eventUrl}
                                                                                 data-object={event.eventUrl}
+                                                                                data-eventstartdatetime={event.startDateTime}
+                                                                                data-eventenddatetime={event.endDateTime}
+                                                                                data-eventduration={event.eventDuration}
+                                                                                data-hourvalue={hour.hoursValue}
                                                                                 class="slds-badge"
                                                                                 style={event.eventClass} 
                                                                                 id={event.Id}
-                                                                                onclick={handleShowMoreEventInfo}>
+                                                                                draggable="true"
+                                                                                onclick={handleShowMoreEventInfo}
+                                                                                ondragstart={handleEventUpdateOnDragStart}
+                                                                                >
                                                                                 <p class="slds-truncate" id={event.Id} onclick={handleShowMoreEventInfo}>
                                                                                     <span data-object={event.eventUrl} onclick={handleShowMoreEventInfo}>{event.subject}</span>
                                                                                     <template if:true={event.isShowDescription}>
@@ -278,7 +290,7 @@
                                                 <div key={currentDay.day} class="slds-col weekCalendarWidthEqualMaker liveLineParent">
                                                     <template if:true={currentDay.dayInfo}>
                                                         <template for:each={currentDay.dayInfo.hourRowsInfo} for:item="hour">
-                                                            <div key={hour.hoursValue} class="slds-col calendarHour">
+                                                            <div key={hour.hoursValue} class="slds-col calendarHour" ondrop={handleDropEventUpdate} ondragover={allowDrop}>
                                                                 <div class="slds-grid">
                                                                     <div class="slds-col slds-size_11-of-12">
                                                                         <div class="slds-grid slds-grid_vertical-align-start">
@@ -289,12 +301,16 @@
                                                                                         </div>
                                                                                         <button key={event.Id} href={event.eventUrl}
                                                                                             data-object={event.eventUrl}
+                                                                                            data-eventstartdatetime={event.startDateTime}
+                                                                                            data-eventenddatetime={event.endDateTime}
+                                                                                            data-eventduration={event.eventDuration}
+                                                                                            data-currentdayinfo={currentDay.day}
+                                                                                            data-hourvalue={hour.hoursValue}
                                                                                             class="slds-badge"
                                                                                             style={event.eventClass} 
                                                                                             onclick={handleShowMoreEventInfo}
                                                                                             draggable="true"
-                                                                                            
-                                                                                            ondragend={handleEventUpdateOnDrag}
+                                                                                            ondragstart={handleEventUpdateOnDragStart}
                                                                                             >
                                                                                             <p class="slds-truncate" data-object={event.eventUrl} onclick={handleShowMoreEventInfo}>
                                                                                                 <span>{event.subject}</span>
@@ -453,6 +469,40 @@
                     <div class="slds-border_bottom slds-p-top_xx-small"></div>
                 </template>
             </lightning-layout-item>
+
+            <template if:true={showEventChangeModalPopup}>
+                <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01" class="slds-modal slds-fade-in-open slds-modal_small">
+                    <div class="slds-modal__container">
+                       <div class="slds-modal__header">
+                          <h1 id="modal-heading-01" class="slds-modal__title slds-hyphenate" tabindex="-1">Confirm the new timings</h1>
+                       </div>
+                       <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col">
+                                <lightning-input disabled timezone={currentUserTimeZone} type="datetime" name="Current Start Date Time" label="Current Start Date Time" value={modalPopupEventInfo.eventStartDateOld}></lightning-input>
+                            </div>
+                            <div class="slds-col">
+                              <lightning-input disabled timezone={currentUserTimeZone} type="datetime" name="Current End Date Time" label="Current End Date Time" value={modalPopupEventInfo.eventEndDateOld}></lightning-input>
+                            </div>
+                          </div>
+
+                          <div class="slds-grid slds-gutters">
+                            <div class="slds-col">
+                              <lightning-input type="datetime" name="New Start Date Time" label="New Start Date Time" value={modalPopupEventInfo.eventStartDateNewString} onchange={handleEventNewStartDateChange}></lightning-input>
+                            </div>
+                            <div class="slds-col">
+                              <lightning-input type="datetime" name="New Start Date Time" label="New Start Date Time" value={modalPopupEventInfo.eventEndDateNewString} onchange={handleEventNewEndDateChange}></lightning-input>
+                            </div>
+                          </div>
+                       </div>
+                       <div class="slds-modal__footer">
+                          <button class="slds-button slds-button_destructive" aria-label="Cancel and close" onclick={handleEventEditModalPopupCancel}>Cancel</button>
+                          <button class="slds-button slds-button_brand" onclick={handleEventEditModalPopupSave}>Continue</button>
+                       </div>
+                    </div>
+                 </section>
+                 <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+            </template>
         </lightning-layout>
     </lightning-card>
 
