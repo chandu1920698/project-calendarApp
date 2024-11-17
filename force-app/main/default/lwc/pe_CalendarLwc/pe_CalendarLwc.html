@@ -90,7 +90,7 @@
                                             <div id={day.number} data-object={day.date} key={day.date}
                                                 class="custom-box slds-text-align_left" onclick={handleEventCreate}>
                                                 <div key={day.date} data-object={day.date} class="texttopleft">
-                                                    {day.number}
+                                                    <p style={day.todayCss}>{day.number}</p>
                                                 </div>
                                             </div>
                                             <div>
@@ -418,8 +418,12 @@
                         </lightning-layout>
                         <lightning-layout class="x-large slds-text-align_center">
                             <template for:each={weekDays} for:item="currentDay">
-                                <lightning-layout-item  flexibility="auto" key={currentDay.fullform} padding="around-small">
-                                    <div class="custom-box-height"><strong>{currentDay.shortform}</strong></div>
+                                <lightning-layout-item  flexibility="auto" key={currentDay.fullform} class="slds-p-around_xxx-small">
+                                    <div>
+                                        <strong>
+                                            <p class="slds-truncate" title={currentDay.fullform}>{currentDay.shortform}</p>
+                                        </strong>
+                                    </div>
                                 </lightning-layout-item>
                             </template>
                         </lightning-layout>
