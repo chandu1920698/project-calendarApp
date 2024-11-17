@@ -161,6 +161,8 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
      * ------------------------- Updates to the function -------------------------
     */
     getTimeZoneOffset() {
+        console.log("Inside getTimeZoneOffset");
+        console.log("this.currentUserTimeZone -> " + this.currentUserTimeZone);
         // Create a new Date object representing the current time
         const date = new Date();
     
@@ -169,23 +171,26 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
             timeZone: this.currentUserTimeZone,
             timeZoneName: 'short'
         }).formatToParts(date);
-    
+
         // Extract the offset from the formatted parts
-        const offsetString = usertimeZone.find(part => part.type === 'timeZoneName').value;
-    
+        let offsetString = usertimeZone.find(part => part.type === 'timeZoneName').value;
+
+        if(offsetString.includes("GMT") == false) {
+            offsetString = "GMT+0:00";
+        }
         let offset = offsetString.split("GMT")[1];
         
         // Extract the sign
         const sign = offset[0]; // '+' or '-'
-        
+
         // Check if the offset contains minutes
         let [hours, minutes] = offset.slice(1).split(':').map(Number);
-       
+
         // If there are no minutes, set minutes to 0
         if (isNaN(minutes)) {
             minutes = 0;
         }
-   
+
         // Convert hours and minutes to decimal hours
         let decimalHours = hours + (minutes / 60);
    
@@ -432,7 +437,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
 
                 for (let j = 0; j < 7; j++) {
                     if ((i === 0 && j < firstDayOfWeek) || dateOfMonth > lastDateOfMonth) {
-                        week.days.push({ date: '', number: '', day : '', today : false, dayhasMoreThanThreeEvents : false, showPopoverEventsOnHover : false});
+                        week.days.push({ date: '', number: '', day : '', today : false, dayhasMoreThanThreeEvents : false, showPopoverEventsOnHover : false, todayCss : ''});
                     } else {
                         const day = new Date();
                         day.setFullYear(year);
@@ -441,14 +446,17 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
                         day.setHours(0);
                         day.setMinutes(0);
                         day.setSeconds(0);
+                        day.setMilliseconds(0);
                         // Removing the current local time zone off set
                         day.setMinutes(day.getMinutes() + (-1 * day.getTimezoneOffset()));
                         const classes = ['day'];
                         let todayStatus = false;
+                        let todayCssValue;
                         if (day.toDateString() === newDate.toDateString()) {
                             todayStatus = true;
+                            todayCssValue = 'font-size: 1.25rem; color : rgba(65, 148, 249, 1);';
                         }
-                        week.days.push({ date: day, number: dateOfMonth, day : dayNames[day.getDay()], today : todayStatus, dayhasMoreThanThreeEvents : false, showPopoverEventsOnHover : false});
+                        week.days.push({ date: day, number: dateOfMonth, day : dayNames[day.getDay()], today : todayStatus, dayhasMoreThanThreeEvents : false, showPopoverEventsOnHover : false, todayCss : todayCssValue});
                         dateOfMonth++;
 
                     }
@@ -507,7 +515,19 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
              * When the previous button on calendar highlights panel is clicked, then month is increased by 1 in main calendar current date
              * Month handler function is called to show the next month details.
             */
-            this.mainCalendarCurrentDate.setMonth(this.mainCalendarCurrentDate.getMonth() - 1);
+
+            let date = new Date(this.mainCalendarCurrentDate);
+
+            // Get the current day of the month
+            const dayOfMonth = date.getDate();
+
+            // Temporarily set to the 1st of the previous month to avoid overflow
+            date.setMonth(date.getMonth() - 1, 1);
+
+            // Set the day to the original day or the last valid day of the month
+            date.setDate(Math.min(dayOfMonth, new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate()));
+
+            this.mainCalendarCurrentDate = new Date(date);
             this.handleMonthChange(new Date(this.mainCalendarCurrentDate));
             /*
              * Once the month calendar is updated, then date picker current date is set to the day of the previous month
@@ -568,7 +588,18 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
              * When the next button on calendar highlights panel is clicked, then month is increased by 1 in main calendar current date
              * Month handler function is called to show the next month details.
             */
-            this.mainCalendarCurrentDate.setMonth(this.mainCalendarCurrentDate.getMonth() + 1);
+            let date = new Date(this.mainCalendarCurrentDate);
+
+            // Get the current day of the month
+            const dayOfMonth = date.getDate();
+
+            // Temporarily set to the 1st of the previous month to avoid overflow
+            date.setMonth(date.getMonth() + 1, 1);
+
+            // Set the day to the original day or the last valid day of the month
+            date.setDate(Math.min(dayOfMonth, new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate()));
+
+            this.mainCalendarCurrentDate = new Date(date);
             this.handleMonthChange(new Date(this.mainCalendarCurrentDate));
             /*
              * Once the month calendar is updated, then date picker current date is set to the day of the next month
@@ -1248,8 +1279,6 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
 
     @track popoverEventsData = [];
     @track showPopoverEvents = false;
-    @track left;
-    @track top;
 
     /*
     * Function Name            : handleOpenPopoverEventsLwc
@@ -1279,7 +1308,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
                 console.log(event.target);
                 
                 // Retrieve the date information from the event's current target
-                console.log('event.currentTarget.dataset.dateinfo -> ' + JSON.stringify(event.currentTarget.dataset.dateinfo));
+                console.log('event.currentTarget.dataset.object -> ' + JSON.stringify(event.currentTarget.dataset.object));
 
                 // Loop through each week in the calendar
                 this.calendar.forEach(week => {
@@ -1289,22 +1318,12 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
                         // console.log('day -> ' + JSON.stringify(day));
                         if (day.date !== null && day.date !== '') {
                             // Compare the current day's date with the date from the event's dataset
-                            // console.log('day.date -> ' + new Date(day.date));
-                            // console.log('day.date -> ' + new Date(day.date).toISOString().split(','));
-                            
-                            if (day.date.toDateString() === new Date(event.currentTarget.dataset.dateinfo).toDateString()) {
+                            if (day.date.toDateString() === new Date(event.currentTarget.dataset.object).toDateString()) {
                                 // If a match is found, set the popover event data for the matched day
                                 day.showPopoverEventsOnHover = true; // Show popover indicator
                                 this.popoverEventsData = day; // Set the popover data to the day's events
-                                this.showPopoverEvents = true; // Make the popover visible
-
-                                // Set the popover position based on the mouse cursor's location
-                                this.left = event.clientX;
-                                this.top = event.clientY;
-        
+                                this.showPopoverEvents = true; // Make the popover visible        
                                 console.log("Inside handleOpenPopoverEventsLwc - this.popoverEventsData -> " + JSON.stringify(this.popoverEventsData));
-                                console.log("this.left -> " + JSON.stringify(this.left));
-                                console.log("this.top -> " + JSON.stringify(this.top));
                             } else {
                                 // If the day does not match, hide the popover indicator
                                 day.showPopoverEventsOnHover = false;
@@ -2624,7 +2643,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
     handleEventUpdateOnDragStart(event) {
         console.log("Inside handleEventUpdateOnDrag");
         console.log("event.target.dataset.object -> " + event.target.dataset.object); 
-        console.log("event.target.dataset.startDateTime -> " + event.target.dataset.eventstartdatetime); 
+        console.log("event.target.dataset.eventstartdatetime -> " + event.target.dataset.eventstartdatetime); 
         console.log("event.target.dataset.eventenddatetime -> " + event.target.dataset.eventenddatetime); 
         console.log("event.target.dataset.eventduration -> " + event.target.dataset.eventduration); 
 
@@ -2669,11 +2688,21 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
         // Save the original event start and end dates from dragged data
         this.modalPopupEventInfo.eventStartDateOld = new Date(draggedEventInfo.startDateTime);
         this.modalPopupEventInfo.eventEndDateOld = new Date(draggedEventInfo.endDateTime);
+
+        console.log("this.modalPopupEventInfo.eventStartDateOld -> " + this.modalPopupEventInfo.eventStartDateOld);
+        console.log("this.modalPopupEventInfo.eventEndDateOld -> " + this.modalPopupEventInfo.eventEndDateOld);
     
-        // Adjust the dates to the correct time zone (GMT)
-        this.modalPopupEventInfo.eventStartDateOld.setMinutes(this.modalPopupEventInfo.eventStartDateOld.getMinutes() + (this.modalPopupEventInfo.eventStartDateOld.getTimezoneOffset()));
-        this.modalPopupEventInfo.eventEndDateOld.setMinutes(this.modalPopupEventInfo.eventEndDateOld.getMinutes() + (this.modalPopupEventInfo.eventEndDateOld.getTimezoneOffset()));
+        // Adjust the dates to the correct time zone (GMT - User time zone offset)
+        this.modalPopupEventInfo.eventStartDateOld.setMinutes(this.modalPopupEventInfo.eventStartDateOld.getMinutes() - this.userTimeZoneOffSetHours * 60);
+        this.modalPopupEventInfo.eventEndDateOld.setMinutes(this.modalPopupEventInfo.eventEndDateOld.getMinutes() - this.userTimeZoneOffSetHours * 60);
     
+
+        // this.modalPopupEventInfo.eventStartDateOld.setMinutes(this.modalPopupEventInfo.eventStartDateOld.getMinutes() + (-1 * this.modalPopupEventInfo.eventStartDateOld.getTimeZoneOffset()) + (-1 * this.userTimeZoneOffSetHours * 60));
+        // this.modalPopupEventInfo.eventEndDateOld.setMinutes(this.modalPopupEventInfo.eventEndDateOld.getMinutes() + (-1 * this.modalPopupEventInfo.eventEndDateOld.getTimeZoneOffset()) + (-1 * this.userTimeZoneOffSetHours * 60));
+    
+        console.log("this.modalPopupEventInfo.eventStartDateOld -> " + this.modalPopupEventInfo.eventStartDateOld);
+        console.log("this.modalPopupEventInfo.eventEndDateOld -> " + this.modalPopupEventInfo.eventEndDateOld);
+
         // Convert old start and end dates to ISO format
         this.modalPopupEventInfo.eventStartDateOld = new Date(this.modalPopupEventInfo.eventStartDateOld).toISOString();
         this.modalPopupEventInfo.eventEndDateOld = new Date(this.modalPopupEventInfo.eventEndDateOld).toISOString();
@@ -2762,11 +2791,16 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
         // Update modal popup info with new start and end times
         this.modalPopupEventInfo.eventStartDateNew = new Date(eventStartTimeNew);
         this.modalPopupEventInfo.eventEndDateNew = new Date(eventEndTimeNew);
+
+        this.modalPopupEventInfo.eventStartDateNew.setMinutes(this.modalPopupEventInfo.eventStartDateNew.getMinutes() - this.userTimeZoneOffSetHours * 60);
+        this.modalPopupEventInfo.eventEndDateNew.setMinutes(this.modalPopupEventInfo.eventEndDateNew.getMinutes() - this.userTimeZoneOffSetHours * 60);
     
         // Convert new start and end dates to ISO format for consistency
         this.modalPopupEventInfo.eventStartDateNewString = eventStartTimeNew.toISOString();
         this.modalPopupEventInfo.eventEndDateNewString = eventEndTimeNew.toISOString();
     
+        
+
         console.log("this.modalPopupEventInfo.eventStartDateNew -> " + this.modalPopupEventInfo.eventStartDateNew);
         console.log("this.modalPopupEventInfo.eventEndDateNew -> " + this.modalPopupEventInfo.eventEndDateNew);
     
