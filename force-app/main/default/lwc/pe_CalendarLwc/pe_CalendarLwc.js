@@ -2644,8 +2644,6 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
         eventStartDateNew : '',
         eventEndDateNew : '',
         eventRecordId : '',
-        eventStartDateNewString : '',
-        eventEndDateNewString : ''
     }
 
     /*
@@ -2809,15 +2807,21 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
         this.modalPopupEventInfo.eventStartDateNew = new Date(eventStartTimeNew);
         this.modalPopupEventInfo.eventEndDateNew = new Date(eventEndTimeNew);
 
+        // alert("this.userTimeZoneOffSetHours -> " + this.userTimeZoneOffSetHours);
+        // alert("this.modalPopupEventInfo.eventStartDateNew.getTimezoneOffset -> " + this.modalPopupEventInfo.eventStartDateNew.getTimezoneOffset());
+
         this.modalPopupEventInfo.eventStartDateNew.setMinutes(this.modalPopupEventInfo.eventStartDateNew.getMinutes() - this.userTimeZoneOffSetHours * 60);
         this.modalPopupEventInfo.eventEndDateNew.setMinutes(this.modalPopupEventInfo.eventEndDateNew.getMinutes() - this.userTimeZoneOffSetHours * 60);
+
+        if(this.userTimeZoneOffSetHours == 0) {
+            this.modalPopupEventInfo.eventStartDateNew.setMinutes(this.modalPopupEventInfo.eventStartDateNew.getMinutes() - this.modalPopupEventInfo.eventStartDateNew.getTimezoneOffset());
+            this.modalPopupEventInfo.eventEndDateNew.setMinutes(this.modalPopupEventInfo.eventEndDateNew.getMinutes() - this.modalPopupEventInfo.eventEndDateNew.getTimezoneOffset());
+        }
     
         // Convert new start and end dates to ISO format for consistency
-        this.modalPopupEventInfo.eventStartDateNewString = eventStartTimeNew.toISOString();
-        this.modalPopupEventInfo.eventEndDateNewString = eventEndTimeNew.toISOString();
+        this.modalPopupEventInfo.eventStartDateNew = new Date(this.modalPopupEventInfo.eventStartDateNew).toISOString();
+        this.modalPopupEventInfo.eventEndDateNew = new Date(this.modalPopupEventInfo.eventEndDateNew).toISOString();
     
-        
-
         console.log("this.modalPopupEventInfo.eventStartDateNew -> " + this.modalPopupEventInfo.eventStartDateNew);
         console.log("this.modalPopupEventInfo.eventEndDateNew -> " + this.modalPopupEventInfo.eventEndDateNew);
     
@@ -2827,8 +2831,8 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
         console.log("this.modalPopupEventInfo -> " + JSON.stringify(this.modalPopupEventInfo));
     
         // Conditionally show or hide modal popup based on whether start or end times have changed
-        if((new Date(this.modalPopupEventInfo.eventStartDateOld).toISOString().split('.')[0] == this.modalPopupEventInfo.eventStartDateNewString.split('.')[0] || 
-            new Date(this.modalPopupEventInfo.eventEndDateOld).toISOString().split('.')[0] == this.modalPopupEventInfo.eventEndDateNewString.split('.')[0]) || 
+        if((new Date(this.modalPopupEventInfo.eventStartDateOld).toISOString().split('.')[0] == this.modalPopupEventInfo.eventStartDateNew.split('.')[0] || 
+            new Date(this.modalPopupEventInfo.eventEndDateOld).toISOString().split('.')[0] == this.modalPopupEventInfo.eventEndDateNew.split('.')[0]) || 
             (this.modalPopupEventInfo.eventEndDateNew == null ||
                 this.modalPopupEventInfo.eventEndDateNew == undefined || 
                 this.modalPopupEventInfo.eventStartDateNew == null || 
@@ -2886,18 +2890,14 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
             console.log("this.modalPopupEventInfo.eventStartDateNew -> " + this.modalPopupEventInfo.eventStartDateNew);
             console.log("this.modalPopupEventInfo.eventEndDateNew -> " + this.modalPopupEventInfo.eventEndDateNew);
     
-            // Log the ISO string format of new start and end dates
-            console.log("this.modalPopupEventInfo.eventStartDateNewString -> " + this.modalPopupEventInfo.eventStartDateNewString);
-            console.log("this.modalPopupEventInfo.eventEndDateNewString -> " + this.modalPopupEventInfo.eventEndDateNewString);
-    
             // Validate if the new start date is before the end date
             if(new Date(this.modalPopupEventInfo.eventStartDateNew) < new Date(this.modalPopupEventInfo.eventEndDateNew)) {
                 
                 // Call an asynchronous function to update the event record in the backend
                 const response = await updateEventRecord({ 
                     eventRecordId: this.modalPopupEventInfo.eventRecordId, 
-                    startDateTime: this.modalPopupEventInfo.eventStartDateNew.toISOString(), 
-                    endDateTime: this.modalPopupEventInfo.eventEndDateNew.toISOString()
+                    startDateTime: this.modalPopupEventInfo.eventStartDateNew,
+                    endDateTime: this.modalPopupEventInfo.eventEndDateNew,
                 });
     
                 // Log response for debugging
