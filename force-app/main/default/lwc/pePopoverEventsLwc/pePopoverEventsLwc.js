@@ -31,11 +31,17 @@ export default class PePopoverEventsLwc extends LightningElement {
     }
 
     handlePopoverCloseButtonClick(){
-        this.dispatchEvent(new CustomEvent('closepopover', {
-            detail: {
-                message: 'Closing the pop over'
-            }
-        }));
+        console.log("Inside PePopoverEventsLwc handlePopoverCloseButtonClick");
+        try {
+            this.dispatchEvent(new CustomEvent('closepopover', {
+                detail: {
+                    message: 'Closing the pop over',
+                    dayInfo : new Date(this.eventsData.date)
+                }
+            }));
+        } catch (error) {
+            console.log("Error PePopoverEventsLwc -> " + JSON.stringify(error));
+        }
     }
 
     /*
@@ -110,6 +116,8 @@ export default class PePopoverEventsLwc extends LightningElement {
      * Created Date             : Oct 17, 2024
      * ------------------------- Updates to the function -------------------------
      * Modified Date             Modified By                             Changes
+     * Oct 17, 2024              Chandra Sekhar Reddy Muthumula           Added the function
+     * Nov 18, 2024              Chandra Sekhar Reddy Muthumula           Closed the component once the event record is edited.
      * ------------------------- Updates to the function -------------------------
      */
     handleEditEventRecord(event) {
@@ -124,6 +132,7 @@ export default class PePopoverEventsLwc extends LightningElement {
                     recordId : event.detail.recordId,
                 }
             }));
+            this.handlePopoverCloseButtonClick();
         } catch (error) {
             console.log("Inside handleEditEventRecord error -> " + JSON.stringify(error));
         }

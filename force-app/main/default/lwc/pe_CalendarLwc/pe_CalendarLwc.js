@@ -1350,14 +1350,30 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
     * Created Date             : Oct 14, 2024
     * ------------------------- Updates to the function -------------------------
     * Modified Date             Modified By                             Changes
+    * Oct 14, 2024              Chandra Sekhar Reddy Muthumula          Added the function
+    * Nov 18, 2024              Chandra Sekhar Reddy Muthumula          Updated showMoreEventInfo to false for all days in this.calendar info while closing
     * ------------------------- Updates to the function -------------------------
     */
     handleClosePopover(event) {
+        console.log("Inside handleClosePopover");
         // Hide the popover by setting the visibility flag to false
         this.showPopoverEvents = false;
-        
+
+        console.log("Event.detail -> " + JSON.stringify(event.detail));
+        // Loop through each week in the calendar
+        this.calendar.forEach(week => {
+            // console.log('week -> ' + JSON.stringify(week));
+            week.days.forEach(day => {
+                // Check if the day has a valid date
+                // console.log('day -> ' + JSON.stringify(day));
+                if (day.date !== null && day.date !== '') {
+                    day.showPopoverEventsOnHover = false; // Show popover indicator
+                }
+            });
+        });
+
         // Reset the popover event data to an empty array
-        this.popoverEventsData = [];
+        this.popoverEventsData = null;
     }
 
     @track datePickerCurrentDate;
@@ -2545,6 +2561,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
      * ------------------------- Updates to the function -------------------------
      */
     handleShowMoreEventInfoClose() {
+        console.log("Inside handleShowMoreEventInfoClose");
         if(this.showCalendar == true) {
             this.calendar.forEach(week => {
                 // console.log('week -> ' + JSON.stringify(week));

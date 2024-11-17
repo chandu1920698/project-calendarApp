@@ -140,8 +140,8 @@ export default class PeEventMoreInfoLwc extends NavigationMixin(LightningElement
     }
 
     handleEventInfoCloseButtonClick(event){
+        console.log("peEventMoreInfoLwc - Inside handleEventInfoCloseButtonClick");
         try {
-            console.log("Inside handleEventInfoCloseButtonClick ");
             this.dispatchEvent(new CustomEvent('closeeventmoreinfo', {
                 detail: {
                     message: 'Closing the pop over'
@@ -160,6 +160,8 @@ export default class PeEventMoreInfoLwc extends NavigationMixin(LightningElement
      * Created Date             : Oct 17, 2024
      * ------------------------- Updates to the function -------------------------
      * Modified Date             Modified By                             Changes
+     * Oct 17, 2024              Chandra Sekhar Reddy Muthumula          Added the function
+     * Nov 18, 2024              Chandra Sekhar Reddy Muthumula          Closed the popover after editing the event record
      * ------------------------- Updates to the function -------------------------
      */
     handleEditEventRecord(event) {
@@ -174,6 +176,7 @@ export default class PeEventMoreInfoLwc extends NavigationMixin(LightningElement
                     recordId : this.eventRecordId,
                 }
             }));
+            this.handleEventInfoCloseButtonClick();
         } catch (error) {
             console.log("Inside handleEditEventRecord error -> " + JSON.stringify(error));
         }
