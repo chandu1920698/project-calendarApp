@@ -424,12 +424,12 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
             
             let days = [];
             let dateOfMonth = 1;
-            
-            // This will be in current browser's time zone
-            let newDate = new Date(); 
-            // This will be now in salesforce user time zone
-            newDate.setMinutes(newDate.getMinutes() + (-1 * newDate.getTimezoneOffset()) + (-60 * this.userTimeZoneOffSetHours)); 
-            // console.log("day -> " + day + " newDate -> " + newDate);
+
+            // Create a new date object for the current date
+            let newDate = new Date();
+                        
+            // Adjust the current date to the user's timezone
+            let currentDateInUserTimeZone = new Date(newDate.setTime(newDate.getTime() + (newDate.getTimezoneOffset() * 60000) + (this.userTimeZoneOffSetHours * 60 * 60000)));
 
             const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
             for (let i = 0; i < 6; i++) {
@@ -452,7 +452,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
                         const classes = ['day'];
                         let todayStatus = false;
                         let todayCssValue;
-                        if (day.toDateString() === newDate.toDateString()) {
+                        if (day.toDateString() === currentDateInUserTimeZone.toDateString()) {
                             todayStatus = true;
                             todayCssValue = 'font-size: 1.25rem; color : rgba(65, 148, 249, 1);';
                         }
@@ -714,25 +714,28 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
         try {
             console.log('event.target 1 - > ' + JSON.stringify(event.target));
             console.log(event.target);
-
+            console.log(event.currentTarget);
+            console.log('event.target.dataset.object - > ' + JSON.stringify(event.target.dataset.object));
+            console.log('event.currentTarget.dataset.object - > ' + JSON.stringify(event.currentTarget.dataset.object));
             let eventStartDateTime;
             let eventEndDateTime;
             let newDate = new Date();
             let currentDateTimeInUserTimeZone = new Date(newDate.setTime(newDate.getTime() + (newDate.getTimezoneOffset() * 60000) + (this.userTimeZoneOffSetHours * 60 * 60000)));
             console.log('currentDateTimeInUserTimeZone - > ' + currentDateTimeInUserTimeZone);
-            if(event.target.dataset.object !== null && event.target.dataset.object !== undefined) {
+            if((event.target.dataset.object !== null && event.target.dataset.object !== undefined) || (event.currentTarget.dataset.object !== null && event.currentTarget.dataset.object !== undefined)) {
                 /*
                  * If the JS event is not null then it means an Event record is being created from the Calendar UI.
-                */
-                console.log('event.target.dataset.object - > ' + JSON.stringify(event.target.dataset.object));
 
-                /*
                  * Set the default date value for the new event coming from the UI element data-object parameter.
                  * It does not matter from which calendar type the event is being created. New Event start date time remains the same.
                  * So we need not check the current active calendar type.
                 */
-                // eventStartDateTime = new Date(new Date(event.target.dataset.object).toISOString().split('T')[0]);
-                eventStartDateTime = new Date(event.target.dataset.object);
+                
+                if(event.currentTarget.dataset.object !== null && event.currentTarget.dataset.object !== undefined) {
+                    eventStartDateTime = new Date(event.currentTarget.dataset.object);
+                } else if(event.target.dataset.object !== null && event.target.dataset.object !== undefined) {
+                    eventStartDateTime = new Date(event.target.dataset.object);   
+                }
 
                 /*
                  * Here we need to check from which calendar type the event is being created.
@@ -751,7 +754,13 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
                      * As we have access to the hours info on Week and Day Calendars, we need to get them from the UI elements and set the event start time.
                     */
                     console.log("event.target.id : hours -> " + event.target.id.split('-')[0]);
-                    eventStartDateTime.setHours(event.target.id.split('-')[0]);
+                    if(event.currentTarget.dataset.object !== null && event.currentTarget.dataset.object !== undefined) {
+                        eventStartDateTime.setHours(event.currentTarget.id.split('-')[0]);
+                        console.log("event.target.id : hours -> " + event.currentTarget.id.split('-')[0]);
+                    } else if(event.target.dataset.object !== null && event.target.dataset.object !== undefined) {
+                        eventStartDateTime.setHours(event.target.id.split('-')[0]);
+                        console.log("event.target.id : hours -> " + event.target.id.split('-')[0]);
+                    }
                 }
                 let totalOffsetInMinutes = (-1 * this.userTimeZoneOffSetHours * 60) + (-1 * eventStartDateTime.getTimezoneOffset());
                 if(this.userTimeZoneOffSetHours == 0) {
