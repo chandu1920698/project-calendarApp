@@ -2156,7 +2156,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
             {hoursValue : '09', hoursValue12hrs : '9 AM', events : [], hasEvents : false},
             {hoursValue : '10', hoursValue12hrs : '10 AM', events : [], hasEvents : false},
             {hoursValue : '11', hoursValue12hrs : '11 AM', events : [], hasEvents : false},
-            {hoursValue : '12', hoursValue12hrs : '12 AM', events : [], hasEvents : false},
+            {hoursValue : '12', hoursValue12hrs : '12 PM', events : [], hasEvents : false},
             {hoursValue : '13', hoursValue12hrs : '1 PM', events : [], hasEvents : false},
             {hoursValue : '14', hoursValue12hrs : '2 PM', events : [], hasEvents : false},
             {hoursValue : '15', hoursValue12hrs : '3 PM', events : [], hasEvents : false},
