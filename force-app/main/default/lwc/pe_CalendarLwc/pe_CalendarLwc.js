@@ -705,6 +705,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
     * ------------------------- Updates to the function -------------------------
     * Modified Date             Modified By                             Changes
     * Oct 8, 2024               Chandra Sekhar Reddy Muthumula          Added detailed comments for better clarity.
+    * Nov 18, 2024              Chandra Sekhar Reddy Muthumula          Added UCT time condition to remove timezone conflicts while creating a new event from UI (day view and calendar view)
     * ------------------------- Updates to the function -------------------------
     */
     handleEventCreate(event) {
@@ -732,31 +733,6 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
                 */
                 // eventStartDateTime = new Date(new Date(event.target.dataset.object).toISOString().split('T')[0]);
                 eventStartDateTime = new Date(event.target.dataset.object);
-                /*
-                 * If the Event is being created in the past dates, do not allow creating the event record.
-                 * Checking if the new event start date is less then current day date
-                */
-
-                
-                // if(eventStartDateTime.getFullYear() < currentDateTimeInUserTimeZone.getFullYear() || 
-                //     (eventStartDateTime.getFullYear() == currentDateTimeInUserTimeZone.getFullYear() && eventStartDateTime.getMonth() < currentDateTimeInUserTimeZone.getMonth()) ||
-                //     (eventStartDateTime.getMonth() == currentDateTimeInUserTimeZone.getMonth() && eventStartDateTime.getDate() < currentDateTimeInUserTimeZone.getDate())
-                    
-                //     ) {
-                //     alert('Time travel is not possible in java script');
-                //     console.log("eventStartDateTime -> " + eventStartDateTime); // Outputs the first date
-                //     console.log("currentDateTimeInUserTimeZone -> " + currentDateTimeInUserTimeZone); // Outputs the first date
-                //     console.log("eventEndDateTime -> " + eventEndDateTime); // Outputs the second date
-                //     return;
-                // } 
-            
-                // else if (date1 > date2) {
-                // console.log('date1 is later than date2');
-                // } else if (date1.getTime() === date2.getTime()) {
-                // console.log('date1 is equal to date2');
-                // } else {
-                // console.log('Something went wrong with the date comparison');
-                // }
 
                 /*
                  * Here we need to check from which calendar type the event is being created.
@@ -778,6 +754,9 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
                     eventStartDateTime.setHours(event.target.id.split('-')[0]);
                 }
                 let totalOffsetInMinutes = (-1 * this.userTimeZoneOffSetHours * 60) + (-1 * eventStartDateTime.getTimezoneOffset());
+                if(this.userTimeZoneOffSetHours == 0) {
+                    totalOffsetInMinutes += eventStartDateTime.getTimezoneOffset();
+                }
                 eventStartDateTime.setMinutes(eventStartDateTime.getMinutes() + totalOffsetInMinutes);
 
                 
@@ -2711,10 +2690,6 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
         this.modalPopupEventInfo.eventStartDateOld.setMinutes(this.modalPopupEventInfo.eventStartDateOld.getMinutes() - this.userTimeZoneOffSetHours * 60);
         this.modalPopupEventInfo.eventEndDateOld.setMinutes(this.modalPopupEventInfo.eventEndDateOld.getMinutes() - this.userTimeZoneOffSetHours * 60);
     
-
-        // this.modalPopupEventInfo.eventStartDateOld.setMinutes(this.modalPopupEventInfo.eventStartDateOld.getMinutes() + (-1 * this.modalPopupEventInfo.eventStartDateOld.getTimeZoneOffset()) + (-1 * this.userTimeZoneOffSetHours * 60));
-        // this.modalPopupEventInfo.eventEndDateOld.setMinutes(this.modalPopupEventInfo.eventEndDateOld.getMinutes() + (-1 * this.modalPopupEventInfo.eventEndDateOld.getTimeZoneOffset()) + (-1 * this.userTimeZoneOffSetHours * 60));
-    
         console.log("this.modalPopupEventInfo.eventStartDateOld -> " + this.modalPopupEventInfo.eventStartDateOld);
         console.log("this.modalPopupEventInfo.eventEndDateOld -> " + this.modalPopupEventInfo.eventEndDateOld);
 
@@ -2807,17 +2782,12 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
         this.modalPopupEventInfo.eventStartDateNew = new Date(eventStartTimeNew);
         this.modalPopupEventInfo.eventEndDateNew = new Date(eventEndTimeNew);
 
-        // alert("this.userTimeZoneOffSetHours -> " + this.userTimeZoneOffSetHours);
-        // alert("this.modalPopupEventInfo.eventStartDateNew.getTimezoneOffset -> " + this.modalPopupEventInfo.eventStartDateNew.getTimezoneOffset());
-
+        this.modalPopupEventInfo.eventStartDateNew.setMinutes(this.modalPopupEventInfo.eventStartDateNew.getMinutes() - this.modalPopupEventInfo.eventStartDateNew.getTimezoneOffset());
+        this.modalPopupEventInfo.eventEndDateNew.setMinutes(this.modalPopupEventInfo.eventEndDateNew.getMinutes() - this.modalPopupEventInfo.eventEndDateNew.getTimezoneOffset());
+        
         this.modalPopupEventInfo.eventStartDateNew.setMinutes(this.modalPopupEventInfo.eventStartDateNew.getMinutes() - this.userTimeZoneOffSetHours * 60);
         this.modalPopupEventInfo.eventEndDateNew.setMinutes(this.modalPopupEventInfo.eventEndDateNew.getMinutes() - this.userTimeZoneOffSetHours * 60);
-
-        if(this.userTimeZoneOffSetHours == 0) {
-            this.modalPopupEventInfo.eventStartDateNew.setMinutes(this.modalPopupEventInfo.eventStartDateNew.getMinutes() - this.modalPopupEventInfo.eventStartDateNew.getTimezoneOffset());
-            this.modalPopupEventInfo.eventEndDateNew.setMinutes(this.modalPopupEventInfo.eventEndDateNew.getMinutes() - this.modalPopupEventInfo.eventEndDateNew.getTimezoneOffset());
-        }
-    
+        
         // Convert new start and end dates to ISO format for consistency
         this.modalPopupEventInfo.eventStartDateNew = new Date(this.modalPopupEventInfo.eventStartDateNew).toISOString();
         this.modalPopupEventInfo.eventEndDateNew = new Date(this.modalPopupEventInfo.eventEndDateNew).toISOString();
