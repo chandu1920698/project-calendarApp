@@ -763,12 +763,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
                     }
                 }
                 let totalOffsetInMinutes = (-1 * this.userTimeZoneOffSetHours * 60) + (-1 * eventStartDateTime.getTimezoneOffset());
-                if(this.userTimeZoneOffSetHours == 0) {
-                    totalOffsetInMinutes += eventStartDateTime.getTimezoneOffset();
-                }
                 eventStartDateTime.setMinutes(eventStartDateTime.getMinutes() + totalOffsetInMinutes);
-
-                
             } else { 
                 /*
                  * If the JS event is null then it means an Event record is being created from "New Event" button on the calendar highlights panel.
@@ -2889,7 +2884,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
                 await this.handleRefreshClick();
             } else {
                 // Show an error toast if the start date is not before the end date
-                this.showToast('Error', 'error', 'Invalid date selection');
+                this.showToast('Error', 'error', 'Invalid Date Time selection');
             }
     
             // Close the modal popup after save or if invalid date
@@ -2909,6 +2904,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
      * Created Date             : Oct 31, 2024
      * ------------------------- Updates to the function -------------------------
      * Modified Date             Modified By                             Changes
+     * Dec 02, 2024              Chandra Sekhar Reddy Muthumula          Fixed in-correct date format and removed unwanted variables
      * ------------------------- Updates to the function -------------------------
      */
     handleEventNewStartDateChange(event) {
@@ -2919,22 +2915,15 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
         console.log("event.target.value -> " + event.target.value);
     
         // Update the new start date string in the modalPopupEventInfo object with the value from the event
-        this.modalPopupEventInfo.eventStartDateNewString = event.target.value;
+        this.modalPopupEventInfo.eventStartDateNew = event.target.value;
     
         // Create a temporary Date object using the start date value from the event
         let tempStartEDateTimeValue = new Date(event.target.value);
     
         // Set the new end date string by adding 60 minutes to the start date and converting it to an ISO string format
-        this.modalPopupEventInfo.eventEndDateNewString = new Date(
+        this.modalPopupEventInfo.eventEndDateNew = new Date(
             tempStartEDateTimeValue.setMinutes(tempStartEDateTimeValue.getMinutes() + 60)
         ).toISOString();
-    
-        // Set the new start date in the modalPopupEventInfo object as a Date object based on the event value
-        this.modalPopupEventInfo.eventStartDateNew = new Date(event.target.value);
-    
-        // Set the new end date by cloning the start date and adding 60 minutes
-        this.modalPopupEventInfo.eventEndDateNew = new Date(this.modalPopupEventInfo.eventStartDateNew);
-        this.modalPopupEventInfo.eventEndDateNew.setMinutes(this.modalPopupEventInfo.eventEndDateNew.getMinutes() + 60);
     }
     
 
@@ -2945,6 +2934,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
      * Created Date             : Oct 31, 2024
      * ------------------------- Updates to the function -------------------------
      * Modified Date             Modified By                             Changes
+     * Dec 02, 2024              Chandra Sekhar Reddy Muthumula          Removed unwanted variables
      * ------------------------- Updates to the function -------------------------
      */
     handleEventNewEndDateChange(event) {
@@ -2957,11 +2947,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
         // Log the new end date value from the event target for verification
         console.log("event.target.value -> " + event.target.value);
     
-        // Update the end date string in modalPopupEventInfo with the new value from the event
-        this.modalPopupEventInfo.eventEndDateNewString = event.target.value;
-    
-        // Convert the end date string to a Date object and store it in modalPopupEventInfo
-        this.modalPopupEventInfo.eventEndDateNew = new Date(event.target.value);
+        // Create a temporary Date object using the start date value from the event
+        this.modalPopupEventInfo.eventEndDateNew = new Date(event.target.value).toISOString();
     }
-    
 }
