@@ -56,9 +56,6 @@
     background-color: rgb(242 242 242);
 }
 
-.custom-box {
-    /* width: 14.285714285714286%; */
-}
 
 .calweekday {
     border: 1px solid lightgray;
@@ -84,8 +81,6 @@
     width: 99%;
     /* Styles not pertinent have been omitted */
 }
-
-.loadingSpinner {}
 
 .divTagAsLink {
     text-decoration: underline;
@@ -122,11 +117,6 @@
 
 .transitiontime {
     transition: 1.0s;
-}
-
-
-.x-large{
-    /* height: 10px; */
 }
 
 .div-css {
@@ -236,4 +226,10 @@ lightning-layout-item.datepickercalweekday > div{
 
 .card-maring-top-remove {
     margin-top: -1.5rem;
+}
+
+.moreEventsOnMonthDayCss {
+    padding-left:1rem;
+    padding-top:0rem;
+    position:relative;
 }

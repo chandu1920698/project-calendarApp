@@ -71,24 +71,24 @@
         <lightning-layout vertical-align="stretch" multiple-rows="true">
             <lightning-layout-item flexibility="auto" class={monthlyCalendarSize} style="position:relative">
                 <template lwc:if={showCalendar}>
-                    <div class="custom-box slds-text-align_center ">
+                    <div class="slds-text-align_center ">
                         <lightning-layout>
                             <template for:each={weekDays} for:item="currentDay">
                                 <lightning-layout-item  flexibility="auto" key={currentDay.fullform} padding="around-small">
-                                    <div class="custom-box  slds-text-align_center"><strong>{currentDay.shortform}</strong></div>
+                                    <div class="slds-text-align_center"><strong>{currentDay.shortform}</strong></div>
                                 </lightning-layout-item>
                             </template>
                         </lightning-layout>
                     </div>
                     <template for:each={calendar} for:item="week">
-                        <div key={week.weekNumber} class="custom-box slds-text-align_center">
+                        <div key={week.weekNumber} class="slds-text-align_center">
                             <lightning-layout>
                                 <template for:each={week.days} for:item="day">
                                     <template if:true={day.date}>
                                         <lightning-layout-item key={day.date} flexibility="auto" ondrop={handleDropEventUpdate} ondragover={allowDrop}
                                             class="calweekday slds-p-around_xx-small">
                                             <div id={day.number} data-object={day.date} key={day.date}
-                                                class="custom-box slds-text-align_left" onclick={handleEventCreate}>
+                                                class="slds-text-align_left" onclick={handleEventCreate}>
                                                 <div key={day.date} data-object={day.date} class="texttopleft">
                                                     <p style={day.todayCss}>{day.number}</p>
                                                 </div>
@@ -126,7 +126,7 @@
                                             </div>
                                             <div>
                                                 <template if:true={day.dayhasMoreThanThreeEvents}>
-                                                    <div style="padding-left:1rem;padding-top:0rem;position:relative" data-object={day.date} data-dateinfo={day.date} data-currentdayinfo={day.date}>
+                                                    <div class={moreEventsOnMonthDayCss} data-object={day.date} data-dateinfo={day.date} data-currentdayinfo={day.date}>
                                                         <a key={day.date} data-object={day.date}
                                                             class="slds-truncate slds-size_1-of-1 card"
                                                             href="javascript:void(0)" value={day.remainingEvents}
@@ -149,7 +149,7 @@
                                     <template if:false={day.date}>
                                         <lightning-layout-item key={day.date} flexibility="auto"
                                             class="calweekday slds-p-around_xx-small slds-theme_shade">
-                                            <div class="custom-box slds-text-align_left"></div>
+                                            <div class="slds-text-align_left"></div>
                                         </lightning-layout-item>
                                     </template>
                                 </template>
@@ -186,7 +186,7 @@
                                                                 <div class="slds-grid slds-grid_vertical-align-start">
                                                                     <template for:each={hour.events} for:item="event">
                                                                         <div key={event.Id} style={event.eventWidth}>
-                                                                            <div class="" data-object={selectedDateFromSmallCalendar} style={event.emptySpaceCssOnTop} id={hour.hoursValue} onclick={handleEventCreate}>
+                                                                            <div  data-object={selectedDateFromSmallCalendar} style={event.emptySpaceCssOnTop} id={hour.hoursValue} onclick={handleEventCreate}>
                                                                             </div>
                                                                             <button href={event.eventUrl}
                                                                                 data-object={event.eventUrl}
@@ -387,12 +387,12 @@
             <lightning-layout-item flexibility="auto" class={fadesmallCalendar}>
                 <template if:true={showSmallCalendar}>
                     <div style="position:relative">
-                        <lightning-layout class="x-large" vertical-align="center">
+                        <lightning-layout class="" vertical-align="center">
                             <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-12">
                                 <lightning-button-icon icon-name="utility:left"  variant="bare" size="medium" alternative-text="Previous Month" class="slds-m-left_xx-small" onclick={handleDatePickerPrevMonthClick}></lightning-button-icon>
                             </lightning-layout-item>
                             <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_4-of-12 slds-text-align_center">
-                                <div class="custom-box-height"><div>{datePickerSelectedMonth}</div></div>
+                                <div class=""><div>{datePickerSelectedMonth}</div></div>
                             </lightning-layout-item>
                             <lightning-layout-item flexibility="auto" padding="around-small" class="slds-size_2-of-12">
                                 <lightning-button-icon icon-name="utility:right" variant="bare" size="medium" alternative-text="Next Month" class="slds-m-left_xx-small" onclick={handleDatePickerNextMonthClick}></lightning-button-icon>
@@ -416,7 +416,7 @@
                                   </div>
                             </lightning-layout-item>
                         </lightning-layout>
-                        <lightning-layout class="x-large slds-text-align_center">
+                        <lightning-layout class=" slds-text-align_center">
                             <template for:each={weekDays} for:item="currentDay">
                                 <lightning-layout-item  flexibility="auto" key={currentDay.fullform} class="slds-p-around_xxx-small">
                                     <div>
