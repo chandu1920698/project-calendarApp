@@ -2600,6 +2600,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
      * Created Date             : Oct 17, 2024
      * ------------------------- Updates to the function -------------------------
      * Modified Date             Modified By                             Changes
+     * Dec 03, 2024              Chandra Sekhar Reddy Muthumula          Added condition to refersh the calendar views after event deletion
      * ------------------------- Updates to the function -------------------------
      */
     async handleEventRecordDeletion(event) {
@@ -2613,6 +2614,12 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
             await deleteEventRecord({ eventRecordId: event.detail.recordId });
 
             await this.handleRefreshClick();
+
+            if(this.showCalendarDayView == true) {
+                await this.generateCalendarDayView('daySource', new Date(this.datePickerCurrentDate));
+            } else if(this.showCalendarWeekView == true) {
+                await this.generateWeekViewCalendarData();
+            }
 
         } catch (error) {
             console.log("Error -> " + JSON.stringify(error));

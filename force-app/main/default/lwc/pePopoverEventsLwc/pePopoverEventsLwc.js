@@ -91,6 +91,7 @@ export default class PePopoverEventsLwc extends LightningElement {
      * Created Date             : Oct 17, 2024
      * ------------------------- Updates to the function -------------------------
      * Modified Date             Modified By                             Changes
+     * Dec 03, 2024              Chandra Sekhar Reddy Muthumula          Removed the undeclared variable as it is not useful
      * ------------------------- Updates to the function -------------------------
      */
     handleShowMoreEventInfoClose() {
@@ -103,7 +104,6 @@ export default class PePopoverEventsLwc extends LightningElement {
                 updatedEvent.isShowMoreEventInfo = false;
                 return updatedEvent; // Return the updated event for the new array
             });
-            console.log("selectedEvent -> " + JSON.stringify(selectedEvent));
         } catch (error) {
             console.log("handleShowMoreEventInfo error -> " + error);
         }
