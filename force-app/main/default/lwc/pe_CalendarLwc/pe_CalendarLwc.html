@@ -85,9 +85,9 @@
                             <lightning-layout>
                                 <template for:each={week.days} for:item="day">
                                     <template if:true={day.date}>
-                                        <lightning-layout-item key={day.date} flexibility="auto" ondrop={handleDropEventUpdate} ondragover={allowDrop}
+                                        <lightning-layout-item key={day.date} flexibility="auto" data-object={day.date} ondrop={handleDropEventUpdate} ondragover={allowDrop}
                                             class="calweekday slds-p-around_xx-small">
-                                            <div id={day.number} data-object={day.date} key={day.date}
+                                            <div id={day.number} data-object={day.date} key={day.date} 
                                                 class="slds-text-align_left" onclick={handleEventCreate}>
                                                 <div key={day.date} data-object={day.date} class="texttopleft">
                                                     <p style={day.todayCss}>{day.number}</p>

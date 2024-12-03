@@ -2679,6 +2679,11 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
         console.log("event.target.dataset.object -> " + event.target.dataset.object);
         console.log("event.target.dataset.currentdayinfo -> " + event.target.dataset.currentdayinfo);
         console.log("event.target.dataset.hourvalue -> " + event.target.dataset.hourvalue);
+
+        console.log("event.currentTarget.dataset.currentdayinfo -> " + event.currentTarget.dataset.currentdayinfo);
+        console.log("event.currentTarget.dataset.hourvalue -> " + event.currentTarget.dataset.hourvalue);
+        console.log("event.currentTarget.dataset.object -> " + event.currentTarget.dataset.object);
+        console.log("event.currentTarget -> " + event.currentTarget);
     
         // Initialize variables to store dropped event time details
         let droppedDateTime;
@@ -2722,7 +2727,13 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
             } else if (event.target.dataset.object != null || event.target.dataset.object != undefined) {
                 // Dropped on an existing event
                 droppedDateTime = new Date(event.target.dataset.object);   
-            }
+            } else if(event.currentTarget.dataset.currentdayinfo != null || event.currentTarget.dataset.currentdayinfo != undefined) {
+                // Dropped on an empty space in the calendar
+                droppedDateTime = new Date(event.currentTarget.dataset.currentdayinfo);
+            } else if(event.currentTarget.dataset.object != null || event.currentTarget.dataset.object != undefined) {
+                // Dropped on an existing event
+                droppedDateTime = new Date(event.currentTarget.dataset.object);
+            } 
     
             // Extract start time components from the dragged event for the new start time
             let tempEventStartTime = draggedEventInfo.startDateTime.split(".")[0].split("T")[1];
