@@ -97,7 +97,7 @@
                                                 <template if:true={day.events}>
                                                     <template for:each={day.events} for:item="currentEvent">
                                                         <template if:true={currentEvent.isShowEventRecord}>
-                                                            <button href={currentEvent.eventUrl}
+                                                            <button
                                                                 data-object={currentEvent.eventUrl}
                                                                 key={currentEvent.eventId}
                                                                 id={currentEvent.eventId}
@@ -188,7 +188,7 @@
                                                                         <div key={event.Id} style={event.eventWidth}>
                                                                             <div  data-object={selectedDateFromSmallCalendar} style={event.emptySpaceCssOnTop} id={hour.hoursValue} onclick={handleEventCreate}>
                                                                             </div>
-                                                                            <button href={event.eventUrl}
+                                                                            <button
                                                                                 data-object={event.eventUrl}
                                                                                 data-eventstartdatetime={event.startDateTime}
                                                                                 data-eventenddatetime={event.endDateTime}
@@ -299,7 +299,7 @@
                                                                                     <div key={event.Id} style={event.eventWidth}>
                                                                                         <div class="" data-object={selectedDateFromSmallCalendar} style={event.emptySpaceCssOnTop} id={hour.hoursValue} onclick={handleEventCreate}>
                                                                                         </div>
-                                                                                        <button key={event.Id} href={event.eventUrl}
+                                                                                        <button key={event.Id}
                                                                                             data-object={event.eventUrl}
                                                                                             data-eventstartdatetime={event.startDateTime}
                                                                                             data-eventenddatetime={event.endDateTime}
