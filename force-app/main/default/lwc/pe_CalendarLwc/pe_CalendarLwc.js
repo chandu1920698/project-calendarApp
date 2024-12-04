@@ -318,9 +318,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
                 console.log('response.data.payload.Event_Record_Id__c: ' + JSON.stringify(response.data.payload.Event_Record_Id__c));
                 
                 if(this.selectHTMLTemplateName === "pe_CalendarLwc") {
-                    console.log('refreshApex before');
-                    await this.getCurrentMonthCalanderEventRecordsImperativeMethod();
-                    console.log('refreshApex after');
+                    await this.handleRefreshClick();
                     if(this.showCalendar == true) {
                         this.loadMonthWeekDayTableCalanderView(this.showCalendar, this.showCalendarWeekView, this.showCalendarDayView);
                     } else if(this.showCalendarWeekView == true) {
@@ -350,50 +348,52 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
             this.subscription = response;
         });
         onError(error => {
-            // alert('onError ---> '+ JSON.stringify(error));
+            console.log('onError ---> '+ JSON.stringify(error));
         });
     }
 
-    /*
-    * Function Name            : async getCurrentMonthCalanderEventRecordsImperativeMethod
-    * Purpose                  : This function retrieves event records for the current month 
-    *                            based on the user's calendar date range (start and end of the month).
-    *                            It updates the calendar without regenerating it from scratch.
-    * Author Details           : Chandra Sekhar Reddy Muthumula
-    * Created Date             : Oct 8, 2024
-    * @return {void}           : This function does not return a value but updates the calendar events.
-    * ------------------------- Updates to the function -------------------------
-    * Modified Date             Modified By                             Changes
-    * Oct 8, 2024               Chandra Sekhar Reddy Muthumula          Added detailed comments for better clarity.
-    * ------------------------- Updates to the function -------------------------
-    */
-    async getCurrentMonthCalanderEventRecordsImperativeMethod() {
-        this.countToManipulateWire += 1;
-        this.isLoading = true;
-        console.log('start -> Inside getCurrentMonthCalanderEventRecordsImperativeMethod');
-        try {
-            /*
-             * Here there is no need to generate the calendars again, as we are not changing any dates, but only creating events. 
-             * So just getting the new data from DB will suffice
-             */
-            // this.generateCalendar(new Date(this.mainCalendarCurrentDate));
-            // this.refershMonthStartEndDates(new Date(this.mainCalendarCurrentDate));
-            // Fetch new event records for the current month from the database based on the start and end dates
-            this.wiredEventRecordsresult = await getCurrentMonthCalanderEventRecords({
-                startDate : this.firstDayOfMonth,    // Start date of the current month
-                endDate : this.lastDayOfMonth,      // End date of the current month
-                count : this.countToManipulateWire, // Counter to refresh wire results
-                relatedRecordId : this.recordId     // Related record ID for filtering
-            });
-            console.log('async getCurrentMonthCalanderEventRecordsImperativeMethod - this.wiredEventRecordsresult - ' + JSON.stringify(this.wiredEventRecordsresult));
-            // Add the newly fetched events to the calendar
-            this.addEventsToCalendarInfo();
-            this.isLoading = false;
-        } catch (error) {
-            alert('error - Inside getCurrentMonthCalanderEventRecordsImperativeMethod' + JSON.stringify(error));
-        }
-        console.log('end -> Inside getCurrentMonthCalanderEventRecordsImperativeMethod');
-    }
+    // /*
+    // * Function Name            : async getCurrentMonthCalanderEventRecordsImperativeMethod
+    // * Purpose                  : This function retrieves event records for the current month 
+    // *                            based on the user's calendar date range (start and end of the month).
+    // *                            It updates the calendar without regenerating it from scratch.
+    // * Author Details           : Chandra Sekhar Reddy Muthumula
+    // * Created Date             : Oct 8, 2024
+    // * @return {void}           : This function does not return a value but updates the calendar events.
+    // * ------------------------- Updates to the function -------------------------
+    // * Modified Date             Modified By                             Changes
+    // * Oct 8, 2024               Chandra Sekhar Reddy Muthumula          Added detailed comments for better clarity.
+    // * ------------------------- Updates to the function -------------------------
+    // */
+    // async getCurrentMonthCalanderEventRecordsImperativeMethod() {
+    //     this.countToManipulateWire += 1;
+    //     this.isLoading = true;
+    //     console.log('start -> Inside getCurrentMonthCalanderEventRecordsImperativeMethod');
+    //     try {
+    //         /*
+    //          * Here there is no need to generate the calendars again, as we are not changing any dates, but only creating events. 
+    //          * So just getting the new data from DB will suffice
+    //          */
+    //         // this.generateCalendar(new Date(this.mainCalendarCurrentDate));
+    //         // this.refershMonthStartEndDates(new Date(this.mainCalendarCurrentDate));
+    //         // Fetch new event records for the current month from the database based on the start and end dates
+    //         this.wiredEventRecordsresult = await getCurrentMonthCalanderEventRecords({
+    //             startDate : this.firstDayOfMonth,    // Start date of the current month
+    //             endDate : this.lastDayOfMonth,      // End date of the current month
+    //             count : this.countToManipulateWire, // Counter to refresh wire results
+    //             relatedRecordId : this.recordId     // Related record ID for filtering
+    //         });
+    //         console.log('async getCurrentMonthCalanderEventRecordsImperativeMethod - this.wiredEventRecordsresult - ' + JSON.stringify(this.wiredEventRecordsresult));
+    //         // Add the newly fetched events to the calendar
+    //         this.addEventsToCalendarInfo();
+    //         setTimeout(() => {
+    //             this.isLoading = false;
+    //         }, 250);
+    //     } catch (error) {
+    //         alert('error - Inside getCurrentMonthCalanderEventRecordsImperativeMethod' + JSON.stringify(error));
+    //     }
+    //     console.log('end -> Inside getCurrentMonthCalanderEventRecordsImperativeMethod');
+    // }
 
     /*
      * Function Name            : generateCalendar
