@@ -84,14 +84,14 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
     @track intervalId;
     @track liveDateTimeStyle;
     connectedCallback() {
-        console.log("Inside connectedCallback");
-        console.log("Calendar - {record Id} -> " + this.recordId); 
-        console.log("this.currentUserTimeZone -> " + this.currentUserTimeZone); 
+        // console.log("Inside connectedCallback");
+        // console.log("Calendar - {record Id} -> " + this.recordId); 
+        // console.log("this.currentUserTimeZone -> " + this.currentUserTimeZone); 
         let newDate = new Date();
-        console.log("this.userTimeZoneOffSetHours -> " + this.userTimeZoneOffSetHours);
+        // console.log("this.userTimeZoneOffSetHours -> " + this.userTimeZoneOffSetHours);
         this.mainCalendarCurrentDate = new Date(newDate.setTime(newDate.getTime() + (newDate.getTimezoneOffset() * 60000) + (this.userTimeZoneOffSetHours * 60 * 60000)));
-        console.log("this.mainCalendarCurrentDate -> " + this.mainCalendarCurrentDate);
-        console.log("new Date(this.mainCalendarCurrentDate) -> " + new Date(this.mainCalendarCurrentDate));
+        // console.log("this.mainCalendarCurrentDate -> " + this.mainCalendarCurrentDate);
+        // console.log("new Date(this.mainCalendarCurrentDate) -> " + new Date(this.mainCalendarCurrentDate));
 
         /*
          * Set the html to show the month calendar as a default one
@@ -115,8 +115,8 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
         this.datePickerSelectedDay = this.datePickerCurrentDate.getDate();
         this.selectedDateFromSmallCalendar = this.datePickerCurrentDate;
 
-        console.log("this.datePickerCurrentDate -> " + this.datePickerCurrentDate);
-        console.log("this.datePickerSelectedYear -> " + this.datePickerSelectedYear);
+        // console.log("this.datePickerCurrentDate -> " + this.datePickerCurrentDate);
+        // console.log("this.datePickerSelectedYear -> " + this.datePickerSelectedYear);
 
         /*
          * Invoke the handle subscribe functionl to subscribe to the platform events, 
@@ -144,7 +144,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
         
         // Error Handler when subscribing to the platform events in here
         onError(error => {
-            console.log('connectedCallback Server Error--->'+error);
+            // console.log('connectedCallback Server Error--->'+error);
         });
     }
 
@@ -161,8 +161,8 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
      * ------------------------- Updates to the function -------------------------
     */
     getTimeZoneOffset() {
-        console.log("Inside getTimeZoneOffset");
-        console.log("this.currentUserTimeZone -> " + this.currentUserTimeZone);
+        // console.log("Inside getTimeZoneOffset");
+        // console.log("this.currentUserTimeZone -> " + this.currentUserTimeZone);
         // Create a new Date object representing the current time
         const date = new Date();
     
@@ -213,18 +213,18 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
     */
     refershLiveLineCss() {
         try {
-            console.log("Inside refershLiveLineCss");
+            // console.log("Inside refershLiveLineCss");
             // Get the current time based on user time zone
             let newDate = new Date();
             let currentLiveTime = new Date(newDate.setTime(newDate.getTime() + (newDate.getTimezoneOffset() * 60000) + (this.userTimeZoneOffSetHours * 60 * 60000)));
 
             // Calculate the total minutes passed by now
             let totalMinutesOfCurrentTime = (currentLiveTime.getHours() * 60) + currentLiveTime.getMinutes();
-            // console.log("totalMinutesOfCurrentTime -> " + totalMinutesOfCurrentTime);
+            // // console.log("totalMinutesOfCurrentTime -> " + totalMinutesOfCurrentTime);
 
             // Calculate the pixels based on the minutes and the live line is to be set from the top.
             let pixelsFromTop = 'top: ' + ((this.hourHeightInDayViewCalendar / 60) * totalMinutesOfCurrentTime) + 'px;';
-            // console.log("pixelsFromTop -> " + pixelsFromTop);
+            // // console.log("pixelsFromTop -> " + pixelsFromTop);
 
             this.liveDateTimeStyle = pixelsFromTop;
 
@@ -234,10 +234,10 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
             } else if(this.showCalendarDayView == true) {
                 this.liveDateTimeStyle += 'border: solid 1px red; position: absolute; right: 0.5rem; z-index: 1;';
             }
-            // console.log("this.liveDateTimeStyle -> " + this.liveDateTimeStyle);
+            // // console.log("this.liveDateTimeStyle -> " + this.liveDateTimeStyle);
         } catch (error) {
             // Catch block to show id any error occurs
-            console.log("Inside refershLiveLineCss - error -> " + error);
+            // console.log("Inside refershLiveLineCss - error -> " + error);
         }
         
     }
@@ -271,7 +271,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
         // Check if data is successfully retrieved
         this.isLoading = true;
         if(result.data){
-            // console.log(JSON.stringify(result.data));
+            // // console.log(JSON.stringify(result.data));
             // Assign the fetched data to the variable
             this.wiredEventRecordsresult = result.data;
 
@@ -280,7 +280,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
              * This will map the events fetched to dates
             */
             this.addEventsToCalendarInfo();
-            console.log("wiredEventRecordsresult -> " + JSON.stringify(this.wiredEventRecordsresult));
+            // console.log("wiredEventRecordsresult -> " + JSON.stringify(this.wiredEventRecordsresult));
             this.isLoading = false;
         }
         else if (result.error) {;
@@ -312,10 +312,10 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
     async handleSubscribe() {
         // Callback invoked whenever a new event message is received
             const messageCallback = async (response) => {
-            console.log('New message received: ', JSON.stringify(response));
-            console.log('New message received: ' + JSON.stringify(response.data.payload.Event_Record_Id__c));
+            // console.log('New message received: ', JSON.stringify(response));
+            // console.log('New message received: ' + JSON.stringify(response.data.payload.Event_Record_Id__c));
             if(response.data.payload.Event_Record_Id__c !== null && response.data.payload.Event_Record_Id__c !== '') {
-                console.log('response.data.payload.Event_Record_Id__c: ' + JSON.stringify(response.data.payload.Event_Record_Id__c));
+                // console.log('response.data.payload.Event_Record_Id__c: ' + JSON.stringify(response.data.payload.Event_Record_Id__c));
                 
                 if(this.selectHTMLTemplateName === "pe_CalendarLwc") {
                     await this.handleRefreshClick();
@@ -340,15 +340,15 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
         // Invoke subscribe method of empApi. Pass reference to messageCallback
         subscribe(this.CHANNEL_NAME, -1, messageCallback).then((response) => {
             // Response contains the subscription information on subscribe call
-            console.log(
+            // console.log(
                 'Subscription request sent to: ',
                 JSON.stringify(response.channel)
             );
-            console.log('subscribe ---> '+JSON.stringify(response));
+            // console.log('subscribe ---> '+JSON.stringify(response));
             this.subscription = response;
         });
         onError(error => {
-            console.log('onError ---> '+ JSON.stringify(error));
+            // console.log('onError ---> '+ JSON.stringify(error));
         });
     }
 
@@ -368,7 +368,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
     // async getCurrentMonthCalanderEventRecordsImperativeMethod() {
     //     this.countToManipulateWire += 1;
     //     this.isLoading = true;
-    //     console.log('start -> Inside getCurrentMonthCalanderEventRecordsImperativeMethod');
+    //     // console.log('start -> Inside getCurrentMonthCalanderEventRecordsImperativeMethod');
     //     try {
     //         /*
     //          * Here there is no need to generate the calendars again, as we are not changing any dates, but only creating events. 
@@ -383,7 +383,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
     //             count : this.countToManipulateWire, // Counter to refresh wire results
     //             relatedRecordId : this.recordId     // Related record ID for filtering
     //         });
-    //         console.log('async getCurrentMonthCalanderEventRecordsImperativeMethod - this.wiredEventRecordsresult - ' + JSON.stringify(this.wiredEventRecordsresult));
+    //         // console.log('async getCurrentMonthCalanderEventRecordsImperativeMethod - this.wiredEventRecordsresult - ' + JSON.stringify(this.wiredEventRecordsresult));
     //         // Add the newly fetched events to the calendar
     //         this.addEventsToCalendarInfo();
     //         setTimeout(() => {
@@ -392,7 +392,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
     //     } catch (error) {
     //         alert('error - Inside getCurrentMonthCalanderEventRecordsImperativeMethod' + JSON.stringify(error));
     //     }
-    //     console.log('end -> Inside getCurrentMonthCalanderEventRecordsImperativeMethod');
+    //     // console.log('end -> Inside getCurrentMonthCalanderEventRecordsImperativeMethod');
     // }
 
     /*
@@ -410,7 +410,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
 
     generateCalendar(currentDate) {
         try {
-            console.log('INsied generateCalendar');
+            // console.log('INsied generateCalendar');
             this.mainCalendarCurrentMonth = this.getCurrentMonth(currentDate);
             this.mainCalendarCurrentYear = currentDate.getFullYear();
             const year = currentDate.getFullYear();
@@ -420,7 +420,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
 
             const firstDayOfWeek = firstDayOfMonth.getDay();
             const lastDateOfMonth = lastDayOfMonth.getDate();
-            console.log("currentDate -> " + currentDate);
+            // console.log("currentDate -> " + currentDate);
             
             let days = [];
             let dateOfMonth = 1;
@@ -468,7 +468,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
                 }
             }
             this.calendar = days;
-            console.log(" generateCalendar - this.calendar -> " + JSON.stringify(this.calendar));
+            // console.log(" generateCalendar - this.calendar -> " + JSON.stringify(this.calendar));
         } catch (error) {
             alert('Error in generateCalendar -> ' + JSON.stringify(error));
         }
@@ -510,7 +510,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
      * ------------------------- Updates to the function -------------------------
     */
     async handlePrevDayWeekMonth() {
-        console.log("Inside handlePrevDayWeekMonth");
+        // console.log("Inside handlePrevDayWeekMonth");
         if(this.showCalendar == true) {
             
             /*
@@ -565,7 +565,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
                 this.getCurrentWeekStartDateEndDate(new Date(this.mainCalendarCurrentDate));
             }
         }
-        console.log("this.mainCalendarCurrentDate -> " + this.mainCalendarCurrentDate);
+        // console.log("this.mainCalendarCurrentDate -> " + this.mainCalendarCurrentDate);
         this.handleDatePickerPrevMonthClick("calendarHighlightPanel", new Date(this.mainCalendarCurrentDate));
         this.loadMonthWeekDayTableCalanderView(this.showCalendar, this.showCalendarWeekView, this.showCalendarDayView);
     }
@@ -584,7 +584,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
      * ------------------------- Updates to the function -------------------------
     */
     async handleNextDayWeekMonth() {
-        console.log("Inside handleNextDayWeekMonth");
+        // console.log("Inside handleNextDayWeekMonth");
         if(this.showCalendar == true) {
             /*
              * When the next button on calendar highlights panel is clicked, then month is increased by 1 in main calendar current date
@@ -637,7 +637,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
                 this.getCurrentWeekStartDateEndDate(new Date(this.mainCalendarCurrentDate));
             }
         }
-        console.log("this.mainCalendarCurrentDate -> " + this.mainCalendarCurrentDate);
+        // console.log("this.mainCalendarCurrentDate -> " + this.mainCalendarCurrentDate);
         this.handleDatePickerNextMonthClick("calendarHighlightPanel", new Date(this.mainCalendarCurrentDate));
         this.loadMonthWeekDayTableCalanderView(this.showCalendar, this.showCalendarWeekView, this.showCalendarDayView);
     }
@@ -659,7 +659,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
     * ------------------------- Updates to the function -------------------------
     */
     async handleRefreshClick() {
-        console.log("Inside handleRefreshClick");
+        // console.log("Inside handleRefreshClick");
         this.isLoading = true;
         this.countToManipulateWire += 1;
 
@@ -709,19 +709,19 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
     * ------------------------- Updates to the function -------------------------
     */
     handleEventCreate(event) {
-        console.log("Inside handleEventCreate");
+        // console.log("Inside handleEventCreate");
 
         try {
-            console.log('event.target 1 - > ' + JSON.stringify(event.target));
-            console.log(event.target);
-            console.log(event.currentTarget);
-            console.log('event.target.dataset.object - > ' + JSON.stringify(event.target.dataset.object));
-            console.log('event.currentTarget.dataset.object - > ' + JSON.stringify(event.currentTarget.dataset.object));
+            // console.log('event.target 1 - > ' + JSON.stringify(event.target));
+            // console.log(event.target);
+            // console.log(event.currentTarget);
+            // console.log('event.target.dataset.object - > ' + JSON.stringify(event.target.dataset.object));
+            // console.log('event.currentTarget.dataset.object - > ' + JSON.stringify(event.currentTarget.dataset.object));
             let eventStartDateTime;
             let eventEndDateTime;
             let newDate = new Date();
             let currentDateTimeInUserTimeZone = new Date(newDate.setTime(newDate.getTime() + (newDate.getTimezoneOffset() * 60000) + (this.userTimeZoneOffSetHours * 60 * 60000)));
-            console.log('currentDateTimeInUserTimeZone - > ' + currentDateTimeInUserTimeZone);
+            // console.log('currentDateTimeInUserTimeZone - > ' + currentDateTimeInUserTimeZone);
             if((event.target.dataset.object !== null && event.target.dataset.object !== undefined) || (event.currentTarget.dataset.object !== null && event.currentTarget.dataset.object !== undefined)) {
                 /*
                  * If the JS event is not null then it means an Event record is being created from the Calendar UI.
@@ -753,13 +753,13 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
                     /*
                      * As we have access to the hours info on Week and Day Calendars, we need to get them from the UI elements and set the event start time.
                     */
-                    console.log("event.target.id : hours -> " + event.target.id.split('-')[0]);
+                    // console.log("event.target.id : hours -> " + event.target.id.split('-')[0]);
                     if(event.currentTarget.dataset.object !== null && event.currentTarget.dataset.object !== undefined) {
                         eventStartDateTime.setHours(event.currentTarget.id.split('-')[0]);
-                        console.log("event.target.id : hours -> " + event.currentTarget.id.split('-')[0]);
+                        // console.log("event.target.id : hours -> " + event.currentTarget.id.split('-')[0]);
                     } else if(event.target.dataset.object !== null && event.target.dataset.object !== undefined) {
                         eventStartDateTime.setHours(event.target.id.split('-')[0]);
-                        console.log("event.target.id : hours -> " + event.target.id.split('-')[0]);
+                        // console.log("event.target.id : hours -> " + event.target.id.split('-')[0]);
                     }
                 }
                 let totalOffsetInMinutes = (-1 * this.userTimeZoneOffSetHours * 60) + (-1 * eventStartDateTime.getTimezoneOffset());
@@ -785,9 +785,9 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
             eventEndDateTime.setDate(eventStartDateTime.getDate());
             eventEndDateTime.setMinutes(eventStartDateTime.getMinutes() + 60);
 
-            console.log("eventStartDateTime - > " + eventStartDateTime); // Outputs the first date
-            console.log("currentDateTimeInUserTimeZone - > " + currentDateTimeInUserTimeZone); // Outputs the first date
-            console.log("eventEndDateTime -> " + eventEndDateTime); // Outputs the second date
+            // console.log("eventStartDateTime - > " + eventStartDateTime); // Outputs the first date
+            // console.log("currentDateTimeInUserTimeZone - > " + currentDateTimeInUserTimeZone); // Outputs the first date
+            // console.log("eventEndDateTime -> " + eventEndDateTime); // Outputs the second date
             /*
               * Set the values of the event
             */
@@ -809,7 +809,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
                 defaultValues['WhatId'] = this.recordId;
             }
 
-            console.log('defaultValues -> ' + JSON.stringify(defaultValues));
+            // console.log('defaultValues -> ' + JSON.stringify(defaultValues));
 
             const encodedDefaultValues = encodeDefaultFieldValues(defaultValues);
             /*
@@ -876,15 +876,15 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
     */
     refershMonthStartEndDates(newDate) {
         try {
-            console.log('Inside refershMonthStartEndDates');
-            console.log('newDate -> ', newDate);
+            // console.log('Inside refershMonthStartEndDates');
+            // console.log('newDate -> ', newDate);
             
             // Adjust the current date by subtracting the user timezone offset to get the correct date in GMT.
             // newDate.setMinutes(newDate.getMinutes() - (this.userTimeZoneOffSetHours * 60));
 
             // Now we have the GMT date, which is used because Salesforce stores event datetimes in GMT.
             const currentDateInGMT = newDate;
-            console.log('currentDateInGMT -> ', currentDateInGMT);
+            // console.log('currentDateInGMT -> ', currentDateInGMT);
 
             // Get the first day of the current month in GMT.
             const firstDayOfMonth = new Date(currentDateInGMT.getFullYear(), currentDateInGMT.getMonth(), 1);
@@ -905,15 +905,15 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
             firstDayOfMonth.setDate(firstDayOfMonth.getDate() + 1);
             lastDayOfMonth.setDate(lastDayOfMonth.getDate() + 1);
 
-            // console.log('First date of the month :', firstDayOfMonth);
-            // console.log('Last date of the month :', lastDayOfMonth);
+            // // console.log('First date of the month :', firstDayOfMonth);
+            // // console.log('Last date of the month :', lastDayOfMonth);
 
             // Format the dates to 'YYYY-MM-DD' to send to Apex.
             this.firstDayOfMonth = firstDayOfMonth.toISOString().split('T')[0];
             this.lastDayOfMonth = lastDayOfMonth.toISOString().split('T')[0];
 
-            console.log('this.firstDayOfMonth :', this.firstDayOfMonth);
-            console.log('this.lastDayOfMonth :', this.lastDayOfMonth);
+            // console.log('this.firstDayOfMonth :', this.firstDayOfMonth);
+            // console.log('this.lastDayOfMonth :', this.lastDayOfMonth);
 
             // Calculate the first day of the month in the user's time zone.
             const firstDayOfMonthUTZ = new Date(currentDateInGMT.getFullYear(), currentDateInGMT.getMonth(), 1);
@@ -932,11 +932,11 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
             this.firstDateofTheMonthUSerTimeZone = firstDayOfMonthUTZ;
             this.lastDateofTheMonthUSerTimeZone = lastDayOfMonthUTZ;
 
-            console.log('this.firstDateofTheMonthUSerTimeZone :', this.firstDateofTheMonthUSerTimeZone);
-            console.log('this.lastDateofTheMonthUSerTimeZone :', this.lastDateofTheMonthUSerTimeZone);
+            // console.log('this.firstDateofTheMonthUSerTimeZone :', this.firstDateofTheMonthUSerTimeZone);
+            // console.log('this.lastDateofTheMonthUSerTimeZone :', this.lastDateofTheMonthUSerTimeZone);
 
         } catch (error) {
-            console.log('Inside refershMonthStartEndDates error -> ' + error);
+            // console.log('Inside refershMonthStartEndDates error -> ' + error);
         }
     }
 
@@ -955,12 +955,12 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
     * ------------------------- Updates to the function -------------------------
     */
     addEventsToCalendarInfo() {
-        console.log('Inside addEventsToCalendarInfo');
+        // console.log('Inside addEventsToCalendarInfo');
         try {
             // Loop through each week in the calendar.
             this.calendar.forEach(week => {
                 // For each week, loop through each day.
-                // console.log('week -> ' + JSON.stringify(week));
+                // // console.log('week -> ' + JSON.stringify(week));
                 week.days.forEach(day => {
                     // Ensure that the day has a valid date.
                     if (day.date != null && day.date !== '') {
@@ -980,11 +980,11 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
             });
 
             // Log the updated calendar with events.
-            console.log("Inside addEventsToCalendarInfo - this.calendar -> " + JSON.stringify(this.calendar));
+            // console.log("Inside addEventsToCalendarInfo - this.calendar -> " + JSON.stringify(this.calendar));
 
             // Refresh the view for month, week, or day calendar depending on which one is currently active.
             this.loadMonthWeekDayTableCalanderView(this.showCalendar, this.showCalendarWeekView, this.showCalendarDayView);
-            console.log("this.showCalendar : " + this.showCalendar + " - " + "this.showCalendarDayView : " + this.showCalendarDayView);
+            // console.log("this.showCalendar : " + this.showCalendar + " - " + "this.showCalendarDayView : " + this.showCalendarDayView);
 
         } catch (error) {
             // Log and alert if an error occurs during the process.
@@ -1008,11 +1008,11 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
     * ------------------------- Updates to the function -------------------------
     */
     handleOpenEventRecord(event) {
-        console.log('event.target -> ' + JSON.stringify(event.target));
-        console.log(event.target);
+        // console.log('event.target -> ' + JSON.stringify(event.target));
+        // console.log(event.target);
 
         // Extract the dataset object (usually a URL-like string) that contains the event record ID.
-        console.log('event.target.dataset.object -> ' + JSON.stringify(event.target.dataset.object));
+        // console.log('event.target.dataset.object -> ' + JSON.stringify(event.target.dataset.object));
 
         // Extract the event record ID from the dataset object and pass it to edit the event record.
         this.editEventRecord(event.target.dataset.object.split('/')[1]);
@@ -1062,8 +1062,8 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
     */
     handleOpenEventRecordFromPopup(event) {
         // Log the event and its details to inspect the popup's data.
-        console.log("event -> " + JSON.stringify(event));
-        console.log("event.detail -> " + JSON.stringify(event.detail));
+        // console.log("event -> " + JSON.stringify(event));
+        // console.log("event.detail -> " + JSON.stringify(event.detail));
 
         // Extract the event record ID from the event detail and call editEventRecord to open it.
         this.editEventRecord(event.detail.recordId);
@@ -1082,7 +1082,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
     disconnectedCallback() {
         // Unsubscribes from the channel to avoid memory leaks or unnecessary operations when the component is destroyed.
         unsubscribe(this.subscription, () => {
-            console.log('Unsubscribed Channel');
+            // console.log('Unsubscribed Channel');
         });
 
         // Clears any interval that was set, to avoid performance issues or unwanted behaviors after the component is destroyed.
@@ -1128,14 +1128,14 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
     * ------------------------- Updates to the function -------------------------
     */
     async handleSwitchCalendarView(event) {
-        console.log('Inside handleSwitchCalendarView');
-        console.log('event.detail.value -> ' + event.detail.value);
+        // console.log('Inside handleSwitchCalendarView');
+        // console.log('event.detail.value -> ' + event.detail.value);
     
         // Update the selected calendar view and mark it as checked in the UI.
         this.calendarTypesList.forEach(calendarType => {
             if (event.detail.value === calendarType.name) {
                 calendarType.isSelected = 'checked';
-                console.log('calendarType -> ' + JSON.stringify(calendarType));
+                // console.log('calendarType -> ' + JSON.stringify(calendarType));
             } else {
                 calendarType.isSelected = '';
             }
@@ -1179,7 +1179,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
     * ------------------------- Updates to the function -------------------------
     */
     loadMonthWeekDayTableCalanderView(month, week, day) {
-        console.log("Inside loadMonthWeekDayTableCalanderView");
+        // console.log("Inside loadMonthWeekDayTableCalanderView");
 
         // Ensure the correct HTML template is selected if not already done.
         if (this.selectHTMLTemplateName == "pe_CalendarLwc") {
@@ -1220,7 +1220,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
     @track toggleBetweenMonthWeekDay = true;
 
     renderedCallback() {
-        // console.log('Inside renderedCallback -> setRenderCallback : ' + this.setRenderCallback);
+        // // console.log('Inside renderedCallback -> setRenderCallback : ' + this.setRenderCallback);
 
         // If setRenderCallback is true, proceed with re-rendering.
         if (this.setRenderCallback == true) {
@@ -1229,7 +1229,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
             // Show the date picker calendar if not already visible.
             if (this.showDatePickerCalendar === false) {
                 this.showDatePickerCalendar = true;
-                console.log("Inside renderedCallback - showDatePickerCalendar : " + this.showDatePickerCalendar);
+                // console.log("Inside renderedCallback - showDatePickerCalendar : " + this.showDatePickerCalendar);
             }
 
             // Show the calendar table view if not already visible.
@@ -1243,17 +1243,17 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
                     this.showCalendar = true;
                     this.showCalendarDayView = false;
                     this.showCalendarWeekView = false;
-                    console.log("Inside renderedCallback - showCalendar : " + this.showCalendar);
+                    // console.log("Inside renderedCallback - showCalendar : " + this.showCalendar);
                 } else if (this.showCalendarDayView === true && this.showCalendar === true && this.showCalendarWeekView == false) {
                     this.showCalendarDayView = false;
                     this.showCalendar = false;
                     this.showCalendarWeekView = true;
-                    console.log("Inside renderedCallback - showCalendarWeekView : " + this.showCalendarWeekView);
+                    // console.log("Inside renderedCallback - showCalendarWeekView : " + this.showCalendarWeekView);
                 } else if (this.showCalendarDayView === false && this.showCalendar === true && this.showCalendarWeekView == true) {
                     this.showCalendarDayView = true;
                     this.showCalendar = false;
                     this.showCalendarWeekView = false;
-                    console.log("Inside renderedCallback - showCalendarDayView : " + this.showCalendarDayView);
+                    // console.log("Inside renderedCallback - showCalendarDayView : " + this.showCalendarDayView);
                 }
                 this.toggleBetweenMonthWeekDay = false;
                 this.refershLiveLineCss();  // Refresh CSS for the calendar view.
@@ -1279,28 +1279,28 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
     * ------------------------- Updates to the function -------------------------
     */
     handleOpenPopoverEventsLwc(event) {
-        console.log("Inside handleOpenPopoverEventsLwc");
+        // console.log("Inside handleOpenPopoverEventsLwc");
         
-        console.log('event.currentTarget.tagName -> ' + JSON.stringify(event.currentTarget.tagName));
-        console.log('event.target.tagName -> ' + JSON.stringify(event.target.tagName));
+        // console.log('event.currentTarget.tagName -> ' + JSON.stringify(event.currentTarget.tagName));
+        // console.log('event.target.tagName -> ' + JSON.stringify(event.target.tagName));
     
         try {
             if (event.target.tagName === 'A') {
-                console.log('The event object is an <a> tag.');
-                console.log('event -> ' + JSON.stringify(event));
-                console.log(event);
-                console.log('event.target -> ' + JSON.stringify(event.target));
-                console.log(event.target);
+                // console.log('The event object is an <a> tag.');
+                // console.log('event -> ' + JSON.stringify(event));
+                // console.log(event);
+                // console.log('event.target -> ' + JSON.stringify(event.target));
+                // console.log(event.target);
                 
                 // Retrieve the date information from the event's current target
-                console.log('event.currentTarget.dataset.object -> ' + JSON.stringify(event.currentTarget.dataset.object));
+                // console.log('event.currentTarget.dataset.object -> ' + JSON.stringify(event.currentTarget.dataset.object));
 
                 // Loop through each week in the calendar
                 this.calendar.forEach(week => {
-                    // console.log('week -> ' + JSON.stringify(week));
+                    // // console.log('week -> ' + JSON.stringify(week));
                     week.days.forEach(day => {
                         // Check if the day has a valid date
-                        // console.log('day -> ' + JSON.stringify(day));
+                        // // console.log('day -> ' + JSON.stringify(day));
                         if (day.date !== null && day.date !== '') {
                             // Compare the current day's date with the date from the event's dataset
                             if (day.date.toDateString() === new Date(event.currentTarget.dataset.object).toDateString()) {
@@ -1308,7 +1308,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
                                 day.showPopoverEventsOnHover = true; // Show popover indicator
                                 this.popoverEventsData = day; // Set the popover data to the day's events
                                 this.showPopoverEvents = true; // Make the popover visible        
-                                console.log("Inside handleOpenPopoverEventsLwc - this.popoverEventsData -> " + JSON.stringify(this.popoverEventsData));
+                                // console.log("Inside handleOpenPopoverEventsLwc - this.popoverEventsData -> " + JSON.stringify(this.popoverEventsData));
                             } else {
                                 // If the day does not match, hide the popover indicator
                                 day.showPopoverEventsOnHover = false;
@@ -1320,7 +1320,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
             }
         } catch (error) {
             // Log any errors that occur and display an alert to the user
-            console.log('Inside handleOpenPopoverEventsLwc error -> ' + JSON.stringify(error));
+            // console.log('Inside handleOpenPopoverEventsLwc error -> ' + JSON.stringify(error));
             alert('Inside handleOpenPopoverEventsLwc error -> ' + JSON.stringify(error));
         }
     }
@@ -1340,17 +1340,17 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
     * ------------------------- Updates to the function -------------------------
     */
     handleClosePopover(event) {
-        console.log("Inside handleClosePopover");
+        // console.log("Inside handleClosePopover");
         // Hide the popover by setting the visibility flag to false
         this.showPopoverEvents = false;
 
-        console.log("Event.detail -> " + JSON.stringify(event.detail));
+        // console.log("Event.detail -> " + JSON.stringify(event.detail));
         // Loop through each week in the calendar
         this.calendar.forEach(week => {
-            // console.log('week -> ' + JSON.stringify(week));
+            // // console.log('week -> ' + JSON.stringify(week));
             week.days.forEach(day => {
                 // Check if the day has a valid date
-                // console.log('day -> ' + JSON.stringify(day));
+                // // console.log('day -> ' + JSON.stringify(day));
                 if (day.date !== null && day.date !== '') {
                     day.showPopoverEventsOnHover = false; // Show popover indicator
                 }
@@ -1376,10 +1376,10 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
     ];
 
     get listOfDatePickerYears() {
-        console.log("Inside listOfDatePickerYears");
-        // console.log("this.datePickerCurrentDate -> " + this.datePickerCurrentDate);
+        // console.log("Inside listOfDatePickerYears");
+        // // console.log("this.datePickerCurrentDate -> " + this.datePickerCurrentDate);
         let currentYear = this.datePickerCurrentDate.getFullYear();
-        // console.log("currentYear -> " + currentYear);
+        // // console.log("currentYear -> " + currentYear);
         let years = [];
         for (let i = currentYear - 100; i<= currentYear + 99; i++) {
             if(i === currentYear) {
@@ -1389,7 +1389,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
             }
             
         }
-        // console.log("years -> " + JSON.stringify(years));
+        // // console.log("years -> " + JSON.stringify(years));
         return years;
     }
 
@@ -1410,17 +1410,17 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
      * ------------------------- Updates to the function -------------------------
     */
     handleDatePickerPrevMonthClick(source, date) {
-        console.log("Inside handleDatePickerPrevMonthClick");
-        console.log("source, date -> " + source + ', ' + date);
+        // console.log("Inside handleDatePickerPrevMonthClick");
+        // console.log("source, date -> " + source + ', ' + date);
         if(source === "calendarHighlightPanel" && date !== null) {
             /*
              * Nothing needs to be done all the variables are already updated on the parent method call.
             */
-            console.log("Inside handleDatePickerNextMonthClick this.mainCalendarCurrentDate -> " + this.mainCalendarCurrentDate);
+            // console.log("Inside handleDatePickerNextMonthClick this.mainCalendarCurrentDate -> " + this.mainCalendarCurrentDate);
             this.generateDatePickerCalendar(new Date(this.mainCalendarCurrentDate));
         } else {
             this.datePickerCurrentDate.setMonth(this.datePickerCurrentDate.getMonth() - 1);
-            console.log("Inside handleDatePickerPrevMonthClick this.datePickerCurrentDate -> " + this.datePickerCurrentDate);
+            // console.log("Inside handleDatePickerPrevMonthClick this.datePickerCurrentDate -> " + this.datePickerCurrentDate);
             this.generateDatePickerCalendar(new Date(this.datePickerCurrentDate));
         }
         this.loadMonthWeekDayTableCalanderView(this.showCalendar, this.showCalendarWeekView, this.showCalendarDayView);
@@ -1444,13 +1444,13 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
     */
     handleDatePickerNextMonthClick(source, date){
         this.showDatePickerCalendar = false;
-        console.log("Inside handleDatePickerNextMonthClick");
-        console.log("source, date -> " + source + ', ' + date);
+        // console.log("Inside handleDatePickerNextMonthClick");
+        // console.log("source, date -> " + source + ', ' + date);
         if(source === "calendarHighlightPanel" && date !== null) {
             /*
              * Nothing needs to be done all the variables are already updated on the parent method call.
             */
-            console.log("Inside handleDatePickerNextMonthClick this.mainCalendarCurrentDate -> " + this.mainCalendarCurrentDate);
+            // console.log("Inside handleDatePickerNextMonthClick this.mainCalendarCurrentDate -> " + this.mainCalendarCurrentDate);
             this.generateDatePickerCalendar(new Date(this.mainCalendarCurrentDate));
         } else {
             /*
@@ -1458,7 +1458,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
              * Adds one month to the date picker current date
             */
             this.datePickerCurrentDate.setMonth(this.datePickerCurrentDate.getMonth() + 1);
-            console.log("Inside handleDatePickerNextMonthClick this.datePickerCurrentDate -> " + this.datePickerCurrentDate);
+            // console.log("Inside handleDatePickerNextMonthClick this.datePickerCurrentDate -> " + this.datePickerCurrentDate);
             this.generateDatePickerCalendar(new Date(this.datePickerCurrentDate));
         }
         this.loadMonthWeekDayTableCalanderView(this.showCalendar, this.showCalendarWeekView, this.showCalendarDayView);
@@ -1476,14 +1476,14 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
     * ------------------------- Updates to the function -------------------------
     */
     getUpdatedDatePickerDayMonthYear() {
-        console.log("Inside getUpdatedDatePickerDayMonthYear");
+        // console.log("Inside getUpdatedDatePickerDayMonthYear");
         this.datePickerSelectedMonth = this.getCurrentMonth(this.datePickerCurrentDate).toLocaleUpperCase();
         this.datePickerSelectedDay = this.datePickerCurrentDate.getDate();
         this.datePickerSelectedYear = this.datePickerCurrentDate.getFullYear();
-        console.log("this.datePickerCurrentDate -> " + this.datePickerCurrentDate);
-        console.log("this.datePickerSelectedMonth -> " + this.datePickerSelectedMonth);
-        console.log("this.datePickerSelectedDay -> " + this.datePickerSelectedDay);
-        console.log("this.datePickerSelectedYear -> " + this.datePickerSelectedYear);
+        // console.log("this.datePickerCurrentDate -> " + this.datePickerCurrentDate);
+        // console.log("this.datePickerSelectedMonth -> " + this.datePickerSelectedMonth);
+        // console.log("this.datePickerSelectedDay -> " + this.datePickerSelectedDay);
+        // console.log("this.datePickerSelectedYear -> " + this.datePickerSelectedYear);
     }
 
     /*
@@ -1498,8 +1498,8 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
     * ------------------------- Updates to the function -------------------------
     */
     handleDatePickerYearSelect(event) {
-        console.log("Inside handleDatePickerYearSelect -> " + JSON.stringify(event));
-        console.log("event.target.value -> " + event.target.value);
+        // console.log("Inside handleDatePickerYearSelect -> " + JSON.stringify(event));
+        // console.log("event.target.value -> " + event.target.value);
         this.datePickerCurrentDate.setFullYear(event.target.value);
         this.generateDatePickerCalendar(new Date(this.datePickerCurrentDate));
     }
@@ -1521,12 +1521,12 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
     */
     generateDatePickerCalendar(datePickerCurrentDate) {
         try {
-            console.log('Inside generateDatePickerCalendar');    
+            // console.log('Inside generateDatePickerCalendar');    
             this.isSmallCalendarLoading = true;
             // Update the selected day, month, and year based on the current date
             this.getUpdatedDatePickerDayMonthYear();
             
-            console.log("datePickerCurrentDate -> " + datePickerCurrentDate);
+            // console.log("datePickerCurrentDate -> " + datePickerCurrentDate);
             
             // Extract the year and month from the provided date
             const year = datePickerCurrentDate.getFullYear();
@@ -1585,13 +1585,13 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
                         let css = 'datePickerTextalignCenter ';
                         let layoutCss = 'datepickercalweekday ';
                         
-                        // console.log("dailyDate -> " + dailyDate);
-                        // console.log("currentDateInUserTimeZone -> " + currentDateInUserTimeZone);
+                        // // console.log("dailyDate -> " + dailyDate);
+                        // // console.log("currentDateInUserTimeZone -> " + currentDateInUserTimeZone);
                         
                         // Check if the current day is today
                         if (dailyDate.toDateString() === currentDateInUserTimeZone.toDateString()) {
-                            // console.log("dailyDate.toDateString() -> " + dailyDate.toDateString());
-                            // console.log("currentDateInUserTimeZone.toDateString() -> " + currentDateInUserTimeZone.toDateString());
+                            // // console.log("dailyDate.toDateString() -> " + dailyDate.toDateString());
+                            // // console.log("currentDateInUserTimeZone.toDateString() -> " + currentDateInUserTimeZone.toDateString());
                             todayStatus = true; // Mark as today
                         }
     
@@ -1603,9 +1603,9 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
     
                         // Check if the current day is within the current week
                         if (!monthStatus && (this.currentWeekStartDate <= dailyDate && dailyDate <= this.currentWeekEndDate)) {
-                            // console.log("this.currentWeekStartDate -> " + this.currentWeekStartDate);
-                            // console.log("this.currentWeekEndDate -> " + this.currentWeekEndDate);
-                            console.log("new Date(day) -> " + dailyDate);
+                            // // console.log("this.currentWeekStartDate -> " + this.currentWeekStartDate);
+                            // // console.log("this.currentWeekEndDate -> " + this.currentWeekEndDate);
+                            // console.log("new Date(day) -> " + dailyDate);
                             layoutCss += 'slds-theme_shade '; // Shade the days in the current week
                         }
                         
@@ -1613,8 +1613,8 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
                         
                         // Check if the current day is selected from the small calendar
                         if (!todayStatus && dailyDate.toDateString() === new Date(this.selectedDateFromSmallCalendar).toDateString()) {
-                            console.log("dailyDate.toDateString() -> " + dailyDate.toDateString());
-                            console.log("this.selectedDateFromSmallCalendar.toDateString() -> " + this.selectedDateFromSmallCalendar.toDateString());
+                            // console.log("dailyDate.toDateString() -> " + dailyDate.toDateString());
+                            // console.log("this.selectedDateFromSmallCalendar.toDateString() -> " + this.selectedDateFromSmallCalendar.toDateString());
                             isSelectedDay = true; // Mark as selected day
                             css += 'isSelectedDayFromSmallCalendar '; // Add CSS class for selected day
                         }
@@ -1645,7 +1645,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
             // Assign the generated calendar to the datePickerCalendar property
             this.datePickerCalendar = days;
             
-            console.log("generateDatePickerCalendar - this.datePickerCalendar -> " + JSON.stringify(this.datePickerCalendar));
+            // console.log("generateDatePickerCalendar - this.datePickerCalendar -> " + JSON.stringify(this.datePickerCalendar));
             setTimeout(() => {
                 this.isSmallCalendarLoading = false;
             }, 250);
@@ -1679,8 +1679,8 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
     */
 
     handleDatePickerDayClick(event) {
-        console.log("Inside handleDatePickerDayClick");
-        console.log('event.target.dataset.object - > ' + JSON.stringify(event.target.dataset.object));
+        // console.log("Inside handleDatePickerDayClick");
+        // console.log('event.target.dataset.object - > ' + JSON.stringify(event.target.dataset.object));
         this.selectedDateFromSmallCalendar = new Date(event.target.dataset.object);
         /*
          * Once the day is selected from the small calendar, then the main calendar info is updated with the new selected date from small calendar
@@ -1724,7 +1724,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
             */
             this.getCurrentWeekStartDateEndDate(new Date(this.datePickerCurrentDate));
         } else if(this.showCalendarWeekView == true) {
-            console.log("this.datePickerCurrentDate.getDate() -> " + this.datePickerCurrentDate.getDate());
+            // console.log("this.datePickerCurrentDate.getDate() -> " + this.datePickerCurrentDate.getDate());
             if(this.mainCalendarCurrentDate.getMonth() != this.datePickerCurrentDate.getMonth() || this.mainCalendarCurrentDate.getFullYear() != this.datePickerCurrentDate.getFullYear() || (this.currentWeekStartDate.getDate() <= this.datePickerCurrentDate.getDate() && this.datePickerCurrentDate.getDate() <= this.currentWeekEndDate.getDate()) == false) {
                 /*
                 * This will get the start and end dates of the week for the selected day in the date picker calendar
@@ -1751,21 +1751,21 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
             week.days.forEach(day => {
                 day.dayCssClass = 'datePickerTextalignCenter ';
                 day.dayLayoutCss = 'datepickercalweekday ';
-                // console.log("day -> " + JSON.stringify(day));
+                // // console.log("day -> " + JSON.stringify(day));
                 // if(day.date != null && day.date != '' && day.date.toISOString().split('T')[0] === this.datePickerCurrentDate.toISOString().split('T')[0]) {
                 if(day.date != null && day.date != '' && day.date.toISOString().split('T')[0] === this.selectedDateFromSmallCalendar.toISOString().split('T')[0]) {
-                    console.log(day.date.toISOString().split('T')[0] + " -> " + this.selectedDateFromSmallCalendar.toISOString().split('T')[0]);
+                    // console.log(day.date.toISOString().split('T')[0] + " -> " + this.selectedDateFromSmallCalendar.toISOString().split('T')[0]);
                     day.dayCssClass += 'isSelectedDayFromSmallCalendar ';
                     day.isSelectedDayFromSmallCalendar = true;
                 } else {
                     day.isSelectedDayFromSmallCalendar = false;
                     day.dayCssClass += '';
                 }
-                // console.log("day.currentMonth -> " + day.currentMonth);
+                // // console.log("day.currentMonth -> " + day.currentMonth);
                 if(day.currentMonth == true) {
                     day.dayLayoutCss += 'slds-theme_shade ';
                 }
-                // console.log("this.currentWeekStartDate.getDate() -> " + this.currentWeekStartDate.getDate() + " this.datePickerCurrentDate.getDate() => " + this.datePickerCurrentDate.getDate() + " this.currentWeekEndDate.getDate() -> " + this.currentWeekEndDate.getDate());
+                // // console.log("this.currentWeekStartDate.getDate() -> " + this.currentWeekStartDate.getDate() + " this.datePickerCurrentDate.getDate() => " + this.datePickerCurrentDate.getDate() + " this.currentWeekEndDate.getDate() -> " + this.currentWeekEndDate.getDate());
                 if(day.currentMonth == false && (day.date != null && day.date != '' && this.currentWeekStartDate <= new Date(day.date) && new Date(day.date) <= this.currentWeekEndDate)) {
                     day.dayLayoutCss += 'slds-theme_shade ';
                 }
@@ -1773,7 +1773,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
         });
         this.datePickerCalendar = [];
         this.datePickerCalendar = tempSmallCalInfo;
-        console.log("this.datePickerCalendar -> " + JSON.stringify(this.datePickerCalendar));
+        // console.log("this.datePickerCalendar -> " + JSON.stringify(this.datePickerCalendar));
     }
 
     /*
@@ -1791,7 +1791,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
 
     @track selectHTMLTemplateName = "pe_CalendarLwc";
     render(){
-        console.log('Inside render to change the HTML');
+        // console.log('Inside render to change the HTML');
         if(this.selectHTMLTemplateName === "pe_CalendarLwc") {
             return pe_CalendarLwc;
         }
@@ -1815,18 +1815,18 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
     */
     convert24HrsTo12Hrs(dateTime) {
         try {
-            // console.log("Inside convert24HrsTo12Hrs dateTime -> " + JSON.stringify(dateTime));
+            // // console.log("Inside convert24HrsTo12Hrs dateTime -> " + JSON.stringify(dateTime));
             let tempDateTime = dateTime;
             let tempDate = tempDateTime.split('T')[0];
-            // console.log("tempDate -> " + JSON.stringify(tempDate));
+            // // console.log("tempDate -> " + JSON.stringify(tempDate));
             let tempTime = tempDateTime.split('T')[1].split('.')[0];
-            // console.log("tempTime -> " + JSON.stringify(tempTime));
+            // // console.log("tempTime -> " + JSON.stringify(tempTime));
             let tempDateSplit = tempDate.split('-');
-            // console.log("tempDateSplit -> " + JSON.stringify(tempDateSplit));
+            // // console.log("tempDateSplit -> " + JSON.stringify(tempDateSplit));
             let tempTimeSplit = tempTime.split(':');
-            // console.log("tempTimeSplit -> " + JSON.stringify(tempTimeSplit));
+            // // console.log("tempTimeSplit -> " + JSON.stringify(tempTimeSplit));
             let hours = tempTimeSplit[0];
-            // console.log(" hours -> " + hours);
+            // // console.log(" hours -> " + hours);
             let suffix = "AM";
             if (hours >= 12) {
                 suffix = 'PM';
@@ -1837,11 +1837,11 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
                 hours = 12;
             }
             const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-            // console.log(`${tempDateTimeSplit[1]} ${tempDateTimeSplit[2]} ${tempDateTimeSplit[3]}, ${hours}:${tempDateTime.getMinutes()} ${suffix}`);
+            // // console.log(`${tempDateTimeSplit[1]} ${tempDateTimeSplit[2]} ${tempDateTimeSplit[3]}, ${hours}:${tempDateTime.getMinutes()} ${suffix}`);
             return `${months[Number(tempDateSplit[1]) - 1]} ${tempDateSplit[2]} ${tempDateSplit[0]}, ${hours}:${tempTimeSplit[1]} ${suffix}`;
             
         } catch(error) {
-            console.log('Inside convert24HrsTo12Hrs Error -> ' + JSON.stringify(error));
+            // console.log('Inside convert24HrsTo12Hrs Error -> ' + JSON.stringify(error));
         }
         
     }
@@ -1869,7 +1869,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
      * ------------------------- Updates to the function -------------------------
      */
     async getTableViewEventRecords() {
-        console.log("Inside getTableViewEventRecords"); // Log entry into the function
+        // console.log("Inside getTableViewEventRecords"); // Log entry into the function
         try {
             // Call the Apex method to get event records based on user ID, related record ID, and search keyword
             const data = await getTableViewCalanderEvents({
@@ -1878,9 +1878,9 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
                 limitSize : this.tableRowLimit,
                 offset : this.tableRowOffset
             });
-            // console.log("Data -> " + JSON.stringify(data)); // Log the fetched data
-            // console.log("this.tableRowLimit -> " + this.tableRowLimit);
-            // console.log("this.tableRowOffset -> " + this.tableRowOffset);
+            // // console.log("Data -> " + JSON.stringify(data)); // Log the fetched data
+            // // console.log("this.tableRowLimit -> " + this.tableRowLimit);
+            // // console.log("this.tableRowOffset -> " + this.tableRowOffset);
             let formattedEventsDataFromApex = []; // Initialize an array to hold formatted event records
             this.enableInfiniteLoading = (data.length == this.tableRowLimit || data.length != 0);
 
@@ -1913,7 +1913,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
                 this.tableViewEventsRecordsData = this.originalTableViewEventsRecordsData;
             }
 
-            console.log("this.originalTableViewEventsRecordsData -> " + JSON.stringify(this.originalTableViewEventsRecordsData));
+            // console.log("this.originalTableViewEventsRecordsData -> " + JSON.stringify(this.originalTableViewEventsRecordsData));
             return this.tableViewEventsRecordsData; // Return the formatted event records
         } catch (error) {
             // Handle any errors that occur during the fetch
@@ -1936,7 +1936,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
     * ------------------------- Updates to the function -------------------------
     */
     async loadMoreData(event) {
-        console.log("Inside loadMoreData");
+        // console.log("Inside loadMoreData");
 
         try {
             // Ensure that only one data fetch is happening at any given time
@@ -1949,7 +1949,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
             // Indicate that data fetching is in progress
             this.isLoadMoreData = true;
 
-            console.log("this.tableRowLimit -> " + this.tableRowLimit + " " + 
+            // console.log("this.tableRowLimit -> " + this.tableRowLimit + " " + 
                         "this.tableRowOffset -> " + this.tableRowOffset + 
                         " this.tableViewEventsRecordsData.length => " + this.tableViewEventsRecordsData.length);
 
@@ -1959,7 +1959,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
             // Call the method to fetch more event records using the updated offset and row limit
             await this.getTableViewEventRecords();
         } catch (error) {
-            console.log("Inside loadMoreData error -> " + JSON.stringify(error));
+            // console.log("Inside loadMoreData error -> " + JSON.stringify(error));
         } finally {
             // Reset the flag indicating that data fetching has completed or failed
             this.isLoadMoreData = false;
@@ -1982,9 +1982,9 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
     * ------------------------- Updates to the function -------------------------
     */
     handleEventSearch(event) {
-        console.log("Inside handleEventSearch");
-        console.log("Search event object -> " + JSON.stringify(event));
-        console.log("Search keyword -> " + JSON.stringify(event.detail.value));
+        // console.log("Inside handleEventSearch");
+        // console.log("Search event object -> " + JSON.stringify(event));
+        // console.log("Search keyword -> " + JSON.stringify(event.detail.value));
 
         // Convert the search keyword to lowercase for case-insensitive search
         this.eventSearchKeyword = event.detail.value.toLowerCase();
@@ -2013,16 +2013,16 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
     * ------------------------- Updates to the function -------------------------
     */
     async handleRowAction(event) {
-        console.log("Inside handleRowAction");
+        // console.log("Inside handleRowAction");
 
         // Extract the action name (either 'delete' or 'edit') from the event details
         const actionName = event.detail.action.name;
-        console.log("actionName -> " + actionName);
-        console.log(event);
+        // console.log("actionName -> " + actionName);
+        // console.log(event);
 
         // Extract the record Id of the row where the action was triggered
         const row = event.detail.row.Id;
-        // console.log(row);
+        // // console.log(row);
 
         // Switch-case structure to handle different actions based on the action name
         switch (actionName) {
@@ -2109,9 +2109,9 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
     * ------------------------- Updates to the function -------------------------
      */
     async generateCalendarDayView(source, date) {
-        console.log("Inside generateCalendarDayView");
+        // console.log("Inside generateCalendarDayView");
         this.isDayCalendarLoading = true;
-        console.log("date -> " + date);
+        // console.log("date -> " + date);
         
         // If the source is 'daySource', set the selected date from the small calendar
         if (source == 'daySource') {
@@ -2119,22 +2119,22 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
         }
 
         const day = {date : date, events : []};
-        console.log("day -> " + JSON.stringify(day));
-        console.log("date.getMonth() -> " + date.getMonth());
-        console.log("this.mainCalendarCurrentDate.getMonth() -> " + this.mainCalendarCurrentDate.getMonth());
+        // console.log("day -> " + JSON.stringify(day));
+        // console.log("date.getMonth() -> " + date.getMonth());
+        // console.log("this.mainCalendarCurrentDate.getMonth() -> " + this.mainCalendarCurrentDate.getMonth());
         
         // This flag is used to iterate through the calendar until the correct day is found
         let iterateThroughCalendarOnlyUntilDayIsMatched = true;
     
-        console.log("this.firstDateofTheMonthUSerTimeZone ->" + this.firstDateofTheMonthUSerTimeZone);
-        console.log("this.lastDateofTheMonthUSerTimeZone ->" + this.lastDateofTheMonthUSerTimeZone);
+        // console.log("this.firstDateofTheMonthUSerTimeZone ->" + this.firstDateofTheMonthUSerTimeZone);
+        // console.log("this.lastDateofTheMonthUSerTimeZone ->" + this.lastDateofTheMonthUSerTimeZone);
 
         // Check if the selected date falls within the current month's range
         if(this.firstDateofTheMonthUSerTimeZone <= date && date < this.lastDateofTheMonthUSerTimeZone) {
             // Eat five star and do nothing
-            console.log("Eat five star and do nothing -> " + date);
+            // console.log("Eat five star and do nothing -> " + date);
         } else {
-            console.log("The date does not fall in the curent month -> " + date);
+            // console.log("The date does not fall in the curent month -> " + date);
             // If the date falls outside the current month, update the calendar for the new month as per the date
             await this.handleMonthChange(new Date(date));
         }
@@ -2142,10 +2142,10 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
         // Iterate through the weeks and days in the calendar to find the matching day and its events
         for(let calendarCurrentWeek of this.calendar) {
             for(let calendarCurrentDay of calendarCurrentWeek.days) {
-                // console.log("calendarCurrentDay.date - " + calendarCurrentDay.date + " <-> " + " date " + date);
+                // // console.log("calendarCurrentDay.date - " + calendarCurrentDay.date + " <-> " + " date " + date);
                 if(iterateThroughCalendarOnlyUntilDayIsMatched == true && calendarCurrentDay.date != null && calendarCurrentDay.date != '' && calendarCurrentDay.date.toDateString() == date.toDateString() && calendarCurrentDay.hasOwnProperty('events')) {
-                    console.log(" iterateThroughCalendarOnlyUntilDayIsMatched -> " + new Date(calendarCurrentDay.date).toDateString() + " -> " + new Date(date).toDateString());
-                    console.log("Found the day events");
+                    // console.log(" iterateThroughCalendarOnlyUntilDayIsMatched -> " + new Date(calendarCurrentDay.date).toDateString() + " -> " + new Date(date).toDateString());
+                    // console.log("Found the day events");
                     day.events = calendarCurrentDay.events;
                     // Stop iterating after matching the day
                     iterateThroughCalendarOnlyUntilDayIsMatched = false;
@@ -2206,7 +2206,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
 
             // Check if event height allows showing description and related records
             if(tempEvent.eventHeight >= 30) {
-                console.log("tempEvent.eventHeight -> " + tempEvent.eventHeight);
+                // console.log("tempEvent.eventHeight -> " + tempEvent.eventHeight);
                 tempEvent.isShowDescription = true;
                 tempEvent.isShowRelatedRecords = true;
 
@@ -2252,7 +2252,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
             'text-align: left;' +
             'border: 0.01px solid lightblue;' +
             event.opacity + ';';
-            // console.log("tempEvent -> " + JSON.stringify(tempEvent));
+            // // console.log("tempEvent -> " + JSON.stringify(tempEvent));
 
             // Place event in the appropriate hour slot
             tempDayHourRows.forEach(hour => {
@@ -2266,7 +2266,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
         tempDayHourRows.forEach(hour => {
             if(hour.events.length > 0) {
                 let eventsCount = hour.events.length;
-                console.log("eventsCount -> " + eventsCount);
+                // console.log("eventsCount -> " + eventsCount);
                 hour.hasEvents = true;
                 hour.events.forEach(event => {
                     event.eventWidth = ' width : ' + ((1/eventsCount) * 100) + '%;' + 'position : relative;'; 
@@ -2275,8 +2275,8 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
                     event.emptySpaceCssOnTop = 'height: '+ ((new Date(event.startDateTime).toISOString().split('T')[1].split(':')[1]/60) * this.hourHeightInDayViewCalendar) + 'px;';
                     event.emptySpaceCssOnBottom = 'height: '+  ((1 - (new Date(event.startDateTime).toISOString().split('T')[1].split(':')[1]/60)) * this.hourHeightInDayViewCalendar - event.eventHeight) + 'px;';
                     
-                    console.log("event.emptySpaceCssOnTop -> " + JSON.stringify(event.emptySpaceCssOnTop));
-                    console.log("event.emptySpaceCssOnBottom -> " + JSON.stringify(event.emptySpaceCssOnBottom));
+                    // console.log("event.emptySpaceCssOnTop -> " + JSON.stringify(event.emptySpaceCssOnTop));
+                    // console.log("event.emptySpaceCssOnBottom -> " + JSON.stringify(event.emptySpaceCssOnBottom));
                 });
             }
             
@@ -2285,15 +2285,15 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
         // Create day info object with the processed hour rows
         let tempDayInfo = {hourRowsInfo : [...tempDayHourRows], isToday : false};
 
-        console.log("this.datePickerCurrentDate -> " + this.datePickerCurrentDate);
-        console.log("this.userTimeZoneOffSetHours -> " + this.userTimeZoneOffSetHours);
+        // console.log("this.datePickerCurrentDate -> " + this.datePickerCurrentDate);
+        // console.log("this.userTimeZoneOffSetHours -> " + this.userTimeZoneOffSetHours);
 
         let newDate = new Date();
         let currentLocalDateTimeInUserTimeZone = new Date(newDate.setTime(newDate.getTime() + (newDate.getTimezoneOffset() * 60000) + (this.userTimeZoneOffSetHours * 60 * 60000)));
         let currentDayInWeekCalendar = new Date(date);
 
-        console.log("currentLocalDateTimeInUserTimeZone -> " + currentLocalDateTimeInUserTimeZone);
-        console.log("currentDayInWeekCalendar -> " + currentDayInWeekCalendar);
+        // console.log("currentLocalDateTimeInUserTimeZone -> " + currentLocalDateTimeInUserTimeZone);
+        // console.log("currentDayInWeekCalendar -> " + currentDayInWeekCalendar);
 
         // Determine if the selected date is today
         if(currentLocalDateTimeInUserTimeZone.getFullYear() == currentDayInWeekCalendar.getFullYear() && currentLocalDateTimeInUserTimeZone.getMonth() == currentDayInWeekCalendar.getMonth() && currentLocalDateTimeInUserTimeZone.getDate() == currentDayInWeekCalendar.getDate() ) {
@@ -2303,8 +2303,8 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
         // Update the day info with processed events and hours
         this.dayInfo = tempDayInfo;
 
-        console.log("this.selectedDateFromSmallCalendar -> " + this.selectedDateFromSmallCalendar);
-        console.log("this.dayInfo -> " + JSON.stringify(this.dayInfo));
+        // console.log("this.selectedDateFromSmallCalendar -> " + this.selectedDateFromSmallCalendar);
+        // console.log("this.dayInfo -> " + JSON.stringify(this.dayInfo));
 
         setTimeout(() => {
             this.isDayCalendarLoading = false;
@@ -2335,17 +2335,17 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
     * ------------------------- Updates to the function -------------------------
     */
     async generateWeekViewCalendarData() {
-        console.log("Inside generateWeekViewCalendarData");
+        // console.log("Inside generateWeekViewCalendarData");
         this.isWeekCalendarLoading = true;
-        console.log("this.currentWeekStartDate -> " + this.currentWeekStartDate);
-        console.log("this.mainCalendarCurrentDate -> " + this.mainCalendarCurrentDate);
+        // console.log("this.currentWeekStartDate -> " + this.currentWeekStartDate);
+        // console.log("this.mainCalendarCurrentDate -> " + this.mainCalendarCurrentDate);
         
         // Initialize an array to hold week data
         let tempWeekData = [];
         
         // Create a new date object starting from the current week's start date
         let tempWeekDate = new Date(this.currentWeekStartDate);
-        console.log("tempWeekDate -> " + tempWeekDate);
+        // console.log("tempWeekDate -> " + tempWeekDate);
 
         // Loop through all 7 days of the week (Sunday to Saturday)
         for(let i = 0; i <= 6; i++) {
@@ -2354,7 +2354,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
             
             // Set the current day's date
             tempDayInfo.day = new Date(tempWeekDate);
-            console.log("tempDayInfo.day -> " + tempDayInfo.day);
+            // console.log("tempDayInfo.day -> " + tempDayInfo.day);
             
             // Set the date for each day in the weekDays array
             this.weekDays[i].date = tempWeekDate.getDate();
@@ -2370,7 +2370,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
             
             // Move to the next day by incrementing the date
             tempWeekDate.setDate(tempWeekDate.getDate() + 1);
-            console.log('tempWeekDate -> ' + JSON.stringify(tempWeekDate));
+            // console.log('tempWeekDate -> ' + JSON.stringify(tempWeekDate));
         }
         
         // After processing all days, assign the collected data to the weekViewCalendarData
@@ -2381,8 +2381,8 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
         }, 250);
         
         // Log the current state of the main calendar and week view calendar data
-        console.log("this.mainCalendarCurrentDate -> " + JSON.stringify(this.mainCalendarCurrentDate));
-        console.log("this.weekViewCalendarData -> " + JSON.stringify(this.weekViewCalendarData));
+        // console.log("this.mainCalendarCurrentDate -> " + JSON.stringify(this.mainCalendarCurrentDate));
+        // console.log("this.weekViewCalendarData -> " + JSON.stringify(this.weekViewCalendarData));
     }
 
     
@@ -2409,9 +2409,9 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
      */
 
     getCurrentWeekStartDateEndDate(inputDate){
-        console.log("Inside getCurrentWeekStartDate");
+        // console.log("Inside getCurrentWeekStartDate");
         let date = inputDate;
-        console.log("getCurrentWeekStartDate date -> " + date);
+        // console.log("getCurrentWeekStartDate date -> " + date);
         //weekStartDate is the difference between the current date value and the day of the week.
         let weekStartDate = date.getDate() - date.getDay();
 
@@ -2425,7 +2425,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
         this.currentWeekStartDate.setHours(0);
         this.currentWeekStartDate.setMinutes(0);
         this.currentWeekStartDate.setSeconds(0);
-        console.log("this.currentWeekStartDate- > " + this.currentWeekStartDate);
+        // console.log("this.currentWeekStartDate- > " + this.currentWeekStartDate);
         this.currentWeekStartDay = this.currentWeekStartDate.getDate();
         this.currentWeekStartMonth = this.getCurrentMonth(this.currentWeekStartDate);
         this.currentWeekStartYear = this.currentWeekStartDate.getFullYear();
@@ -2443,7 +2443,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
         this.currentWeekEndDate.setHours(23);
         this.currentWeekEndDate.setMinutes(59);
         this.currentWeekEndDate.setSeconds(59);
-        console.log("this.currentWeekEndDate -> " + this.currentWeekEndDate);
+        // console.log("this.currentWeekEndDate -> " + this.currentWeekEndDate);
         this.currentWeekEndDay = this.currentWeekEndDate.getDate();
         this.currentWeekEndMonth = this.getCurrentMonth(this.currentWeekEndDate);
         this.currentWeekEndYear = this.currentWeekEndDate.getFullYear();
@@ -2459,21 +2459,21 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
      * ------------------------- Updates to the function -------------------------
      */
     handleShowMoreEventInfo(event) {
-        console.log("Inside handleShowMoreEventInfo");
+        // console.log("Inside handleShowMoreEventInfo");
         try {
-            console.log("event -> " + JSON.stringify(event));
-            console.log(event);
-            console.log(event.target);
-            console.log(event.target.id); 
-            console.log("event.target.dataset.object -> " + JSON.stringify(event.target.dataset.object));
+            // console.log("event -> " + JSON.stringify(event));
+            // console.log(event);
+            // console.log(event.target);
+            // console.log(event.target.id); 
+            // console.log("event.target.dataset.object -> " + JSON.stringify(event.target.dataset.object));
             let selectedEventId = event.target.dataset.object.split("/")[1];
-            console.log("selectedEventId -> " +selectedEventId);
+            // console.log("selectedEventId -> " +selectedEventId);
 
             let selectedEvent;
             if(this.showCalendar == true) {
                  // Loop through each week in the calendar
                 this.calendar.forEach(week => {
-                    // console.log('week -> ' + JSON.stringify(week));
+                    // // console.log('week -> ' + JSON.stringify(week));
                     week.days.forEach(day => {
                         // Check if the day has events
                         if (day.hasOwnProperty('events')) {
@@ -2484,7 +2484,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
 
                                 // If the event ID matches the selected event, mark it for more info display
                                 if (updatedEvent.eventId == selectedEventId) {
-                                    console.log(updatedEvent.eventId + " -> " + selectedEventId);
+                                    // console.log(updatedEvent.eventId + " -> " + selectedEventId);
                                     updatedEvent.isShowMoreEventInfo = true;
                                     selectedEvent = updatedEvent;
                                 } else {
@@ -2503,7 +2503,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
 
                         // If the event ID matches the selected event, mark it for more info display
                         if (updatedEvent.eventId == selectedEventId) {
-                            console.log(updatedEvent.eventId + " -> " + selectedEventId);
+                            // console.log(updatedEvent.eventId + " -> " + selectedEventId);
                             updatedEvent.isShowMoreEventInfo = true;
                             selectedEvent = updatedEvent;
                         } else {
@@ -2522,7 +2522,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
     
                             // If the event ID matches the selected event, mark it for more info display
                             if (updatedEvent.eventId == selectedEventId) {
-                                console.log(updatedEvent.eventId + " -> " + selectedEventId);
+                                // console.log(updatedEvent.eventId + " -> " + selectedEventId);
                                 updatedEvent.isShowMoreEventInfo = true;
                                 selectedEvent = updatedEvent;
                             } else {
@@ -2536,9 +2536,9 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
             }
            
             // this.loadMonthWeekDayTableCalanderView(this.showCalendar, this.showCalendarWeekView, this.showCalendarDayView);
-            console.log("selectedEvent -> " + JSON.stringify(selectedEvent));
+            // console.log("selectedEvent -> " + JSON.stringify(selectedEvent));
         } catch (error) {
-            console.log("handleShowMoreEventInfo error -> " + error);
+            // console.log("handleShowMoreEventInfo error -> " + error);
         }
     }
 
@@ -2552,10 +2552,10 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
      * ------------------------- Updates to the function -------------------------
      */
     handleShowMoreEventInfoClose() {
-        console.log("Inside handleShowMoreEventInfoClose");
+        // console.log("Inside handleShowMoreEventInfoClose");
         if(this.showCalendar == true) {
             this.calendar.forEach(week => {
-                // console.log('week -> ' + JSON.stringify(week));
+                // // console.log('week -> ' + JSON.stringify(week));
                 week.days.forEach(day => {
                     // Check if the day has events
                     if (day.hasOwnProperty('events')) {
@@ -2613,11 +2613,11 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
      */
     async handleEventRecordDeletion(event) {
         try {
-            console.log("Inside handleEventRecordDeletion");
-            console.log("Event -> " + JSON.stringify(event));
-            console.log("event.detail -> " + JSON.stringify(event.detail));
-            console.log("event.detail.message -> " + event.detail.message);
-            console.log("event.detail.recordId ->" + event.detail.recordId);
+            // console.log("Inside handleEventRecordDeletion");
+            // console.log("Event -> " + JSON.stringify(event));
+            // console.log("event.detail -> " + JSON.stringify(event.detail));
+            // console.log("event.detail.message -> " + event.detail.message);
+            // console.log("event.detail.recordId ->" + event.detail.recordId);
 
             await deleteEventRecord({ eventRecordId: event.detail.recordId });
 
@@ -2630,7 +2630,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
             }
 
         } catch (error) {
-            console.log("Error -> " + JSON.stringify(error));
+            // console.log("Error -> " + JSON.stringify(error));
         }
     }
 
@@ -2654,11 +2654,11 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
      * ------------------------- Updates to the function -------------------------
      */
     handleEventUpdateOnDragStart(event) {
-        console.log("Inside handleEventUpdateOnDrag");
-        console.log("event.target.dataset.object -> " + event.target.dataset.object); 
-        console.log("event.target.dataset.eventstartdatetime -> " + event.target.dataset.eventstartdatetime); 
-        console.log("event.target.dataset.eventenddatetime -> " + event.target.dataset.eventenddatetime); 
-        console.log("event.target.dataset.eventduration -> " + event.target.dataset.eventduration); 
+        // console.log("Inside handleEventUpdateOnDrag");
+        // console.log("event.target.dataset.object -> " + event.target.dataset.object); 
+        // console.log("event.target.dataset.eventstartdatetime -> " + event.target.dataset.eventstartdatetime); 
+        // console.log("event.target.dataset.eventenddatetime -> " + event.target.dataset.eventenddatetime); 
+        // console.log("event.target.dataset.eventduration -> " + event.target.dataset.eventduration); 
 
         let eventData = {
             startDateTime : event.target.dataset.eventstartdatetime,
@@ -2680,18 +2680,18 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
      * ------------------------- Updates to the function -------------------------
      */
     handleDropEventUpdate(event) {
-        console.log("Inside handleDropEventUpdate");
+        // console.log("Inside handleDropEventUpdate");
     
         // Log the relevant target attributes for debugging
-        console.log("event.target.id -> " + event.target.id);
-        console.log("event.target.dataset.object -> " + event.target.dataset.object);
-        console.log("event.target.dataset.currentdayinfo -> " + event.target.dataset.currentdayinfo);
-        console.log("event.target.dataset.hourvalue -> " + event.target.dataset.hourvalue);
+        // console.log("event.target.id -> " + event.target.id);
+        // console.log("event.target.dataset.object -> " + event.target.dataset.object);
+        // console.log("event.target.dataset.currentdayinfo -> " + event.target.dataset.currentdayinfo);
+        // console.log("event.target.dataset.hourvalue -> " + event.target.dataset.hourvalue);
 
-        console.log("event.currentTarget.dataset.currentdayinfo -> " + event.currentTarget.dataset.currentdayinfo);
-        console.log("event.currentTarget.dataset.hourvalue -> " + event.currentTarget.dataset.hourvalue);
-        console.log("event.currentTarget.dataset.object -> " + event.currentTarget.dataset.object);
-        console.log("event.currentTarget -> " + event.currentTarget);
+        // console.log("event.currentTarget.dataset.currentdayinfo -> " + event.currentTarget.dataset.currentdayinfo);
+        // console.log("event.currentTarget.dataset.hourvalue -> " + event.currentTarget.dataset.hourvalue);
+        // console.log("event.currentTarget.dataset.object -> " + event.currentTarget.dataset.object);
+        // console.log("event.currentTarget -> " + event.currentTarget);
     
         // Initialize variables to store dropped event time details
         let droppedDateTime;
@@ -2701,32 +2701,32 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
     
         // Parse the dragged event information from the dataTransfer object
         let draggedEventInfo = JSON.parse(event.dataTransfer.getData("draggedEventInfo"));
-        console.log("event.dataTransfer.getData(draggedEventInfo) -> " + event.dataTransfer.getData("draggedEventInfo"));
+        // console.log("event.dataTransfer.getData(draggedEventInfo) -> " + event.dataTransfer.getData("draggedEventInfo"));
     
         // Save the original event start and end dates from dragged data
         this.modalPopupEventInfo.eventStartDateOld = new Date(draggedEventInfo.startDateTime);
         this.modalPopupEventInfo.eventEndDateOld = new Date(draggedEventInfo.endDateTime);
 
-        console.log("this.modalPopupEventInfo.eventStartDateOld -> " + this.modalPopupEventInfo.eventStartDateOld);
-        console.log("this.modalPopupEventInfo.eventEndDateOld -> " + this.modalPopupEventInfo.eventEndDateOld);
+        // console.log("this.modalPopupEventInfo.eventStartDateOld -> " + this.modalPopupEventInfo.eventStartDateOld);
+        // console.log("this.modalPopupEventInfo.eventEndDateOld -> " + this.modalPopupEventInfo.eventEndDateOld);
     
         // Adjust the dates to the correct time zone (GMT - User time zone offset)
         this.modalPopupEventInfo.eventStartDateOld.setMinutes(this.modalPopupEventInfo.eventStartDateOld.getMinutes() - this.userTimeZoneOffSetHours * 60);
         this.modalPopupEventInfo.eventEndDateOld.setMinutes(this.modalPopupEventInfo.eventEndDateOld.getMinutes() - this.userTimeZoneOffSetHours * 60);
     
-        console.log("this.modalPopupEventInfo.eventStartDateOld -> " + this.modalPopupEventInfo.eventStartDateOld);
-        console.log("this.modalPopupEventInfo.eventEndDateOld -> " + this.modalPopupEventInfo.eventEndDateOld);
+        // console.log("this.modalPopupEventInfo.eventStartDateOld -> " + this.modalPopupEventInfo.eventStartDateOld);
+        // console.log("this.modalPopupEventInfo.eventEndDateOld -> " + this.modalPopupEventInfo.eventEndDateOld);
 
         // Convert old start and end dates to ISO format
         this.modalPopupEventInfo.eventStartDateOld = new Date(this.modalPopupEventInfo.eventStartDateOld).toISOString();
         this.modalPopupEventInfo.eventEndDateOld = new Date(this.modalPopupEventInfo.eventEndDateOld).toISOString();
     
-        console.log("this.modalPopupEventInfo.eventStartDateOld -> " + this.modalPopupEventInfo.eventStartDateOld);
-        console.log("this.modalPopupEventInfo.eventEndDateOld -> " + this.modalPopupEventInfo.eventEndDateOld);
+        // console.log("this.modalPopupEventInfo.eventStartDateOld -> " + this.modalPopupEventInfo.eventStartDateOld);
+        // console.log("this.modalPopupEventInfo.eventEndDateOld -> " + this.modalPopupEventInfo.eventEndDateOld);
     
         // Check which view is active to determine where the event was dropped
         if(this.showCalendar == true) {
-            console.log("this.showCalendar -> " + this.showCalendar);
+            // console.log("this.showCalendar -> " + this.showCalendar);
     
             // Check if the drop occurred on a specific day or on an existing event
             if(event.target.dataset.currentdayinfo != null || event.target.dataset.currentdayinfo != undefined) {
@@ -2750,7 +2750,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
             droppedSeconds = Number(tempEventStartTime.split(':')[2]);
     
         } else if(this.showCalendarDayView == true) {
-            console.log("this.showCalendarDayView -> " + this.showCalendarDayView);
+            // console.log("this.showCalendarDayView -> " + this.showCalendarDayView);
     
             // Check if the drop occurred on an hour slot or an existing event
             if(event.target.dataset.hourvalue == null || event.target.dataset.hourvalue == undefined) {
@@ -2764,7 +2764,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
             droppedDateTime = new Date(this.datePickerCurrentDate);
     
         } else if(this.showCalendarWeekView == true) {
-            console.log("this.showCalendarWeekView -> " + this.showCalendarWeekView);
+            // console.log("this.showCalendarWeekView -> " + this.showCalendarWeekView);
     
             // Check if the drop occurred on a specific day or existing event in the week view
             if(event.target.dataset.currentdayinfo == null || event.target.dataset.currentdayinfo == undefined) {
@@ -2779,7 +2779,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
         }
     
         // Log the new dropped datetime
-        console.log("droppedDateTime -> " + JSON.stringify(droppedDateTime));
+        // console.log("droppedDateTime -> " + JSON.stringify(droppedDateTime));
     
         // Set minutes and seconds based on dragged event data for consistent time
         let tempEventStartTime = draggedEventInfo.startDateTime.split(".")[0].split("T")[1];
@@ -2787,9 +2787,9 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
         droppedSeconds = Number(tempEventStartTime.split(':')[2]);
     
         // Log updated hour, minute, and second values
-        console.log("droppedHours -> " + JSON.stringify(droppedHours));
-        console.log("droppedMinutes -> " + JSON.stringify(droppedMinutes));
-        console.log("droppedSeconds -> " + JSON.stringify(droppedSeconds));
+        // console.log("droppedHours -> " + JSON.stringify(droppedHours));
+        // console.log("droppedMinutes -> " + JSON.stringify(droppedMinutes));
+        // console.log("droppedSeconds -> " + JSON.stringify(droppedSeconds));
         
         // Create new start time based on drop date and dragged time details
         let eventStartTimeNew = new Date();
@@ -2800,13 +2800,13 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
         eventStartTimeNew.setMinutes(droppedMinutes);
         eventStartTimeNew.setSeconds(droppedSeconds);
     
-        console.log("eventStartTimeNew -> " + eventStartTimeNew);
+        // console.log("eventStartTimeNew -> " + eventStartTimeNew);
     
         // Calculate new end time based on duration from dragged data
         let eventEndTimeNew = new Date(eventStartTimeNew);
         eventEndTimeNew.setMinutes(eventEndTimeNew.getMinutes() + Number(draggedEventInfo.eventDuration));
     
-        console.log("eventEndTimeNew -> " + eventEndTimeNew);
+        // console.log("eventEndTimeNew -> " + eventEndTimeNew);
     
         // Update modal popup info with new start and end times
         this.modalPopupEventInfo.eventStartDateNew = new Date(eventStartTimeNew);
@@ -2822,13 +2822,13 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
         this.modalPopupEventInfo.eventStartDateNew = new Date(this.modalPopupEventInfo.eventStartDateNew).toISOString();
         this.modalPopupEventInfo.eventEndDateNew = new Date(this.modalPopupEventInfo.eventEndDateNew).toISOString();
     
-        console.log("this.modalPopupEventInfo.eventStartDateNew -> " + this.modalPopupEventInfo.eventStartDateNew);
-        console.log("this.modalPopupEventInfo.eventEndDateNew -> " + this.modalPopupEventInfo.eventEndDateNew);
+        // console.log("this.modalPopupEventInfo.eventStartDateNew -> " + this.modalPopupEventInfo.eventStartDateNew);
+        // console.log("this.modalPopupEventInfo.eventEndDateNew -> " + this.modalPopupEventInfo.eventEndDateNew);
     
         // Store the dragged event's ID for reference in the modal popup
         this.modalPopupEventInfo.eventRecordId = draggedEventInfo.eventRecordId;
     
-        console.log("this.modalPopupEventInfo -> " + JSON.stringify(this.modalPopupEventInfo));
+        // console.log("this.modalPopupEventInfo -> " + JSON.stringify(this.modalPopupEventInfo));
     
         // Conditionally show or hide modal popup based on whether start or end times have changed
         if((new Date(this.modalPopupEventInfo.eventStartDateOld).toISOString().split('.')[0] == this.modalPopupEventInfo.eventStartDateNew.split('.')[0] || 
@@ -2840,7 +2840,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
                     
             // Hide the modal if there is no change in times or values are invalid
             this.showEventChangeModalPopup = false;
-            console.log("Modal Popup value -> " + this.showEventChangeModalPopup);
+            // console.log("Modal Popup value -> " + this.showEventChangeModalPopup);
         } else {
             // Show the modal if times have changed
             this.showEventChangeModalPopup = true;
@@ -2884,11 +2884,11 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
      */
     async handleEventEditModalPopupSave() {
         try {
-            console.log("Inside handleEventEditModalPopupSave");
+            // console.log("Inside handleEventEditModalPopupSave");
     
             // Log new event start and end dates for debugging
-            console.log("this.modalPopupEventInfo.eventStartDateNew -> " + this.modalPopupEventInfo.eventStartDateNew);
-            console.log("this.modalPopupEventInfo.eventEndDateNew -> " + this.modalPopupEventInfo.eventEndDateNew);
+            // console.log("this.modalPopupEventInfo.eventStartDateNew -> " + this.modalPopupEventInfo.eventStartDateNew);
+            // console.log("this.modalPopupEventInfo.eventEndDateNew -> " + this.modalPopupEventInfo.eventEndDateNew);
     
             // Validate if the new start date is before the end date
             if(new Date(this.modalPopupEventInfo.eventStartDateNew) < new Date(this.modalPopupEventInfo.eventEndDateNew)) {
@@ -2901,7 +2901,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
                 });
     
                 // Log response for debugging
-                console.log("response -> " + JSON.stringify(response));
+                // console.log("response -> " + JSON.stringify(response));
     
                 // Show a success toast message if the event is updated
                 this.showToast('Success', 'success', 'Event Updated Successfully');
@@ -2934,11 +2934,11 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
      * ------------------------- Updates to the function -------------------------
      */
     handleEventNewStartDateChange(event) {
-        console.log("Inside handleEventNewStartDateChange");
+        // console.log("Inside handleEventNewStartDateChange");
     
         // Log the target element and its value for debugging
-        console.log("event.target -> " + event.target);
-        console.log("event.target.value -> " + event.target.value);
+        // console.log("event.target -> " + event.target);
+        // console.log("event.target.value -> " + event.target.value);
     
         // Update the new start date string in the modalPopupEventInfo object with the value from the event
         this.modalPopupEventInfo.eventStartDateNew = event.target.value;
@@ -2965,13 +2965,13 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
      */
     handleEventNewEndDateChange(event) {
         // Log entry point to function for debugging purposes
-        console.log("Inside handleEventNewEndDateChange");
+        // console.log("Inside handleEventNewEndDateChange");
     
         // Log the event target element to understand where the data is coming from
-        console.log("event.target -> " + event.target);
+        // console.log("event.target -> " + event.target);
     
         // Log the new end date value from the event target for verification
-        console.log("event.target.value -> " + event.target.value);
+        // console.log("event.target.value -> " + event.target.value);
     
         // Create a temporary Date object using the start date value from the event
         this.modalPopupEventInfo.eventEndDateNew = new Date(event.target.value).toISOString();
