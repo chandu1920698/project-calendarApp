@@ -340,10 +340,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
         // Invoke subscribe method of empApi. Pass reference to messageCallback
         subscribe(this.CHANNEL_NAME, -1, messageCallback).then((response) => {
             // Response contains the subscription information on subscribe call
-            // console.log(
-                'Subscription request sent to: ',
-                JSON.stringify(response.channel)
-            );
+            // console.log('Subscription request sent to: ', JSON.stringify(response.channel));
             // console.log('subscribe ---> '+JSON.stringify(response));
             this.subscription = response;
         });
@@ -1949,9 +1946,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
             // Indicate that data fetching is in progress
             this.isLoadMoreData = true;
 
-            // console.log("this.tableRowLimit -> " + this.tableRowLimit + " " + 
-                        "this.tableRowOffset -> " + this.tableRowOffset + 
-                        " this.tableViewEventsRecordsData.length => " + this.tableViewEventsRecordsData.length);
+            // console.log("this.tableRowLimit -> " + this.tableRowLimit + " " + "this.tableRowOffset -> " + this.tableRowOffset + " this.tableViewEventsRecordsData.length => " + this.tableViewEventsRecordsData.length);
 
             // Increment the tableRowOffset by the limit value to fetch the next set of records
             this.tableRowOffset += this.tableRowLimit;
