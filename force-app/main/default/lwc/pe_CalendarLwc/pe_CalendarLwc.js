@@ -505,9 +505,11 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
      * ------------------------- Updates to the function -------------------------
      * Modified Date             Modified By                             Changes
      * Sep 13, 2024              Chandra Sekhar Reddy Muthumula          Added comments to the function
+     * Dec 09, 2024              Chandra Sekhar Reddy Muthumula          BUG 52 Fixture
+     * Dec 09, 2024              Chandra Sekhar Reddy Muthumula          BUG 53 Fixture
      * ------------------------- Updates to the function -------------------------
     */
-    handlePrevDayWeekMonth() {
+    async handlePrevDayWeekMonth() {
         console.log("Inside handlePrevDayWeekMonth");
         if(this.showCalendar == true) {
             
@@ -538,35 +540,33 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
             this.getCurrentWeekStartDateEndDate(new Date(this.datePickerCurrentDate));
         } else if(this.showCalendarWeekView == true) {
             /*
-             * When the previous button is clicked, then the date picker current date is subtracted with 7 days.
+             * When the previous button is clicked, then the mainCalendarCurrentDate is subtracted with 7 days.
              * And then new week start and end dates are generated using this.getCurrentWeekStartDateEndDate function.
              * Then the previous week calendar is generated.
-             * The main calendar current date is updated with date picker current date
             */
-            this.datePickerCurrentDate.setDate(this.datePickerCurrentDate.getDate() - 7);
-            console.log("this.currentWeekStartDate -> " + this.currentWeekStartDate);
-            this.getCurrentWeekStartDateEndDate(new Date(this.datePickerCurrentDate));
-            this.generateWeekViewCalendarData();
-            this.mainCalendarCurrentDate = new Date(this.datePickerCurrentDate);
+            this.mainCalendarCurrentDate.setDate(this.mainCalendarCurrentDate.getDate() - 7);
+            this.datePickerCurrentDate = new Date(this.mainCalendarCurrentDate);
+            this.getUpdatedDatePickerDayMonthYear();
+            this.getCurrentWeekStartDateEndDate(new Date(this.mainCalendarCurrentDate));
+            await this.generateWeekViewCalendarData();
         } else if(this.showCalendarDayView == true) {
             /*
-             * When the previous button is clicked, then the date picker current date is subtracted with 1 day.
-             * Then the previous week calendar is generated.
-             * The main calendar current date is updated with date picker current date
+             * When the previous button is clicked, then the mainCalendarCurrentDate is subtracted with 1 day.
+             * Then the previous day calendar is generated.
             */
-            this.datePickerCurrentDate.setDate(this.datePickerCurrentDate.getDate() - 1);
+            this.mainCalendarCurrentDate.setDate(this.mainCalendarCurrentDate.getDate() - 1);
+            this.datePickerCurrentDate = new Date(this.mainCalendarCurrentDate);
             this.getUpdatedDatePickerDayMonthYear();
-            this.generateCalendarDayView('daySource', new Date(this.datePickerCurrentDate));
+            await this.generateCalendarDayView('daySource', new Date(this.mainCalendarCurrentDate));
             /*
              * The new week start and end dates are generated using this.getCurrentWeekStartDateEndDate function.
              */
-            if((this.currentWeekStartDate <= this.datePickerCurrentDate && this.datePickerCurrentDate <= this.currentWeekEndDate) == false) {
-                this.getCurrentWeekStartDateEndDate(new Date(this.datePickerCurrentDate));
+            if((this.currentWeekStartDate <= this.mainCalendarCurrentDate && this.mainCalendarCurrentDate <= this.currentWeekEndDate) == false) {
+                this.getCurrentWeekStartDateEndDate(new Date(this.mainCalendarCurrentDate));
             }
-            this.mainCalendarCurrentDate = new Date(this.datePickerCurrentDate);
         }
         console.log("this.mainCalendarCurrentDate -> " + this.mainCalendarCurrentDate);
-        this.handleDatePickerPrevMonthClick("calendarHighlightPanel", new Date(this.datePickerCurrentDate));
+        this.handleDatePickerPrevMonthClick("calendarHighlightPanel", new Date(this.mainCalendarCurrentDate));
         this.loadMonthWeekDayTableCalanderView(this.showCalendar, this.showCalendarWeekView, this.showCalendarDayView);
     }
     
@@ -579,9 +579,11 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
      * ------------------------- Updates to the function -------------------------
      * Modified Date             Modified By                             Changes
      * Sep 13, 2024              Chandra Sekhar Reddy Muthumula          Added comments to the function
+     * Dec 09, 2024              Chandra Sekhar Reddy Muthumula          BUG 52 Fixture
+     * Dec 09, 2024              Chandra Sekhar Reddy Muthumula          BUG 53 Fixture
      * ------------------------- Updates to the function -------------------------
     */
-    handleNextDayWeekMonth() {
+    async handleNextDayWeekMonth() {
         console.log("Inside handleNextDayWeekMonth");
         if(this.showCalendar == true) {
             /*
@@ -610,35 +612,33 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
             this.getCurrentWeekStartDateEndDate(new Date(this.datePickerCurrentDate));
         } else if(this.showCalendarWeekView == true) {
             /*
-             * When the next button is clicked, then the date picker current date is added with 7 days.
+             * When the next button is clicked, then the mainCalendarCurrentDate is added with 7 days.
              * And then new week start and end dates are generated using this.getCurrentWeekStartDateEndDate function.
              * Then the next week calendar is generated.
-             * The main calendar current date is updated with date picker current date
             */
-            this.datePickerCurrentDate.setDate(this.datePickerCurrentDate.getDate() + 7);
+            this.mainCalendarCurrentDate.setDate(this.mainCalendarCurrentDate.getDate() + 7);
+            this.datePickerCurrentDate = new Date(this.mainCalendarCurrentDate);
             this.getUpdatedDatePickerDayMonthYear();
-            this.getCurrentWeekStartDateEndDate(new Date(this.datePickerCurrentDate));
-            this.generateWeekViewCalendarData();
-            this.mainCalendarCurrentDate = new Date(this.datePickerCurrentDate);
+            this.getCurrentWeekStartDateEndDate(new Date(this.mainCalendarCurrentDate));
+            await this.generateWeekViewCalendarData();
         } else if(this.showCalendarDayView == true) {
             /*
-             * When the next button is clicked, then the date picker current date is added with 1 day.
-             * Then the next week calendar is generated.
-             * The main calendar current date is updated with date picker current date
+             * When the next button is clicked, then the mainCalendarCurrentDate is subtracted with 1 day.
+             * Then the next day calendar is generated.
             */
-            this.datePickerCurrentDate.setDate(this.datePickerCurrentDate.getDate() + 1);
+            this.mainCalendarCurrentDate.setDate(this.mainCalendarCurrentDate.getDate() + 1);
+            this.datePickerCurrentDate = new Date(this.mainCalendarCurrentDate);
             this.getUpdatedDatePickerDayMonthYear();
-            this.generateCalendarDayView('daySource', new Date(this.datePickerCurrentDate));
+            await this.generateCalendarDayView('daySource', new Date(this.mainCalendarCurrentDate));
             /*
              * The new week start and end dates are generated using this.getCurrentWeekStartDateEndDate function.
              */
-            if((this.currentWeekStartDate <= this.datePickerCurrentDate && this.datePickerCurrentDate <= this.currentWeekEndDate) == false) {
-                this.getCurrentWeekStartDateEndDate(new Date(this.datePickerCurrentDate));
+            if((this.currentWeekStartDate <= this.mainCalendarCurrentDate && this.mainCalendarCurrentDate <= this.currentWeekEndDate) == false) {
+                this.getCurrentWeekStartDateEndDate(new Date(this.mainCalendarCurrentDate));
             }
-            this.mainCalendarCurrentDate = new Date(this.datePickerCurrentDate);
         }
         console.log("this.mainCalendarCurrentDate -> " + this.mainCalendarCurrentDate);
-        this.handleDatePickerNextMonthClick("calendarHighlightPanel", new Date(this.datePickerCurrentDate));
+        this.handleDatePickerNextMonthClick("calendarHighlightPanel", new Date(this.mainCalendarCurrentDate));
         this.loadMonthWeekDayTableCalanderView(this.showCalendar, this.showCalendarWeekView, this.showCalendarDayView);
     }
 
@@ -1123,6 +1123,8 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
     * @param {Object} event    : Event object containing the value of the selected calendar view.
     * ------------------------- Updates to the function -------------------------
     * Modified Date             Modified By                             Changes
+    * Dec 09, 2024              Chandra Sekhar Reddy Muthumula          BUG 52 Fixture
+    * Dec 09, 2024              Chandra Sekhar Reddy Muthumula          BUG 53 Fixture
     * ------------------------- Updates to the function -------------------------
     */
     async handleSwitchCalendarView(event) {
@@ -1153,7 +1155,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
         } else if (event.detail.value === 'day') {
             this.selectHTMLTemplateName = "pe_CalendarLwc";
             this.getUpdatedDatePickerDayMonthYear();  // Updates the date picker for day view
-            this.generateCalendarDayView('daySource', new Date(this.datePickerCurrentDate));  // Generate day view
+            this.generateCalendarDayView('daySource', new Date(this.mainCalendarCurrentDate));  // Generate day view
             this.loadMonthWeekDayTableCalanderView(false, false, true);  // Day view
         } else if (event.detail.value === 'table') {
             this.eventSearchKeyword = '';
@@ -1403,6 +1405,8 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
      * ------------------------- Updates to the function -------------------------
      * Modified Date             Modified By                             Changes
      * Sep 11, 2024              Chandra Sekhar Reddy Muthumula          Added comments to the function
+     * Dec 09, 2024              Chandra Sekhar Reddy Muthumula          BUG 52 Fixture
+     * Dec 09, 2024              Chandra Sekhar Reddy Muthumula          BUG 53 Fixture
      * ------------------------- Updates to the function -------------------------
     */
     handleDatePickerPrevMonthClick(source, date) {
@@ -1412,12 +1416,13 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
             /*
              * Nothing needs to be done all the variables are already updated on the parent method call.
             */
-            console.log("Inside handleDatePickerPrevMonthClick this.datePickerCurrentDate -> " + this.datePickerCurrentDate);
+            console.log("Inside handleDatePickerNextMonthClick this.mainCalendarCurrentDate -> " + this.mainCalendarCurrentDate);
+            this.generateDatePickerCalendar(new Date(this.mainCalendarCurrentDate));
         } else {
             this.datePickerCurrentDate.setMonth(this.datePickerCurrentDate.getMonth() - 1);
+            console.log("Inside handleDatePickerPrevMonthClick this.datePickerCurrentDate -> " + this.datePickerCurrentDate);
+            this.generateDatePickerCalendar(new Date(this.datePickerCurrentDate));
         }
-        this.generateDatePickerCalendar(new Date(this.datePickerCurrentDate));
-        console.log("Inside handleDatePickerPrevMonthClick this.datePickerCurrentDate -> " + this.datePickerCurrentDate);
         this.loadMonthWeekDayTableCalanderView(this.showCalendar, this.showCalendarWeekView, this.showCalendarDayView);
     }
 
@@ -1433,6 +1438,8 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
      * ------------------------- Updates to the function -------------------------
      * Modified Date             Modified By                             Changes
      * Sep 11, 2024              Chandra Sekhar Reddy Muthumula          Added comments to the function
+     * Dec 09, 2024              Chandra Sekhar Reddy Muthumula          BUG 52 Fixture
+     * Dec 09, 2024              Chandra Sekhar Reddy Muthumula          BUG 53 Fixture
      * ------------------------- Updates to the function -------------------------
     */
     handleDatePickerNextMonthClick(source, date){
@@ -1443,16 +1450,17 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
             /*
              * Nothing needs to be done all the variables are already updated on the parent method call.
             */
-            console.log("Inside handleDatePickerNextMonthClick this.datePickerCurrentDate -> " + this.datePickerCurrentDate);
+            console.log("Inside handleDatePickerNextMonthClick this.mainCalendarCurrentDate -> " + this.mainCalendarCurrentDate);
+            this.generateDatePickerCalendar(new Date(this.mainCalendarCurrentDate));
         } else {
             /*
              * This else condition executes when the date picker next month button is clicked.
              * Adds one month to the date picker current date
             */
             this.datePickerCurrentDate.setMonth(this.datePickerCurrentDate.getMonth() + 1);
+            console.log("Inside handleDatePickerNextMonthClick this.datePickerCurrentDate -> " + this.datePickerCurrentDate);
+            this.generateDatePickerCalendar(new Date(this.datePickerCurrentDate));
         }
-        this.generateDatePickerCalendar(new Date(this.datePickerCurrentDate));
-        console.log("Inside handleDatePickerNextMonthClick this.mainCalendarCurrentDate -> " + this.mainCalendarCurrentDate);
         this.loadMonthWeekDayTableCalanderView(this.showCalendar, this.showCalendarWeekView, this.showCalendarDayView);
     }
 
