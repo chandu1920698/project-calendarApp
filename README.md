@@ -8,11 +8,11 @@ Inspired from the existing salesforce calendar app and Webex features.
 
 ## Why Use This Component?
 
-The components address the limitations of being put on a record page and seeing all the scheduled events in a calendar view.
+The components address the limitations the existing Salesforce calendar app of being put on a record page and veiwing all the scheduled events in a calendar view.
 
 ## Features of the app:
  1. Customize your events of the record using this calendar app.
- 2. This can be placed and accessed on most of the objects (listed below).
+ 2. This can be placed and accessed on most of the record pages (listed below).
  3. You can create events with your customers. Move (prepone/postpone) them as needed.
  4. Experience multiple views of the calendar.
  
@@ -38,7 +38,7 @@ No additional fields are created on Event object.
 
 ## Post Installation Steps:
 
-1. Open any record of the above listed objects. Click on Gear Icon > Edit page.
+1. Open any record page of the above listed objects. Click on Gear Icon > Edit page.
 2. Create a new tab on the page and name it accordingly.
 3. Search for 'pe_CalendarLwc' component in the search bar to the left and add it.
 4. Save the lightning record page.
