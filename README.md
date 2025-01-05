@@ -64,8 +64,8 @@ No additional fields are created on Event object.
 
 #### Installation: 
 You can install this Calendar App directly into your Salesforce Environment using the following links:
--  Production Environment: [Install the package in Production](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tWU0000004oe9).
--  Sandbox Environment: [Install the package in Sandbox/Scratch Org](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tWU0000004oe9).
+-  Production Environment: [Install the package in Production](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tWU0000004or3).
+-  Sandbox Environment: [Install the package in Sandbox/Scratch Org](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tWU0000004or3).
 
 #### Post Installation Steps:
 
