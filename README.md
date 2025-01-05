@@ -13,6 +13,22 @@ The components address the limitations the existing Salesforce calendar app of b
  2. This can be placed and accessed on most of the record pages (listed below).
  3. You can create events with your customers. Move (prepone/postpone) them as needed.
  4. Experience multiple views of the calendar.
+
+ <img width="1439" alt="image" src="https://github.com/user-attachments/assets/3b05bd40-0e73-4d0e-8680-c37f39364491" />
+ 
+ <img width="1440" alt="image" src="https://github.com/user-attachments/assets/ff73f4a0-d017-4384-b850-80e65e793a49" />
+
+ <img width="1440" alt="image" src="https://github.com/user-attachments/assets/e1b707c0-96b1-4b93-926a-071ea7182f62" />
+ 
+ <img width="1440" alt="image" src="https://github.com/user-attachments/assets/3a0fc2ce-1d79-4752-8f36-09efe8fdc2cd" />
+ 
+ <img width="1440" alt="image" src="https://github.com/user-attachments/assets/5ac23edf-738b-4271-a5be-76aeddaf1d96" />
+
+ <img width="1440" alt="image" src="https://github.com/user-attachments/assets/a97540f2-e5ed-4bcc-ae45-30f7ecd6c67c" />
+ 
+ <img width="1440" alt="image" src="https://github.com/user-attachments/assets/1c1bab32-1cbe-4c5d-b87d-eb838eedc9fb" />
+
+ ##
  
 ## Record Pages on which this calendar can be placed on are listed below:
 
