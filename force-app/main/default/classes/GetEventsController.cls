@@ -318,10 +318,63 @@ public with sharing class GetEventsController {
         // Return the response message
         return response;
     }
-
     
-    
-    
+    /*
+    * Function Name            : updateEventRecord
+    * Purpose                  : Updates an event record based on the provided event record ID.
+    * Author Details           : Chandra Sekhar Reddy Muthumula
+    * Created Date             : Oct 31, 2024
+    * Parameters               : 
+    *    - eventRecordId       : Id of the event record to be updated.
+    *    - startDateTime       : New start date time of the event.
+    *    - endDateTime         : New end date time of the event.
+    * Return                   : 
+    *    - String              : A response message indicating success or failure of the deletion.
+    */
+    @AuraEnabled
+    public static String updateEventRecord(Id eventRecordId, String startDateTime, String endDateTime) {
+        String response = '';
+        
+        // Log the event record ID being processed for debugging
+        System.debug('eventRecordId -> ' + eventRecordId);
+        System.debug('startDateTime -> ' + startDateTime);
+        System.debug('endDateTime -> ' + endDateTime);
+        
+        startDateTime = startDateTime.split('\\.').get(0);
+        startDateTime = startDateTime.replace('T', ' ');
+        System.debug('startDateTime -> ' + startDateTime);
+        
+        endDateTime = endDateTime.split('\\.').get(0);
+        endDateTime = endDateTime.replace('T', ' ');
+        System.debug('endDateTime -> ' + endDateTime);
+        
+        // Query to find the event record based on the provided ID
+        List<Event> eventRecords = [SELECT Id, StartDateTime, EndDateTime FROM Event WHERE Id = :eventRecordId];
+        
+        List<Event> updatedEvents = new List<Event>();
+        
+        // Check if the event record exists
+        if (eventRecords.size() > 0) {
+            
+            for(Event currentEvent : eventRecords) { 
+                System.debug('currentEvent -> ' + currentEvent);
+                currentEvent.StartDateTime = Datetime.valueOfGMT(startDateTime);
+                currentEvent.EndDateTime = Datetime.valueOfGMT(endDateTime);
+                updatedEvents.add(currentEvent);
+                System.debug('currentEvent -> ' + currentEvent);
+            }
+            // Delete the event record
+            update updatedEvents;
+            response = 'success;Record Updated;Event record updated successfully';
+        } else {
+            // Set error response if the record does not exist
+            response = 'error;Event updation failed; Record Not Found';
+        }
+        
+        // Return the response message
+        return response;
+    }
+        
     public class CalendarEvent {
         @AuraEnabled
 		public String title;

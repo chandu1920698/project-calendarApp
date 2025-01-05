@@ -56,12 +56,9 @@
     background-color: rgb(242 242 242);
 }
 
-.custom-box {
-    /* width: 14.285714285714286%; */
-}
 
 .calweekday {
-    border-style: groove;
+    border: 1px solid lightgray;
     height: 92px;
     width: 0px;
     display: flex;
@@ -84,8 +81,6 @@
     width: 99%;
     /* Styles not pertinent have been omitted */
 }
-
-.loadingSpinner {}
 
 .divTagAsLink {
     text-decoration: underline;
@@ -122,14 +117,6 @@
 
 .transitiontime {
     transition: 1.0s;
-}
-
-.custom-box-height {
-    /* height: 10px; */
-}
-
-.x-large{
-    /* height: 10px; */
 }
 
 .div-css {
@@ -185,11 +172,8 @@ lightning-layout-item.datepickercalweekday > div{
 }
 
 .calendarHour {
-    border-right: 1px solid #F3F3F3;
-    /* border-left: 1px solid #F3F3F3; */
-    border-top: 1px solid #F3F3F3;
-    /* border-bottom: 1px solid #F3F3F3; */
-    /* height: var(--hourHeightInDayViewCalendar); */
+    border-right: 1px solid lightgray;
+    border-top: 1px solid lightgray;
     height: 50px;
 }
 
@@ -198,11 +182,8 @@ lightning-layout-item.datepickercalweekday > div{
 }
 
 .timecolumnclass {
-    border-right: 1px solid #F3F3F3;
-    border-left: 1px solid #F3F3F3;
-    /* border-top: 1px solid #F3F3F3; */
-    /* border-bottom: 1px solid #F3F3F3; */
-    /* height: var(--hourHeightInDayViewCalendar); */
+    border-right: 1px solid lightgray;
+    border-left: 1px solid lightgray;
     height: 50px;
 }
 
@@ -239,4 +220,10 @@ lightning-layout-item.datepickercalweekday > div{
 
 .card-maring-top-remove {
     margin-top: -1.5rem;
+}
+
+.moreEventsOnMonthDayCss {
+    padding-left:1rem;
+    padding-top:0rem;
+    position:relative;
 }

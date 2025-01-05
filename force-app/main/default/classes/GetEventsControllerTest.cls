@@ -38,7 +38,6 @@ public class GetEventsControllerTest {
         
         String startDate = (Date.Today() - 1).toString().split(' ')[0];
         String endDate = (Date.Today() + 1).toString().split(' ')[0];
-        Id currentUserId = UserInfo.getUserId();
         Integer count = 0;
         Id relatedRecordId = acct.Id;
         
@@ -46,7 +45,7 @@ public class GetEventsControllerTest {
 		System.debug('endDate -> ' + endDate);
         
         Test.StartTest();
-        Assert.areNotEqual(NULL, GetEventsController.getCurrentMonthCalanderEvents(startDate, endDate, currentUserId, count, relatedRecordId));
+        Assert.areNotEqual(NULL, GetEventsController.getCurrentMonthCalanderEvents(startDate, endDate, count, relatedRecordId));
         Test.StopTest();
     }
     
@@ -86,7 +85,7 @@ public class GetEventsControllerTest {
         Integer offset = 0;
         
         Test.StartTest();
-        Assert.areNotEqual(NULL, GetEventsController.getTableViewCalanderEvents(currentUserId, count, relatedRecordId, limitSize, offset));
+        Assert.areNotEqual(NULL, GetEventsController.getTableViewCalanderEvents(count, relatedRecordId, limitSize, offset));
         Test.StopTest();
     }
     
@@ -141,6 +140,49 @@ public class GetEventsControllerTest {
         
         Test.StartTest();
         Assert.areEqual('5:05 PM', GetEventsController.convertTo12HourFormat('2024-10-09 17:05:57'));
+        Test.StopTest();
+    }
+    
+    @isTest
+    static void testMethod9() {
+        //Test for GetEventsController.updateEventRecord - 12:00 AM Time - 2024-10-09 17:05:57
+        
+        Event event = [SELECT Id, StartDateTime, EndDateTime FROM Event LIMIT 1];
+        
+        String startDateTime = event.StartDateTime.toString().split('\\.').get(0);
+        startDateTime = startDateTime.replace('T', ' ');
+        
+        String endDateTime = event.EndDateTime.toString().split('\\.').get(0);
+        endDateTime = endDateTime.replace('T', ' ');
+        
+        System.debug('startDateTime -> ' + event.StartDateTime.toString());
+        System.debug('endDateTime -> ' + event.EndDateTime.toString());
+        
+        // String startDate = (Date.Today() - 1).toString().split(' ')[0];
+        // String endDate = (Date.Today() + 1).toString().split(' ')[0];
+                
+        Test.StartTest();
+        Assert.areEqual('success;Record Updated;Event record updated successfully', GetEventsController.updateEventRecord(event.id, startDateTime, endDateTime));
+        Test.StopTest();
+    }
+    
+    @isTest
+    static void testMethod10() {
+        //Test for GetEventsController.updateEventRecord - Error scenario
+        
+        Event event = [SELECT Id, StartDateTime, EndDateTime FROM Event LIMIT 1];
+        
+        String startDateTime = event.StartDateTime.toString().split('\\.').get(0);
+        startDateTime = startDateTime.replace('T', ' ');
+        
+        String endDateTime = event.EndDateTime.toString().split('\\.').get(0);
+        endDateTime = endDateTime.replace('T', ' ');
+        
+        System.debug('startDateTime -> ' + event.StartDateTime.toString());
+        System.debug('endDateTime -> ' + event.EndDateTime.toString());
+                
+        Test.StartTest();
+        Assert.areEqual('error;Event updation failed; Record Not Found', GetEventsController.updateEventRecord('00UWU000000ing12AC', startDateTime, endDateTime));
         Test.StopTest();
     }
     
