@@ -1497,8 +1497,10 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
     handleDatePickerYearSelect(event) {
         // console.log("Inside handleDatePickerYearSelect -> " + JSON.stringify(event));
         // console.log("event.target.value -> " + event.target.value);
-        this.datePickerCurrentDate.setFullYear(event.target.value);
-        this.generateDatePickerCalendar(new Date(this.datePickerCurrentDate));
+        //this.datePickerCurrentDate.setFullYear(event.target.value);
+        let tempDatePickerDateValue = new Date(this.datePickerCurrentDate);
+        tempDatePickerDateValue.setFullYear(event.target.value);
+        this.generateDatePickerCalendar(new Date(tempDatePickerDateValue));
     }
 
 
