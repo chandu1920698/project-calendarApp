@@ -1,7 +1,5 @@
 # Calendar App Documentation
 
-## Unmanaged Package Link:
-
 ## Overview
 This is a Calendar App built using the Lightinig Web Component frame work. You can use this simple app to manage events of a record on which this app is placed.
 Inspired from the existing salesforce calendar app and Webex features.
@@ -34,6 +32,9 @@ The components address the limitations the existing Salesforce calendar app of b
 The above objects are taken from the existing 'Related To' (Api Name: WhatId) standard field of the Event object. 
  
 No additional fields are created on Event object.
+
+
+## Unmanaged Package Link: https://login.salesforce.com/packaging/installPackage.apexp?p0=04tWU0000004oe9
 
 
 ## Post Installation Steps:
