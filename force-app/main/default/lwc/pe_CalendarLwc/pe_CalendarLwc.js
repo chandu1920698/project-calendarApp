@@ -1524,7 +1524,6 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
             this.getUpdatedDatePickerDayMonthYear();
             
             // console.log("datePickerCurrentDate -> " + datePickerCurrentDate);
-            
             // Extract the year and month from the provided date
             const year = datePickerCurrentDate.getFullYear();
             const month = datePickerCurrentDate.getMonth(); 
@@ -1609,9 +1608,9 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
                         let isSelectedDay = false; // Flag to indicate if this is a selected day
                         
                         // Check if the current day is selected from the small calendar
-                        if (!todayStatus && dailyDate.toDateString() === new Date(this.selectedDateFromSmallCalendar).toDateString()) {
+                        if (!todayStatus && (dailyDate.toDateString() === new Date(this.mainCalendarCurrentDate).toDateString())) {
                             // console.log("dailyDate.toDateString() -> " + dailyDate.toDateString());
-                            // console.log("this.selectedDateFromSmallCalendar.toDateString() -> " + this.selectedDateFromSmallCalendar.toDateString());
+                            // console.log("this.mainCalendarCurrentDate.toDateString() -> " + new Date(this.mainCalendarCurrentDate).toDateString());
                             isSelectedDay = true; // Mark as selected day
                             css += 'isSelectedDayFromSmallCalendar '; // Add CSS class for selected day
                         }
