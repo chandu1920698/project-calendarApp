@@ -47,6 +47,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
     @track calendar = [];
     @track mainCalendarCurrentMonth = '';
     @track mainCalendarCurrentYear = '';
+    @track mainCalendarCurrentDay = '';
     @track eventOpacity = 1.0;
     @track eventRecordData;
     @track countToManipulateWire = 0;
@@ -90,6 +91,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
         let newDate = new Date();
         // console.log("this.userTimeZoneOffSetHours -> " + this.userTimeZoneOffSetHours);
         this.mainCalendarCurrentDate = new Date(newDate.setTime(newDate.getTime() + (newDate.getTimezoneOffset() * 60000) + (this.userTimeZoneOffSetHours * 60 * 60000)));
+        this.getUpdatedMainCalendarDateInfo();
         // console.log("this.mainCalendarCurrentDate -> " + this.mainCalendarCurrentDate);
         // console.log("new Date(this.mainCalendarCurrentDate) -> " + new Date(this.mainCalendarCurrentDate));
 
@@ -147,6 +149,29 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
             // console.log('connectedCallback Server Error--->'+error);
         });
     }
+
+    /*
+     * ------------------------- Functionality Details -------------------------
+     * Function Name                  : getUpdatedMainCalendarDateInfo
+     * Purpose                        : Fetches updated Main Calendar Month, Year and Date.
+     * Author                         : Chandra Sekhar Reddy Muthumula
+     * Created Date                   : Jan 06, 2024
+     * ------------------------- Updates to the function -------------------------
+     * Modified Date             Modified By                             Changes
+     * Jan 06, 2024              Chandra Sekhar Reddy Muthumula          Added the function
+     * ------------------------- Updates to the function -------------------------
+    */
+    getUpdatedMainCalendarDateInfo() {
+        // console.log("Inside getUpdatedMainCalendarDateInfo ");
+        this.mainCalendarCurrentDay = this.mainCalendarCurrentDate.getDate();
+        this.mainCalendarCurrentMonth = this.getCurrentMonth(this.mainCalendarCurrentDate);
+        this.mainCalendarCurrentYear = this.mainCalendarCurrentDate.getFullYear();
+
+        // console.log("this.mainCalendarCurrentDay -> " + this.mainCalendarCurrentDay);
+        // console.log("this.mainCalendarCurrentMonth -> " + this.mainCalendarCurrentMonth);
+        // console.log("this.mainCalendarCurrentYear -> " + this.mainCalendarCurrentYear);
+    }
+
 
     /*
      * ------------------------- Functionality Details -------------------------
@@ -527,6 +552,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
             date.setDate(Math.min(dayOfMonth, new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate()));
 
             this.mainCalendarCurrentDate = new Date(date);
+            this.getUpdatedMainCalendarDateInfo();
             this.handleMonthChange(new Date(this.mainCalendarCurrentDate));
             /*
              * Once the month calendar is updated, then date picker current date is set to the day of the previous month
@@ -542,6 +568,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
              * Then the previous week calendar is generated.
             */
             this.mainCalendarCurrentDate.setDate(this.mainCalendarCurrentDate.getDate() - 7);
+            this.getUpdatedMainCalendarDateInfo();
             this.datePickerCurrentDate = new Date(this.mainCalendarCurrentDate);
             this.getUpdatedDatePickerDayMonthYear();
             this.getCurrentWeekStartDateEndDate(new Date(this.mainCalendarCurrentDate));
@@ -552,6 +579,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
              * Then the previous day calendar is generated.
             */
             this.mainCalendarCurrentDate.setDate(this.mainCalendarCurrentDate.getDate() - 1);
+            this.getUpdatedMainCalendarDateInfo();
             this.datePickerCurrentDate = new Date(this.mainCalendarCurrentDate);
             this.getUpdatedDatePickerDayMonthYear();
             await this.generateCalendarDayView('daySource', new Date(this.mainCalendarCurrentDate));
@@ -599,6 +627,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
             date.setDate(Math.min(dayOfMonth, new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate()));
 
             this.mainCalendarCurrentDate = new Date(date);
+            this.getUpdatedMainCalendarDateInfo();
             this.handleMonthChange(new Date(this.mainCalendarCurrentDate));
             /*
              * Once the month calendar is updated, then date picker current date is set to the day of the next month
@@ -614,6 +643,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
              * Then the next week calendar is generated.
             */
             this.mainCalendarCurrentDate.setDate(this.mainCalendarCurrentDate.getDate() + 7);
+            this.getUpdatedMainCalendarDateInfo();
             this.datePickerCurrentDate = new Date(this.mainCalendarCurrentDate);
             this.getUpdatedDatePickerDayMonthYear();
             this.getCurrentWeekStartDateEndDate(new Date(this.mainCalendarCurrentDate));
@@ -624,6 +654,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
              * Then the next day calendar is generated.
             */
             this.mainCalendarCurrentDate.setDate(this.mainCalendarCurrentDate.getDate() + 1);
+            this.getUpdatedMainCalendarDateInfo();
             this.datePickerCurrentDate = new Date(this.mainCalendarCurrentDate);
             this.getUpdatedDatePickerDayMonthYear();
             await this.generateCalendarDayView('daySource', new Date(this.mainCalendarCurrentDate));
@@ -637,10 +668,6 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
         // console.log("this.mainCalendarCurrentDate -> " + this.mainCalendarCurrentDate);
         this.handleDatePickerNextMonthClick("calendarHighlightPanel", new Date(this.mainCalendarCurrentDate));
         this.loadMonthWeekDayTableCalanderView(this.showCalendar, this.showCalendarWeekView, this.showCalendarDayView);
-    }
-
-    get mainCalendarCurrentDay() {
-        return this.mainCalendarCurrentDate.getDate();
     }
 
     /*
@@ -1699,10 +1726,12 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
                 * This does not need to refersh the month calendar if the day selected from the date picker calendar is of the same month
                 */
                 this.mainCalendarCurrentDate = new Date(this.datePickerCurrentDate);
+                this.getUpdatedMainCalendarDateInfo();
                 this.handleRefreshClick();
             }
             if(this.mainCalendarCurrentDate.getDate() != this.datePickerCurrentDate.getDate()) {
                 this.mainCalendarCurrentDate = new Date(this.datePickerCurrentDate);
+                this.getUpdatedMainCalendarDateInfo();
             }
             /*
              *  The week calendar days have to be newly set as per the new selected date from the selected date
@@ -1717,6 +1746,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
              *  The month calendar date has to be newly set as per the new selected date from the selected date
             */
             this.mainCalendarCurrentDate = new Date(this.datePickerCurrentDate);
+            this.getUpdatedMainCalendarDateInfo();
             /*
              *  The week calendar days have to be newly set as per the new selected date from the small calendar
             */
@@ -1738,6 +1768,7 @@ export default class Pe_CalendarLwc extends NavigationMixin(LightningElement) {
              *  The month calendar date has to be newly set as per the new selected date from the selected date
             */
             this.mainCalendarCurrentDate = new Date(this.datePickerCurrentDate);
+            this.getUpdatedMainCalendarDateInfo();
         }
 
         /*
