@@ -13,7 +13,7 @@ The components address the limitations of the existing Salesforce calendar app o
 ---
 
 #### Techstack Used:
-1. Lightinig Web Component (LWC) frame work.
+1. Lightning Web Component (LWC) frame work.
 2. Apex Programming Language.
 3. Salesforce Object Query Language (SOQL)
 4. Salesforce Platform Events
@@ -64,8 +64,8 @@ No additional fields are created on Event object.
 
 #### Installation: 
 You can install this Calendar App directly into your Salesforce Environment using the following links:
--  Production Environment: [Install the package in Production](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tWU0000004or3).
--  Sandbox Environment: [Install the package in Sandbox/Scratch Org](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tWU0000004or3).
+-  Production Environment: [Install the package in Production](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tWU0000004p7B).
+-  Sandbox Environment: [Install the package in Sandbox/Scratch Org](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tWU0000004p7B).
 
 #### Post Installation Steps:
 
