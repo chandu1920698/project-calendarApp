@@ -1,19 +1,19 @@
 # Calendar App Documentation
 
 #### Overview
-This is a Calendar App built using the Lightinig Web Component frame work. You can use this simple app to manage events of a record on which this app is placed.
+This is a Calendar App built using the Lightning Web Component framework. You can use this simple app to manage events of a record on which this app is placed.
 Inspired from the existing salesforce calendar app and Webex features.
 
 ---
 
 #### Why Use This Component?
 
-The components address the limitations of the existing Salesforce calendar app of being put on a record page and veiwing all the scheduled events in a calendar view.
+The components address the limitations of the existing Salesforce calendar app of being put on a record page and viewing all the scheduled events in a calendar view.
 
 ---
 
 #### Techstack Used:
-1. Lightning Web Component (LWC) frame work.
+1. Lightning Web Component (LWC) framework.
 2. Apex Programming Language.
 3. Salesforce Object Query Language (SOQL)
 4. Salesforce Platform Events
